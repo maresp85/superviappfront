@@ -1,0 +1,117 @@
+<div class="wrapper">
+
+    <app-navbar></app-navbar>
+  
+    <app-sidebar></app-sidebar>
+  
+    <div class="content-wrapper">
+  
+      <section class="content">
+  
+        <div class="container-fluid">
+
+        <app-title [title]="title" [breadcrumbtitle]="breadcrumbtitle" [breadcrumbtitle2]="breadcrumbtitle2">
+        </app-title>
+        <div class="card"> 
+            <!-- /.card-header -->
+            <div class="card-body">
+                <form (ngSubmit)="onSubmit( f )" #f="ngForm" class="form-group">                                
+                    <div class="form-group">
+                        <label for="descripcion">Nombre:</label>
+                        <input 
+                            type="text" 
+                            name="nombre"
+                            class="form-control"
+                            [(ngModel)]="empresa.nombre"
+                            [ngClass]="{'is-invalid':f.submitted && f.controls['nombre'].errors}"
+                            maxlength="450"
+                            required
+                        >
+                    </div> 
+                    <div class="form-group">
+                        <label for="ubicacion">Ubicación:</label>
+                        <input 
+                            type="text" 
+                            name="ubicacion"
+                            class="form-control"                       
+                            [(ngModel)]="empresa.ubicacion"
+                            [ngClass]="{'is-invalid':f.submitted && f.controls['ubicacion'].errors}"
+                            maxlength="450"
+                            required
+                        >               
+                    </div>   
+                    <div class="form-group">
+                        <label for="ubicacion">Teléfono:</label>
+                        <input 
+                            type="number" 
+                            name="telefono"
+                            class="form-control"                       
+                            [(ngModel)]="empresa.telefono"
+                            [ngClass]="{'is-invalid':f.submitted && f.controls['telefono'].errors}"
+                            maxlength="10"
+                            required
+                        >               
+                    </div>
+                    <div class="form-group">
+                        <label for="logoImage">Logo:</label>
+                        <input 
+                            type="file" 
+                            #Image 
+                            accept="image/*" 
+                            name="logoImage"
+                            class="form-control-file"
+                            (change)="logoUpload($event)"
+                            required
+                        >
+                        <div *ngIf="existsFile" class="alert alert-danger mt-1" role="alert">
+                            La imagen del logo es obligatoria
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label for="activo" class="mr-1">Activo:</label> 
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                            <input 
+                                type="radio" 
+                                class="form-check-input"
+                                [(ngModel)]="empresa.activo"
+                                name="activo"                           
+                                value="true"
+                            >
+                                Si
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                            <input 
+                                type="radio" 
+                                class="form-check-input" 
+                                [(ngModel)]="empresa.activo"
+                                name="activo" 
+                                value="false"
+                            >
+                            No
+                            </label>
+                        </div>   
+                    </div>     
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit">
+                            <i [ngClass]="{'fa-refresh fa-spin':loadingButton}" class="fa"></i>
+                            Guardar
+                        </button>  
+                    </div>      
+                        
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</section>  
+
+</div>
+
+<aside class="control-sidebar control-sidebar-dark">
+</aside>
+
+</div>

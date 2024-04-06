@@ -1,0 +1,138 @@
+<div class="wrapper">
+
+    <app-navbar></app-navbar>
+  
+    <app-sidebar></app-sidebar>
+  
+    <div class="content-wrapper">
+  
+      <section class="content">
+  
+        <div class="container-fluid">
+
+        <app-title 
+            [title]="title" 
+            [breadcrumbtitle]="breadcrumbtitle" 
+            [breadcrumbtitle2]="breadcrumbtitle2"
+        >
+        </app-title>
+        <app-loading *ngIf="loading"></app-loading>        
+        <div *ngIf="!loading">
+            <div class="card"> 
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <form (ngSubmit)="onSubmit( f )" #f="ngForm" class="form-group">                                
+                        <div class="form-group">
+                            <label for="cumple">Cumple: </label>
+                            <select 
+                                name="cumple"                         
+                                class="form-control" 
+                                [(ngModel)]="itemactividad.cumple"                                
+                                [ngClass]="{'is-invalid':f.submitted && f.controls['cumple'].errors}"    
+                            >                            
+                                <option [value]=1>Si</option>
+                                <option [value]=0>No</option>                      
+                            </select>
+                        </div>  
+                        <div class="form-group">
+                            <label for="tipotrabajo">Tipo:</label>
+                            <select 
+                                name="tipo"                         
+                                class="form-control" 
+                                [(ngModel)]="itemactividad.tipo" 
+                                [ngClass]="{'is-invalid':f.submitted && f.controls['tipo'].errors}"    
+                                required
+                            >                        
+                                <option 
+                                    value="EVIDENCIAS" 
+                                    [selected]="itemactividad.tipo == 'EVIDENCIAS'"
+                                >
+                                    EVIDENCIAS
+                                </option>
+                                <option 
+                                    value="NOTA BITÁCORA"
+                                    [selected]="itemactividad.tipo == 'NOTA BITÁCORA'"
+                                >
+                                    NOTA BITÁCORA
+                                </option>
+                                <option 
+                                    value="ETIQUETA"
+                                    [selected]="itemactividad.tipo == 'ETIQUETA'"
+                                >
+                                    ETIQUETA
+                                </option>
+                                <option 
+                                    value="CHECKLIST"
+                                    [selected]="itemactividad.tipo == 'CHECKLIST'"
+                                >
+                                    CHECKLIST              
+                                </option>
+                                <option 
+                                    value="FIRMA DIGITAL"
+                                    [selected]="itemactividad.tipo == 'FIRMA DIGITAL'"
+                                >
+                                    FIRMA DIGITAL
+                                </option>
+                            </select>
+                        </div>  
+                        <div class="form-group">
+                            <label for="etiqueta">Texto:</label>
+                            <textarea 
+                                type="text" 
+                                name="etiqueta"
+                                class="form-control"
+                                [(ngModel)]="itemactividad.etiqueta"
+                                [ngClass]="{'is-invalid':f.submitted && f.controls['etiqueta'].errors}"
+                                maxlength="450"
+                                required
+                            >
+                            </textarea>
+                        </div>  
+                        <div class="form-group">
+                            <label for="imagen">Captura imágenes: </label>
+                            <select 
+                                name="imagen"                         
+                                class="form-control" 
+                                [(ngModel)]="itemactividad.imagen"                                
+                                [ngClass]="{'is-invalid':f.submitted && f.controls['imagen'].errors}"    
+                            >                            
+                                <option [value]=1>Si</option>
+                                <option [value]=0>No</option>                        
+                            </select>
+                        </div>  
+                        <div class="form-group">
+                            <label for="activo">Activo: </label>
+                            <select 
+                                name="activo"                         
+                                class="form-control" 
+                                [(ngModel)]="itemactividad.activo"                                
+                                [ngClass]="{'is-invalid':f.submitted && f.controls['activo'].errors}"    
+                            >                            
+                                <option [value]=1>Si</option>
+                                <option [value]=0>No</option>                       
+                            </select>
+                        </div>  
+                        <div class="form-group">
+                            <button 
+                                class="btn btn-primary" 
+                                type="submit"
+                            >
+                                <i [ngClass]="{'fa-refresh fa-spin':loadingButton}" class="fa"></i>
+                                Guardar
+                            </button>  
+                        </div>      
+                            
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>  
+
+</div>
+
+<aside class="control-sidebar control-sidebar-dark">
+</aside>
+
+</div>

@@ -1,0 +1,80 @@
+<div class="wrapper">
+
+    <app-navbar></app-navbar>
+  
+    <app-sidebar></app-sidebar>
+  
+    <div class="content-wrapper">
+  
+      <section class="content">
+  
+        <div class="container-fluid">
+
+        <app-title [title]="title" 
+                   [breadcrumbtitle]="breadcrumbtitle" 
+                   [breadcrumbtitle2]="breadcrumbtitle2">
+        </app-title>
+        <app-loading *ngIf="loading"></app-loading>      
+
+        <div *ngIf="!loading">
+
+            <div class="card"> 
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <form (ngSubmit)="onSubmit(f)" #f="ngForm" class="form-group">                                
+                        <div class="form-group">
+                            <label for="descripcion">Nombre:</label>
+                            <input type="text" 
+                                   name="nombre"
+                                   class="form-control"
+                                   [(ngModel)]="obra.nombre"
+                                   [ngClass]="{'is-invalid':f.submitted && f.controls['nombre'].errors}"
+                                   maxlength="450"
+                                   required>
+                        </div>     
+                        <div class="form-group">
+                            <label for="descripcion">Dirección:</label>
+                            <input type="text" 
+                                   name="direccion"
+                                   class="form-control"
+                                   [(ngModel)]="obra.direccion"
+                                   [ngClass]="{'is-invalid':f.submitted && f.controls['direccion'].errors}"
+                                   maxlength="450"
+                                   required>
+                        </div> 
+                        <div class="form-group">
+                            <label for="activo">Activo: </label>
+                            <select 
+                                name="activo"                         
+                                class="form-control" 
+                                [(ngModel)]="obra.activo"                                
+                                [ngClass]="{'is-invalid':f.submitted && f.controls['activo'].errors}"    
+                                required
+                            >                            
+                                <option [value]=1>Si</option>
+                                <option [value]=0>No</option>                        
+                            </select>
+                        </div> 
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">
+                                <i [ngClass]="{'fa-refresh fa-spin':loadingButton}" class="fa"></i>
+                                Guardar
+                            </button>  
+                        </div>      
+                            
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>  
+
+</div>
+
+<aside class="control-sidebar control-sidebar-dark">
+</aside>
+
+</div>

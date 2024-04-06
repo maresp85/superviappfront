@@ -1,0 +1,116 @@
+<div class="wrapper">
+
+    <app-navbar></app-navbar>
+  
+    <app-sidebar></app-sidebar>
+  
+    <div class="content-wrapper">
+  
+      <section class="content">
+  
+        <div class="container-fluid">
+
+        <app-title 
+            [title]="title" 
+            [breadcrumbtitle]="breadcrumbtitle" 
+            [breadcrumbtitle2]="breadcrumbtitle2"
+        >
+        </app-title>
+        <app-loading *ngIf="loading"></app-loading>      
+
+        <div *ngIf="!loading">
+
+            <div class="card"> 
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <form (ngSubmit)="onSubmit(f)" #f="ngForm" class="form-group">
+                        <div class="form-group">
+                            <label for="trabajo">Empresa:</label>
+                            <select
+                                #mySelectEmpresa
+                                name='empresa'                         
+                                class="form-control" 
+                                [(ngModel)]="empresa"
+                                (change)="onChangeStateEmpresa(mySelectEmpresa.value)"
+                                [ngClass]="{'is-invalid':f.submitted && f.controls['empresa'].errors}"    
+                                required
+                            >                            
+                                <option [value]='t._id' *ngFor='let t of listadoEmpresa'>{{ t.nombre }}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="usuarioId">Usuario: </label>
+                            <select 
+                                name="usuarioId"                         
+                                class="form-control" 
+                                [(ngModel)]="usuarioId"                                
+                                [ngClass]="{'is-invalid': f.submitted && f.controls['usuarioId'].errors}"    
+                                required
+                            >                            
+                                <option *ngFor="let usuario of listadoUsuario" [value]="usuario._id">
+                                    {{ usuario.nombre }} ({{ usuario.role }})
+                                 </option>                        
+                            </select>
+                        </div> 
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">
+                                <i [ngClass]="{'fa-refresh fa-spin': loadingButton}" class="fa"></i>
+                                Enviar
+                            </button>  
+                        </div>      
+                            
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">    
+                <!-- /.card-header -->
+                <div class="card-body p-0">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Correo electrónico</th>
+                        <th>Perfil</th>
+                        <th>Opciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let lista of listadoObraUsuario; let i = index">                  
+                        <td>{{ lista.usuario.nombre }}</td>
+                        <td>{{ lista.usuario.email }}</td>
+                        <td>{{ lista.usuario.role }}</td>
+                        <td>      
+                            <div class="col-4">
+                                <a (click)="deleteObraUsuario(lista._id)" 
+                                    title="Eliminar"
+                                    style="color: #dc3545;cursor: pointer">
+                                <i class="fa fa-times-circle" aria-hidden="true"></i>
+                                </a>   
+                            </div>     
+                        </td>   
+                      </tr>         
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary" (click)="back()">            
+                    Regresar
+                </button>  
+            </div>
+
+        </div>
+
+    </div>
+
+</section>  
+
+</div>
+
+<aside class="control-sidebar control-sidebar-dark">
+</aside>
+
+</div>

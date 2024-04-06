@@ -1,0 +1,110 @@
+<div class="wrapper">
+
+  <app-navbar></app-navbar>
+
+  <app-sidebar></app-sidebar>
+
+  <div class="content-wrapper">
+
+    <section class="content">
+
+      <div class="container-fluid">
+
+        <app-title 
+          [title]="title"
+          [breadcrumbtitle]="breadcrumbtitle"
+          [breadcrumbtitle2]="breadcrumbtitle2"
+        >
+        </app-title>
+        <app-loading *ngIf="loading"></app-loading>
+        <div *ngIf="!loading">
+          <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+              <table class="table table-striped">
+                <thead>
+                  <tr>         
+                    <th style="text-align: center;">Nombre</th>
+                    <th style="text-align: center;">Empresa</th>
+                    <th style="text-align: center;">¿Campo Fecha Mejora?</th>
+                    <th style="text-align: center;">¿Legaliza en Cualquier Orden?</th>
+                    <th style="text-align: center;">Bitácora</th>
+                    <th style="text-align: center;">Activo</th>
+                    <th *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">Opciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let lista of listado | paginate:{itemsPerPage: 12, currentPage:p}; let i = index">              
+                    <td>{{ lista.nombre }}</td>
+                    <td>{{ lista.empresa.nombre }}</td>
+                    <td style="text-align: center;">
+                      <span *ngIf="lista.fechaMejora == true" class="badge badge-primary">
+                        Si
+                      </span>
+                      <span *ngIf="lista.fechaMejora == false" class="badge badge-secondary">
+                        No
+                      </span>
+                    </td>
+                    <td style="text-align: center;">
+                      <span *ngIf="lista.legalizaCualquierOrden == true" class="badge badge-primary">
+                        Si
+                      </span>
+                      <span *ngIf="lista.legalizaCualquierOrden == false" class="badge badge-secondary">
+                        No
+                      </span>
+                    </td>
+                    <td style="text-align: center;">
+                      <span *ngIf="lista.bitacora == true" class="badge badge-primary">
+                        Si
+                      </span>
+                      <span *ngIf="lista.bitacora == false" class="badge badge-danger">
+                        No
+                      </span>    
+                    </td>
+                    <td style="text-align: center;">
+                      <span *ngIf="lista.activo == true" class="badge badge-success">
+                        Si
+                      </span>
+                      <span *ngIf="lista.activo == false" class="badge badge-danger">
+                        No
+                      </span>
+                    </td>
+                    <td *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+                      <a class="nav-link" [routerLink]="['/editartrabajos', lista._id]">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- /.card-body -->   
+          </div>
+
+          <div class="row text-center">
+            <div class="col-md-12 col-lg-12">
+              <pagination-controls 
+                (pageChange)="p=$event" 
+                previousLabel="Anterior"
+                nextLabel="Siguiente"
+              >
+              </pagination-controls>
+            </div>
+          </div>
+          
+          <a class="btn btn-primary" routerLink="../creartrabajos" *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+            Nuevo Trabajo
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+
+</div>

@@ -1,0 +1,175 @@
+<div class="wrapper">
+
+  <app-navbar></app-navbar>
+
+  <app-sidebar></app-sidebar>
+
+  <div class="content-wrapper">
+
+    <section class="content">
+
+      <div class="container-fluid">
+
+        <app-title 
+          [title]="title"
+          [breadcrumbtitle]="breadcrumbtitle"
+          [breadcrumbtitle2]="breadcrumbtitle2"
+        >
+        </app-title>
+
+        <app-loading *ngIf="loading"></app-loading>
+
+        <div *ngIf="!loading">
+
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body p-0">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: 10px">#</th>
+                      <th>Nombre</th>
+                      <th>Correo Electrónico</th>
+                      <th>Empresa</th>
+                      <th>Perfil</th>
+                      <th>Activo</th>
+                      <!--<th>Recibe Email</th>-->
+                      <th>Login Web</th>
+                      <th>Login Móvil</th>
+                      <th>Edita Ordenes</th>
+                      <th>Firma Digital</th>
+                      <th *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let lista of listado | paginate:{itemsPerPage: 10, currentPage:p}; let i = index">
+                      <td>{{ i+1 }}</td>
+                      <td>{{ lista.nombre }}</td>
+                      <td>{{ lista.email }}</td>
+                      <td>
+                        <span *ngIf="lista.role !== 'ADMIN'">
+                          {{ lista.empresa[0].nombre }}
+                        </span>
+                      </td>
+                      <td>
+                        <span *ngIf="lista.role == 'ADMIN'" class="badge badge-success">
+                          {{ lista.role }}
+                        </span>
+                        <span *ngIf="lista.role == 'COORDINADOR'" class="badge badge-warning">
+                          {{ lista.role }}
+                        </span>
+                        <span *ngIf="lista.role == 'INGENIERO'" class="badge badge-primary">
+                          {{ lista.role }}
+                        </span>
+                        <span *ngIf="lista.role == 'SUPERVISOR'" class="badge badge-secondary">
+                          {{ lista.role }}
+                        </span>                          
+                        <span *ngIf="lista.role == 'RESIDENTE DE OBRA'" class="badge badge-secondary">
+                          {{ lista.role }}
+                        </span>
+                        <span *ngIf="lista.role == 'DIRECTOR DE OBRA'" class="badge badge-info">
+                          {{ lista.role }}
+                        </span>
+                        <span *ngIf="lista.role == 'GERENCIA-DIRECCIÓN CONSTRUCCIONES'" class="badge badge-success">
+                          {{ lista.role }}
+                        </span>
+                        <span *ngIf="lista.role == 'SSTT'" class="badge badge-secondary">
+                          {{ lista.role }}
+                        </span>
+                        <span *ngIf="lista.role == 'OTROS'" class="badge badge-secondary">
+                          {{ lista.role }}
+                        </span>
+                      </td>
+                      <td class="text-center">
+                        <span *ngIf="lista.estado == true" class="badge badge-success">
+                          Si
+                        </span>
+                        <span *ngIf="lista.estado == false" class="badge badge-danger">
+                          No
+                        </span>
+                      </td>
+                    <!-- <td>
+                        <span *ngIf="lista.sendemail == true" class="badge badge-primary">
+                          Si
+                        </span>
+                        <span *ngIf="lista.sendemail == false" class="badge badge-danger">
+                          No
+                        </span>
+                      </td>-->
+                      <td class="text-center">
+                        <span *ngIf="lista.enterweb == true" class="badge badge-primary">
+                          Si
+                        </span>
+                        <span *ngIf="lista.enterweb == false" class="badge badge-danger">
+                          No
+                        </span>
+                      </td>
+                      <td class="text-center">
+                        <span *ngIf="lista.entermovil == true" class="badge badge-info">
+                          Si
+                        </span>
+                        <span *ngIf="lista.entermovil == false" class="badge badge-danger">
+                          No
+                        </span>
+                      </td>
+                      <td class="text-center">
+                        <span *ngIf="lista.editorder == true" class="badge badge-success">
+                          Si
+                        </span>
+                        <span *ngIf="lista.editorder == false" class="badge badge-danger">
+                          No
+                        </span>
+                      </td>                      
+                      <td>
+                        <img *ngIf="lista.imgfirma" src="{{url}}{{lista.imgfirma}}" width="90"/>
+                      </td>
+                      <td *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+                        <div class="row">
+                          <div class="col-4">
+                            <a [routerLink]="['/editarusuarios', lista.email]"
+                              title="Editar">
+                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                          <div class="col-4">
+                            <a [routerLink]="['/editarusuariosclave', lista.email]"
+                              title="Cambiar Clave">
+                              <i class="fa fa-key" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <div class="row text-center">
+              <div class="col-md-12 col-lg-12">
+                <pagination-controls 
+                  (pageChange)="p=$event" 
+                  previousLabel="Anterior"
+                  nextLabel="Siguiente"
+                >
+                </pagination-controls>
+              </div>
+            </div>  
+
+            <div class="mb-2">
+              <a class="btn btn-primary" routerLink="/crearusuarios">
+                Nuevo Usuario
+              </a>
+            </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+
+</div>

@@ -1,0 +1,91 @@
+<div class="wrapper">
+
+    <app-navbar></app-navbar>
+  
+    <app-sidebar></app-sidebar>
+  
+    <div class="content-wrapper">
+  
+      <section class="content">
+  
+        <div class="container-fluid">
+                  
+          <app-title [title]="title" 
+                     [breadcrumbtitle]="breadcrumbtitle" 
+                     [breadcrumbtitle2]="breadcrumbtitle2">
+          </app-title>
+          
+        <app-loading *ngIf="loading"></app-loading>   
+
+        <div *ngIf="!loading">
+
+          <div class="card"> 
+
+              <div class="card-header ui-sortable-handle" style="cursor: move;">
+                <h3 class="card-title">
+                  <i class="ion ion-clipboard mr-1"></i>
+                  {{ subtitle }}
+                </h3>
+              </div>
+
+              <div class="card-body p-0">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: 10px">#</th>
+                      <th>Usuario Legaliza</th>
+                      <th>Fecha Generación</th>
+                      <th>Fecha Legalización</th>
+                      <th>Estado</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let lista of listado; let i = index">
+                      <td>{{ lista.id }}</td>                                            
+                      <td>{{ lista.usuariolegaliza.nombre }}</td>                             
+                      <td>{{ lista.fecha | date:'dd/MM/yyyy HH:mm':'UTC -5' }}</td> 
+                      <td>{{ lista.fechalegaliza | date:'dd/MM/yyyy HH:mm':'UTC -5' }}</td>                             
+                      <td>
+                        <span *ngIf="lista.estado == 'PENDIENTE'" class="badge badge-warning">
+                          {{ lista.estado }}
+                        </span>
+                        <span *ngIf="lista.estado == 'CUMPLE'" class="badge badge-success">
+                          {{ lista.estado }}
+                        </span>
+                        <span *ngIf="lista.estado == 'NO CUMPLE'" class="badge badge-danger">
+                          {{ lista.estado }}
+                        </span>
+                      </td>      
+                      <td>
+                        <a style="cursor:pointer"
+                            title="Consultar Actividad"
+                            (click)="consultarActividad(lista._id)">
+                          <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                        </a>  
+                      </td>                        
+                    </tr>         
+                  </tbody>
+                </table>
+                
+              </div>
+             
+              <div class="card-footer clearfix">
+                <button type="button" class="btn btn-info" (click)="regresar()">
+                  Regresar</button>
+              </div>
+
+          </div>
+
+        </div>
+  
+        </div>
+  
+      </section>  
+    
+    </div>
+  
+    <aside class="control-sidebar control-sidebar-dark">
+    </aside>
+  
+  </div>

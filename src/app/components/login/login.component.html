@@ -1,0 +1,63 @@
+<div class="login-page">
+  <div class="login-box">
+    <!-- /.login-logo -->
+    <div class="card">
+      <div class="card-body login-card-body">
+        <p class="login-box-msg">
+          <img src="../../../assets/logo_st_bn.jpg" width="180px">
+        </p>
+        <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+          <div class="input-group mb-3">
+            <input type="email"
+                  class="form-control"
+                  name="email"
+                  [(ngModel)]="usuario.email"
+                  [ngClass]="{'is-invalid':f.submitted && f.controls['email'].errors}"
+                  placeholder="Email"
+                  required
+                  email>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fa fa-envelope"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <input type="password"
+                  class="form-control"
+                  name="password"
+                  [(ngModel)]="usuario.password"
+                  [ngClass]="{'is-invalid':f.submitted && f.controls['password'].errors}"
+                  placeholder="Password"
+                  required>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fa fa-lock"></span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <!--<div class="col-7">
+              <div class="icheck-primary">
+                <input type="checkbox" id="remember">
+                <label for="remember">
+                  Recordarme
+                </label>
+              </div>
+            </div>-->
+            <!-- /.col -->
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary btn-block" style="background-color: #4f5962; border-color: #4f5962">
+                <i [ngClass]="{'fa-refresh fa-spin':loadingButton}" class="fa"></i>
+                Ingresar
+              </button>
+            </div>
+            <!-- /.col -->
+          </div>
+        </form>
+        <span style="font-size:12px" >V. 2.0.0</span>
+      </div>
+      <!-- /.login-card-body -->
+    </div>
+  </div>
+</div>

@@ -1,0 +1,118 @@
+<div class="wrapper">
+
+  <app-navbar></app-navbar>
+
+  <app-sidebar></app-sidebar>
+
+  <div class="content-wrapper">
+
+    <section class="content">
+
+      <div class="container-fluid">
+
+        <app-title [title]="title"
+                   [breadcrumbtitle]="breadcrumbtitle"
+                   [breadcrumbtitle2]="breadcrumbtitle2">
+        </app-title>
+
+        <app-loading *ngIf="loading"></app-loading>
+
+        <div *ngIf="!loading">
+
+          <div class="card">
+            <div class="card-body p-0">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: 10px">N°</th>
+                      <th scope="col" style="text-align: center;">Obra</th>
+                      <th scope="col" style="text-align: center;">Ingeniero(a)</th>
+                      <th scope="col" style="text-align: center;">Fecha Creación</th>
+                      <th scope="col" style="text-align: center;">Tipo de Grado</th>
+                      <th scope="col" style="text-align: center;">Estado</th>
+                      <th scope="col">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let lista of listado | paginate:{itemsPerPage: 20, currentPage: p}">
+                      <td>{{ lista.id }}</td>
+                      <td>{{ lista.obra.nombre }}</td>
+                      <td>{{ lista.usuario.nombre }}</td>
+                      <td scope="col" style="text-align: center;">{{ lista.fecha | date:'dd/MM/yyyy HH:mm':'UTC -5' }}</td>
+                      <td scope="col" style="text-align: center;">
+                        <span *ngIf="lista.tipo_grado == 'CORRECTIVO'" class="badge badge-secondary">
+                          {{ lista.tipo_grado }}
+                        </span>
+                        <span *ngIf="lista.tipo_grado == 'PREVENTIVO'" class="badge badge-warning">
+                          {{ lista.tipo_grado }}
+                        </span>
+                        <span *ngIf="lista.tipo_grado == 'PRODUCTO NO CONFORME'" class="badge badge-info">
+                          {{ lista.tipo_grado }}
+                        </span>
+                      </td>
+                      <td scope="col" style="text-align: center;">
+                        <span *ngIf="lista.estado == 'ABIERTO'" class="badge badge-primary">
+                          {{ lista.estado }}
+                        </span>
+                        <span *ngIf="lista.estado == 'CERRADO'" class="badge badge-success">
+                          {{ lista.estado }}
+                        </span>
+                        <span *ngIf="lista.estado == 'ABIERTO CON ACCIÓN DE MEJORA'" class="badge badge-danger">
+                          {{ lista.estado }}
+                        </span>
+                      </td>
+                      <td scope="col">
+                        <div class="row">
+                          <div class="col-3">
+                            <a style="cursor: pointer;color:#007bff"
+                               title="Descargar"
+                               (click)="generatePdf(lista._id)">
+                              <i class="fa fa-cloud-download" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                          <div class="col-3" *ngIf="lista.estado != 'CERRADO'">
+                            <a style="cursor: pointer;color:#007bff"
+                               title="Editar"
+                               [routerLink]="['/editarnoconformidad', lista._id, lista.id]">
+                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                          <div class="col-3" *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+                            <a style="color: #dc3545;cursor: pointer"
+                               title="Eliminar"
+                               (click)="deleteNoConformidad(lista._id)">
+                              <i class="fa fa-times-circle" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+          </div>
+          <a class="btn btn-primary"
+             routerLink="/crearnoconformidad"
+             *ngIf="_usService.leerRoleUsuario() != 'ADMIN' && _usService.leerRoleUsuario() != 'SUPERVISOR'">
+              Nuevo Reporte de No Conformidad
+          </a>
+          <div class="row text-center">
+            <div class="col-md-12 col-lg-12">
+                <pagination-controls (pageChange)="p=$event"
+                    previousLabel="Anterior"
+                    nextLabel="Siguiente">
+                </pagination-controls>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+
+</div>

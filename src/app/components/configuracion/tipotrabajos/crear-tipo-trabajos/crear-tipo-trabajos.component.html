@@ -1,0 +1,80 @@
+<div class="wrapper">
+
+    <app-navbar></app-navbar>
+  
+    <app-sidebar></app-sidebar>
+  
+    <div class="content-wrapper">
+  
+      <section class="content">
+  
+        <div class="container-fluid">
+
+        <app-title [title]="title" 
+                   [breadcrumbtitle]="breadcrumbtitle" 
+                   [breadcrumbtitle2]="breadcrumbtitle2">
+        </app-title>
+
+        <div class="card"> 
+            <!-- /.card-header -->
+            <div class="card-body">
+                <form (ngSubmit)="onSubmit( f )" #f="ngForm" class="form-group">                                
+                    <div class="form-group">
+                        <label for="descripcion">Nombre:</label>
+                        <input 
+                            type="text" 
+                            name="nombre"
+                            class="form-control"
+                            [(ngModel)]="tipotrabajo.nombre"
+                            [ngClass]="{'is-invalid':f.submitted && f.controls['nombre'].errors}"
+                            maxlength="450"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="empresa">Empresa:</label>
+                        <select
+                            #mySelectEmpresa
+                            name='empresa'                         
+                            class="form-control" 
+                            [(ngModel)]="tipotrabajo.empresa"
+                            (change)="onChangeStateEmpresa(mySelectEmpresa.value)"
+                            [ngClass]="{'is-invalid':f.submitted && f.controls['empresa'].errors}"    
+                            required
+                        >                            
+                            <option [value]='t._id' *ngFor='let t of listadoEmpresa'>{{ t.nombre }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="trabajo">Trabajo:</label>
+                        <select 
+                            name="trabajo"                         
+                            class="form-control" 
+                            [(ngModel)]="tipotrabajo.trabajo" 
+                            [ngClass]="{'is-invalid':f.submitted && f.controls['trabajo'].errors}"    
+                            required
+                        >                            
+                            <option [value]="t._id" *ngFor="let t of listadoTrabajo">{{ t.nombre }}</option>
+                        </select>
+                    </div>          
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit">
+                            <i [ngClass]="{'fa-refresh fa-spin':loadingButton}" class="fa"></i>
+                            Guardar
+                        </button>  
+                    </div>      
+                        
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</section>  
+
+</div>
+
+<aside class="control-sidebar control-sidebar-dark">
+</aside>
+
+</div>

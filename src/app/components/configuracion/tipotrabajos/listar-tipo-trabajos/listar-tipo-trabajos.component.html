@@ -1,0 +1,100 @@
+<div class="wrapper">
+
+  <app-navbar></app-navbar>
+
+  <app-sidebar></app-sidebar>
+
+  <div class="content-wrapper">
+
+    <section class="content">
+
+      <div class="container-fluid">
+
+        <app-title
+          [title]='title' 
+          [breadcrumbtitle]='breadcrumbtitle'
+          [breadcrumbtitle2]='breadcrumbtitle2'
+        >
+        </app-title>
+
+        <app-loading *ngIf="loading"></app-loading>      
+
+        <div *ngIf="!loading">
+
+          <div class="card"> 
+              <!-- /.card-header -->
+              <div class="card-body p-0">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: 10px">Orden</th>
+                      <th style="text-align: center;">Nombre</th>
+                      <th style="text-align: center;">Trabajo</th>                  
+                      <th style="text-align: center;">Empresa</th>                  
+                      <th style="text-align: center;">Activo</th>
+                      <th *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let lista of listado | paginate:{itemsPerPage: 15, currentPage:p}">
+                      <td>{{ lista.orden }}</td>   
+                      <td>{{ lista.nombre }}</td>
+                      <td style="text-align: center;">{{ lista.trabajo[0].nombre }}</td>                   
+                      <td style="text-align: center;">{{ lista.empresa.nombre }}</td>                   
+                      <td style="text-align: center;">
+                        <span *ngIf="lista.activo == true" class="badge badge-success">
+                          Si
+                        </span>
+                        <span *ngIf="lista.activo == false" class="badge badge-danger">
+                          No
+                        </span>    
+                      </td>
+                      <td *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">   
+                        <div class="row">
+                          <div class="col-4">
+                            <a [routerLink]="['/editartipotrabajos', lista._id]"
+                               title="Editar">
+                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </a> 
+                          </div>                        
+                          <div class="col-4">
+                            <a (click)="deleteTipoTrabajo(lista._id)" 
+                                title="Eliminar"
+                                style="color: #dc3545;cursor: pointer">
+                              <i class="fa fa-times-circle" aria-hidden="true"></i>
+                            </a>   
+                          </div>
+                        </div>
+                      </td>                 
+                    </tr>         
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+          </div>
+          <div class="row text-center">
+            <div class="col-md-12 col-lg-12">
+                <pagination-controls (pageChange)="p=$event" 
+                    previousLabel="Anterior"
+                    nextLabel="Siguiente">
+                </pagination-controls>
+            </div>
+          </div>
+          <div class="mb-2">
+            <a class="btn btn-primary" routerLink="../creartipotrabajos"
+              *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+                Nuevo Tipo de Trabajo
+            </a>
+          </div>  
+        </div>
+        
+      </div>
+
+    </section>  
+  
+  </div>
+
+<aside class="control-sidebar control-sidebar-dark">
+</aside>
+
+</div>

@@ -1,0 +1,160 @@
+<div class="wrapper">
+
+  <app-navbar></app-navbar>
+
+  <app-sidebar></app-sidebar>
+
+  <div class="content-wrapper">
+
+    <section class="content">
+
+      <div class="container-fluid">
+
+        <app-title 
+          [title]='title' 
+          [breadcrumbtitle]='breadcrumbtitle'
+          [breadcrumbtitle2]='breadcrumbtitle2'
+        >
+        </app-title>
+
+        <app-loading *ngIf="loading"></app-loading>        
+       
+        <div *ngIf="!loading">
+
+          <form class="form-group">
+
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="empresa">Empresa:</label>
+                  <select
+                    #mySelectEmpresa
+                    name='empresa'                         
+                    class="form-control" 
+                    [(ngModel)]="empresa"
+                    (change)="onChangeStateEmpresa(mySelectEmpresa.value)"
+                  >                            
+                    <option [value]='t._id' *ngFor='let t of listadoEmpresa'>{{ t.nombre }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="trabajo">Trabajos:</label>
+                  <select 
+                    #mySelect
+                    name="trabajo"
+                    [(ngModel)]="trabajo"  
+                    (change)="onChangeStateTrabajo(mySelect.value)"
+                    class="form-control"
+                  >
+                    <option *ngFor="let trabajo of listadoTrabajos" [value]="trabajo._id">
+                      {{ trabajo.nombre }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </form>                   
+          
+          <div class="card"> 
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Orden</th>
+                    <th style="text-align: center;">Nombre</th>
+                    <th>Trabajo</th>
+                    <th>Tipo Trabajo</th>
+                    <th>Perfil</th>
+                    <th>Opciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let lista of listado | paginate:{itemsPerPage: 15, currentPage: p}; let i = index">
+                    <td>{{ lista.orden }}</td>   
+                    <td>{{ lista.nombre }}</td>
+                    <td style="font-size: 11pt;">{{ lista.trabajo.nombre }}</td>
+                    <td style="font-size: 11pt;">{{ lista.tipotrabajo[0].nombre }}</td>
+                    <td>
+                      <span *ngIf="lista.role == 'COORDINADOR'" class="badge badge-warning">
+                        {{ lista.role }}
+                      </span>
+                      <span *ngIf="lista.role == 'INGENIERO'" class="badge badge-primary">
+                        {{ lista.role }}
+                      </span>
+                      <span *ngIf="lista.role == 'SUPERVISOR'" class="badge badge-secondary">
+                        {{ lista.role }}
+                      </span>                          
+                      <span *ngIf="lista.role == 'RESIDENTE DE OBRA'" class="badge badge-secondary">
+                        {{ lista.role }}
+                      </span>
+                      <span *ngIf="lista.role == 'DIRECTOR DE OBRA'" class="badge badge-info">
+                        {{ lista.role }}
+                      </span>
+                      <span *ngIf="lista.role == 'GERENCIA-DIRECCIÓN CONSTRUCCIONES'" class="badge badge-success">
+                        {{ lista.role }}
+                      </span>
+                      <span *ngIf="lista.role == 'SSTT'" class="badge badge-secondary">
+                        {{ lista.role }}
+                      </span>
+                      <span *ngIf="lista.role == 'OTROS'" class="badge badge-secondary">
+                        {{ lista.role }}
+                      </span>
+                    </td>
+                    <td scope="col" style="text-align: center;" *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+                      <div class="row">
+                        <div class="col-4">
+                          <a [routerLink]="['/editaractividades', lista._id]"
+                             title="Editar">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                          </a> 
+                        </div>   
+                        <div class="col-4">                    
+                          <a (click)="deleteActividad(lista._id)" 
+                            title="Eliminar"
+                            style="color: #dc3545;cursor: pointer">
+                            <i class="fa fa-times-circle" aria-hidden="true"></i>
+                          </a>    
+                        </div> 
+                        <div class="col-4">   
+                          <a [routerLink]="['/listaritemactividades', lista._id]"
+                             title="Items">
+                            <i class="fa fa-sitemap" aria-hidden="true"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </td>               
+                  </tr>         
+                </tbody>
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <div class="row text-center">
+            <div class="col-md-12 col-lg-12">
+                <pagination-controls (pageChange)="p=$event" 
+                    previousLabel="Anterior"
+                    nextLabel="Siguiente">
+                </pagination-controls>
+            </div>
+          </div> 
+          <div class="mb-2">
+            <a class="btn btn-primary" [routerLink]="['/crearactividades']" 
+              *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+                Nueva Actividad         
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </section>  
+  
+  </div>
+
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+
+</div>

@@ -1,0 +1,72 @@
+<div class="wrapper">
+
+  <app-navbar></app-navbar>
+
+  <app-sidebar></app-sidebar>
+
+  <div class="content-wrapper">
+
+    <section class="content">
+
+      <div class="container-fluid">
+
+        <app-title 
+          [title]="title" 
+          [breadcrumbtitle]="breadcrumbtitle" 
+          [breadcrumbtitle2]="breadcrumbtitle2"
+        >
+        </app-title>
+
+        <app-loading *ngIf="loading"></app-loading>
+
+        <div *ngIf="!loading">
+          
+          <div class="card">    
+              <!-- /.card-header -->
+              <div class="card-body p-0">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: 10px">#</th>
+                      <th>Nombre</th>
+                      <th>Ubicación</th>
+                      <th style="text-align: center;">Activo</th>
+                      <th style="text-align: center;">Logo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let lista of listado.empresaDB; let i = index">
+                      <td>{{ i+1 }}</td>   
+                      <td>{{ lista.nombre }}</td>                             
+                      <td>{{ lista.ubicacion }}</td>   
+                      <td style="text-align: center;">
+                        <span *ngIf="lista.activo == true" class="badge badge-success">
+                          Si
+                        </span>
+                        <span *ngIf="lista.activo == false" class="badge badge-danger">
+                          No
+                        </span>    
+                      </td>  
+                      <td>
+                        <img *ngIf="lista.logo" src="{{url}}{{lista.logo}}" width="90"/>
+                      </td>               
+                    </tr>         
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+          </div>
+          <a class="btn btn-primary" routerLink="../crearempresas">
+            Nueva Empresa
+          </a>
+        </div>
+      </div>
+
+    </section>  
+    
+  </div>
+
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+
+</div>

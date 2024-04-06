@@ -1,0 +1,202 @@
+<div class="wrapper">
+
+  <app-navbar></app-navbar>
+
+  <app-sidebar></app-sidebar>
+
+  <div class="content-wrapper">
+
+    <section class="content">
+
+      <div class="container-fluid">
+
+        <app-title 
+          [title]="title"
+          [breadcrumbtitle]="breadcrumbtitle"
+          [breadcrumbtitle2]="breadcrumbtitle2">
+        </app-title>
+
+        <app-loading *ngIf="loading"></app-loading>
+
+        <div *ngIf="showChart">   
+          <div class="row">
+            <div class="col-12 col-sm-6 col-md-3 d-none">               
+              <apx-chart
+                [series]="chartOptions.series"
+                [chart]="chartOptions.chart"
+                [labels]="chartOptions.labels"
+                [responsive]="chartOptions.responsive"
+                [colors]="chartOptions.colors"
+                [legend]="chartOptions.legend"
+                [plotOptions]="chartOptions.plotOptions"
+                ></apx-chart>  
+                <button (click)="showPdfButton()">Open PDF</button>  
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!loading">
+
+          <div 
+            id="accordion"
+            *ngIf="_usService.leerRoleUsuario() == 'ADMIN'
+             || _usService.leerRoleUsuario() == 'COORDINADOR'
+             || _usService.leerRoleUsuario() == 'SUPERVISOR'"
+          >
+            <div class="card">
+              <div class="card-header" id="headingThree">
+                <h5 class="mb-0">
+                  <button 
+                    class="btn btn-link collapsed" 
+                    data-toggle="collapse" 
+                    data-target="#collapseThree" 
+                    aria-expanded="false" 
+                    aria-controls="collapseThree"
+                  >
+                    Búsqueda de Reportes
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                <div class="card-body">
+                  
+                  <form (ngSubmit)="onSearch(f)" #f="ngForm" class="form-group">
+                    <div class="row">
+                      <div class="col-3">
+                        <div class="form-group">
+                          <label for="id">N°</label>
+                          <input 
+                            name="id"
+                            type="text"
+                            class="form-control"
+                            [(ngModel)]="ordenes.id" 
+                          />
+                        </div>
+                      </div>
+                      <div class="col-3">
+                        <div class="form-group">
+                          <label for="usuario">Ingeniero(a):</label>
+                          <select 
+                            name="usuario"
+                            class="form-control"
+                            [(ngModel)]="ordenes.usuario"
+                          >
+                              <option [value]="i._id" *ngFor="let i of usuarios">{{ i.nombre }}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-3">
+                        <label for="fecha">Fecha Inicial:</label>
+                        <input 
+                          type="date"
+                          name="fecha"
+                          class="form-control"
+                          [(ngModel)]="ordenes.fecha" 
+                        />
+                      </div>
+                      <div class="col-3">
+                        <label for="fechaf">Fecha Final:</label>
+                        <input 
+                          type="date"
+                          name="fechaf"
+                          class="form-control"
+                          [(ngModel)]="ordenes.fechaf" 
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="form-group">
+                          <button 
+                            class="btn btn-primary" 
+                            type="submit"
+                          >
+                              <i [ngClass]="{ 'fa-refresh fa-spin':loadingButton }" class="fa"></i>
+                              Buscar
+                          </button>
+                      </div>
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-body p-0">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: 10px">N°</th>
+                      <th scope="col" style="text-align: center;">Ingeniero(a)</th>
+                      <th scope="col" style="text-align: center;">Fecha inicio</th>
+                      <th scope="col" style="text-align: center;">Fecha fin</th>
+                      <th scope="col" style="text-align: center;">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let lista of listado | paginate:{itemsPerPage: 20, currentPage: p}">
+                      <td>{{ lista.id }}</td>
+                      <td>
+                        <span *ngIf="lista.usuario">
+                          {{ lista.usuario.nombre }}
+                        </span>
+                      </td>
+                      <td scope="col" style="text-align: center;">{{ lista.fecha_inicio | date:'dd/MM/yyyy':'UTC -5' }}</td>
+                      <td scope="col" style="text-align: center;">{{ lista.fecha_fin | date:'dd/MM/yyyy':'UTC -5' }}</td>
+                      <td scope="col" style="text-align: center;">
+                        <div class="row">
+                          <div class="col-3">
+                            <a 
+                              style="cursor: pointer;color:#ff0000"
+                              title="Descargar Reporte Semanal No Cumplidas"
+                              (click)="generatePdf(lista._id, lista.usuario._id, lista.fecha_inicio, lista.fecha_fin, true)"
+                            >
+                              <i class="fa fa-cloud-download" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                          <div class="col-3">
+                            <a 
+                              style="cursor: pointer;color:#007bff"
+                              title="Descargar Reporte Semanal"
+                              (click)="generatePdf(lista._id, lista.usuario._id, lista.fecha_inicio, lista.fecha_fin, false)"
+                            >
+                              <i class="fa fa-cloud-download" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                          <div class="col-3">
+                            <a style="cursor: pointer;color:#007bff"
+                               [routerLink]="['/cargarimagenes', lista._id]"
+                               title="Imágenes">
+                              <i class="fa fa-file-image-o" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+          </div>
+
+          <div class="row text-center">
+            <div class="col-md-12 col-lg-12">
+                <pagination-controls (pageChange)="p=$event"
+                    previousLabel="Anterior"
+                    nextLabel="Siguiente">
+                </pagination-controls>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+
+</div>

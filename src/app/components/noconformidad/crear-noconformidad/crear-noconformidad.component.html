@@ -1,0 +1,226 @@
+<div class="wrapper">
+
+    <app-navbar></app-navbar>
+
+    <app-sidebar></app-sidebar>
+
+    <div class="content-wrapper">
+
+        <section class="content">
+
+            <div class="container-fluid">
+
+                <app-title [title]="title"
+                           [breadcrumbtitle]="breadcrumbtitle"
+                           [breadcrumbtitle2]="breadcrumbtitle2">
+                </app-title>
+                <app-loading *ngIf="loading"></app-loading>
+                <div *ngIf="!loading">
+                    <div class="card">
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form (ngSubmit)="onSubmit(f)" #f="ngForm" class="form-group">
+                                <div class="form-group">
+                                  <label for="obra">Obra:</label>
+                                  <select name="obra"
+                                          class="form-control"
+                                          [(ngModel)]="noconformidad.obra"
+                                          [ngClass]="{'is-invalid':f.submitted && f.controls['obra'].errors}"
+                                          required>
+                                      <option [value]="t._id" *ngFor="let t of obra">{{ t.nombre }}</option>
+                                  </select>
+                                </div>
+                                <div class="form-group" *ngIf="_usService.leerRoleUsuario() == 'COORDINADOR'">
+                                  <label for="usuario">Usuario:</label>
+                                  <select name="usuario"
+                                          class="form-control"
+                                          [(ngModel)]="noconformidad.usuario"
+                                          [ngClass]="{'is-invalid':f.submitted && f.controls['usuario'].errors}"
+                                          required>
+                                      <option [value]="i._id" *ngFor="let i of usuarios">{{ i.nombre }}</option>
+                                  </select>
+                                </div>
+                                <div class="form-group" *ngIf="_usService.leerRoleUsuario() == 'INGENIERO'">
+                                  <label for="usuario">Usuario:</label>
+                                  <select name="usuario"
+                                          class="form-control"
+                                          [(ngModel)]="noconformidad.usuario"
+                                          [ngClass]="{'is-invalid':f.submitted && f.controls['usuario'].errors}"
+                                          required>
+                                      <option [value]="usuarioid">{{ usuarionombre }}</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label for="fecha_evidencia">Fecha de la evidencia:</label>
+                                  <input type="datetime-local"
+                                         name="fecha_evidencia"
+                                         class="form-control"
+                                         [(ngModel)]="noconformidad.fecha_evidencia"
+                                         [ngClass]="{'is-invalid':f.submitted && f.controls['fecha_evidencia'].errors}"
+                                         required />
+                                </div>
+                                <div class="form-group">
+                                  <label for="proceso">No conformidad observada en el proceso:</label>
+                                  <input type="text"
+                                         name="proceso"
+                                         class="form-control"
+                                         [(ngModel)]="noconformidad.proceso"
+                                         [ngClass]="{'is-invalid':f.submitted && f.controls['proceso'].errors}"
+                                         maxlength="500"
+                                         required>
+                                </div>
+                                <div class="form-group">
+                                  <label for="tipo_accion">Tipo de acción:</label>
+                                  <select name="tipo_accion"
+                                          class="form-control"
+                                          [(ngModel)]="noconformidad.tipo_accion"
+                                          [ngClass]="{'is-invalid':f.submitted && f.controls['tipo_accion'].errors}"
+                                          required>
+                                      <option value="A.C">A.C</option>
+                                      <option value="A.P">A.P</option>
+                                      <option value="PNC">PNC</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label for="descripcion">Descripción de la evidencia objetiva:</label>
+                                  <textarea type="text"
+                                            name="descripcion"
+                                            class="form-control"
+                                            [(ngModel)]="noconformidad.descripcion"
+                                            [ngClass]="{'is-invalid':f.submitted && f.controls['descripcion'].errors}"
+                                            maxlength="1000"
+                                            required>
+                                  </textarea>
+                                </div>
+                                <div class="form-group">
+                                  <label for="tipo_grado">Tipo de grado:</label>
+                                  <select name="tipo_grado"
+                                          class="form-control"
+                                          [(ngModel)]="noconformidad.tipo_grado"
+                                          [ngClass]="{'is-invalid':f.submitted && f.controls['tipo_grado'].errors}"
+                                          required>
+                                      <option value="CORRECTIVO">Correctivo</option>
+                                      <option value="PREVENTIVO">Preventivo</option>
+                                      <option value="PRODUCTO NO CONFORME">Producto no conforme</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label for="quien_detecta">Quien detecta:</label>
+                                  <input type="text"
+                                         name="quien_detecta"
+                                         class="form-control"
+                                         [(ngModel)]="noconformidad.quien_detecta"
+                                         [ngClass]="{'is-invalid':f.submitted && f.controls['quien_detecta'].errors}"
+                                         maxlength="450"
+                                         required>
+                                </div>
+                                <div class="form-group">
+                                  <label for="numeral_norma">Numeral de la norma:</label>
+                                  <input type="text"
+                                         name="numeral_norma"
+                                         class="form-control"
+                                         [(ngModel)]="noconformidad.numeral_norma"
+                                         [ngClass]="{'is-invalid':f.submitted && f.controls['numeral_norma'].errors}"
+                                         maxlength="50">
+                                </div>
+                                <div class="form-group">
+                                  <label for="resolver">Resolver:</label>
+                                  <input type="datetime-local"
+                                         name="resolver"
+                                         class="form-control"
+                                         [(ngModel)]="noconformidad.resolver"
+                                         [ngClass]="{'is-invalid':f.submitted && f.controls['resolver'].errors}"/>
+                                </div>
+                                <div class="form-group">
+                                  <label for="analisis">Análisis de causa raiz:</label>
+                                  <textarea type="text"
+                                            name="analisis"
+                                            class="form-control"
+                                            [(ngModel)]="noconformidad.analisis"
+                                            [ngClass]="{'is-invalid':f.submitted && f.controls['analisis'].errors}"
+                                            maxlength="1000"
+                                            required>
+                                  </textarea>
+                                </div>
+                                <div class="form-group">
+                                  <label for="accion_correctiva">Acción correctiva:</label>
+                                  <textarea type="text"
+                                            name="accion_correctiva"
+                                            class="form-control"
+                                            [(ngModel)]="noconformidad.accion_correctiva"
+                                            [ngClass]="{'is-invalid':f.submitted && f.controls['accion_correctiva'].errors}"
+                                            maxlength="1000">
+                                  </textarea>
+                                </div>
+                                <div class="form-group">
+                                  <label for="verificacion">Verificación de las acciones correctivas:</label>
+                                  <textarea type="text"
+                                            name="verificacion"
+                                            class="form-control"
+                                            [(ngModel)]="noconformidad.verificacion"
+                                            [ngClass]="{'is-invalid':f.submitted && f.controls['verificacion'].errors}"
+                                            maxlength="1000">
+                                  </textarea>
+                                </div>
+                                <div class="form-group">
+                                  <label for="fecha_verificacion">Fecha de verificación:</label>
+                                  <input type="datetime-local"
+                                         name="fecha_verificacion"
+                                         class="form-control"
+                                         [(ngModel)]="noconformidad.fecha_verificacion"
+                                         [ngClass]="{'is-invalid':f.submitted && f.controls['fecha_verificacion'].errors}"/>
+                                </div>
+                                <div class="form-group">
+                                  <label for="estado">Estado de la No Conformidad:</label>
+                                  <select name="estado"
+                                          class="form-control"
+                                          [(ngModel)]="noconformidad.estado"
+                                          [ngClass]="{'is-invalid':f.submitted && f.controls['estado'].errors}"
+                                          required>
+                                      <option value="ABIERTO">Abierto</option>
+                                      <option value="ABIERTO CON ACCIÓN DE MEJORA">Abierto con acción de mejora</option>
+                                      <option value="CERRADO">Cerrado</option>
+                                  </select>
+                                </div>
+                                <label for="">Registro fotográfico:</label>
+                                <div class="form-group">
+                                  <input
+                                    type="file" #Image accept="image/*"
+                                    class="form-control-file"
+                                    (change)="fileUpload1($event)"/>
+                                </div>
+                                <div class="form-group">
+                                  <input
+                                    type="file" #Image accept="image/*"
+                                    class="form-control-file"
+                                    (change)="fileUpload2($event)"/>
+                                </div>
+                                <div class="form-group">
+                                  <input
+                                    type="file" #Image accept="image/*"
+                                    class="form-control-file"
+                                    (change)="fileUpload3($event)">
+                                </div>
+                                <div class="card-footer">
+                                  <div class="float-right">
+                                     <button class="btn btn-primary" type="submit">
+                                        <i [ngClass]="{'fa-refresh fa-spin':loadingButton}" class="fa"></i>
+                                        Guardar
+                                    </button>
+                                  </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <aside class="control-sidebar control-sidebar-dark">
+    </aside>
+
+</div>

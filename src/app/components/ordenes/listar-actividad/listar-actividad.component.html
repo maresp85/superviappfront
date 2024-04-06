@@ -1,0 +1,240 @@
+<div class="wrapper">
+
+    <app-navbar></app-navbar>
+
+    <app-sidebar></app-sidebar>
+
+    <div class="content-wrapper">
+
+      <section class="content">
+
+        <div class="container-fluid">
+
+          <app-title 
+            [title]="title"
+            [breadcrumbtitle]="breadcrumbtitle"
+            [breadcrumbtitle2]="breadcrumbtitle2"
+          >
+          </app-title>
+
+          <app-loading *ngIf="loading"></app-loading>
+
+          <div *ngIf="!loading">
+
+            <div class="card">
+              <div class="card-footer clearfix">
+                <strong>Usuario: </strong> {{ usuariolegaliza }}
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <strong>Fecha Legalización: </strong>{{ fechalegaliza | date:'dd/MM/yyyy HH:mm':'UTC -5' }}
+                <span *ngIf="estadolegaliza == 'PENDIENTE'" class="badge badge-secondary float-right">
+                  {{ estadolegaliza }}
+                </span>
+                <span *ngIf="estadolegaliza== 'CUMPLE'" class="badge badge-success float-right">
+                  {{ estadolegaliza }}
+                </span>
+                <span *ngIf="estadolegaliza == 'NO CUMPLE'" class="badge badge-danger float-right">
+                  {{ estadolegaliza }}
+                </span>
+              </div>
+            </div>
+
+            <div class="card">
+
+              <div class="card-header ui-sortable-handle" style="cursor: move;">
+                <h3 class="card-title">
+                  <i class="ion ion-clipboard mr-1"></i>
+                  {{ subtitle }}
+                </h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+
+                  <span *ngFor="let lista of listado; let i = index">
+                  
+                    <span class="text" *ngIf="lista.tipo.toUpperCase() == 'ETIQUETA'">
+                      <ul class="todo-list ui-sortable">
+                        <li>
+                          <span class="text">{{ lista.etiqueta.toUpperCase() }}</span>
+                        </li>
+                      </ul>
+                    </span>
+                    
+                    <span class="text" *ngIf="lista.tipo.toUpperCase() == 'CHECKLIST'">
+                      <span *ngFor="let l of checkList; let i = index">
+                        <span *ngIf="l.etiqueta == lista.etiqueta && l.fechaMejora" class="text">
+                          <ul class="todo-list ui-sortable">
+                            <li>
+                              <span class="text">{{ lista.etiqueta.toUpperCase() }}</span>
+                              <span class="ml-4">
+                                <i class="fa fa-check" aria-hidden="true" style="color:rgb(98, 158, 8)"></i>
+                                <strong> Fecha Mejora:</strong> {{ l.fechaMejora }}
+                              </span>
+                            </li>
+                          </ul>
+                        </span>
+                      </span>                      
+                    </span>
+                    
+                    <div *ngIf="lista.tipo.toUpperCase() == 'FIRMA DIGITAL'">
+                      <ul class="todo-list ui-sortable">
+                        <li>
+                          <span class="text">{{ lista.etiqueta.toUpperCase() }}</span>
+                          <div class="row">
+                            <div class="col-1 mt-1"> 
+                              <img src="{{ firmaimg }}" width="80%"/>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>                    
+                     
+                    <div *ngIf="lista.tipo.toUpperCase() == 'EVIDENCIAS'">
+                      <ul class="todo-list ui-sortable">
+                        <li>
+                          <span class="text">{{ lista.etiqueta.toUpperCase() }}</span>
+                          <div *ngIf="lista.imagen == 1 && lista.tipo == 'EVIDENCIAS'">
+                            <div class="row">
+                              <div *ngFor="let img of imagenes; let i = index">
+                                <div class="col-1 mt-1" *ngIf="'EVIDENCIAS' == checkTipoImagen(img.filename)">
+                                  <a href="{{ urluploadimgordenes }}{{ img.filename }}" target="_blank">
+                                    <img 
+                                      src="{{ urluploadimgordenes }}{{ img.filename }}"
+                                      class="img-circle"
+                                      height="99px"
+                                      width="99px"
+                                    >
+                                  </a>
+                                  <div *ngIf="usuarioDB.editorder">
+                                    <a 
+                                      (click)="deleteImagen(i)"
+                                      title="Eliminar"
+                                      style="color: #dc3545;cursor: pointer"
+                                    >
+                                      <i class="fa fa-times-circle" aria-hidden="true"></i>
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="row" *ngIf="usuarioDB.editorder && cantImg < 4">
+                              <div class="col-12 mt-3">
+                                <input
+                                  type="file" #Image accept="image/*"
+                                  class="form-control-file float-right"
+                                  (change)="fileUpload($event, lista.tipo)"
+                                  multiple
+                                  required
+                                >
+                              </div>
+                            </div>
+
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div *ngIf="lista.tipo.toUpperCase() == 'FOTO BITÁCORA'">
+                      <ul class="todo-list ui-sortable">
+                        <li>
+                          <span class="text">{{ lista.etiqueta.toUpperCase() }}</span>
+                          <div class="row" *ngIf="lista.imagen == 1 && lista.tipo == 'FOTO BITÁCORA'">                     
+                            <div *ngFor="let img of imagenes">
+                              <div class="col-1 mt-1" *ngIf="'FOTOBITACORA' == checkTipoImagen(img.filename)">
+                                <a href="{{ urluploadimgordenes }}{{ img.filename }}" target="_blank">
+                                  <img 
+                                    src="{{ urluploadimgordenes }}{{ img.filename }}"
+                                    class="img-circle"
+                                    height="99px"
+                                    width="99px"
+                                  >
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+
+                  </span>               
+
+                  <ul class="todo-list ui-sortable">
+                    <li>
+                      <span class="text">
+                        <a 
+                          *ngIf="usuarioDB.editorder"
+                          (click)="editaObservacion = !editaObservacion"
+                          title="Editar"
+                          style="color: #0da5eb;cursor: pointer"
+                        >
+                          <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                        OBSERVACIONES:
+                      </span>   
+                      <div *ngIf="editaObservacion">
+                        <textarea 
+                          type="text"
+                          name="observaciones"
+                          class="form-control"
+                          (click)="disabledbutton = false"
+                          [(ngModel)]="observaciones"
+                          maxlength="650"
+                        >
+                        </textarea>
+                      </div>
+                      <div *ngIf="!editaObservacion">
+                        <span *ngIf="observaciones != 'undefined'">
+                          {{ observaciones }}
+                        </span>
+                      </div>
+                    </li>
+                  </ul>
+
+                  <ul class="todo-list ui-sortable">
+                    <li>
+                      <div *ngIf="fechaMejora" class="mt-2">                        
+                        <label for="fechaMejora">Fecha proyectada de Mejora:</label>
+                        <input 
+                          type="date"
+                          name="fechaMejora"
+                          (click)="changeDate()"
+                          [disabled]="!usuarioDB.editorder"
+                          class="form-control"
+                          [ngModel] ="fechaMejora | date:'yyyy-MM-dd'" (ngModelChange)="fechaMejora = $event"
+                        >                        
+                      </div>
+                    </li>
+                  </ul>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer clearfix">
+                <button type="button" class="btn btn-info" (click)="regresar()">
+                  Regresar
+                </button>
+                <span>
+                  <button 
+                    type="button"
+                    class="btn btn-warning float-right"
+                    [disabled]="disabledbutton"
+                    (click)="updateOrdenActividad()"
+                  >
+                    <i [ngClass]="{'fa-refresh fa-spin':loadingButton}" class="fa"></i>
+                    Actualizar
+                  </button>
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+    <aside class="control-sidebar control-sidebar-dark">
+    </aside>
+
+  </div>

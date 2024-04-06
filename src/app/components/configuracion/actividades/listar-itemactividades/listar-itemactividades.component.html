@@ -1,0 +1,107 @@
+<div class="wrapper">
+
+  <app-navbar></app-navbar>
+
+  <app-sidebar></app-sidebar>
+
+  <div class="content-wrapper">
+
+    <section class="content">
+
+      <div class="container-fluid">
+
+        <app-title [title]="title"
+                   [breadcrumbtitle]="breadcrumbtitle"
+                   [breadcrumbtitle2]="breadcrumbtitle2">
+        </app-title>
+        <app-loading *ngIf="loading"></app-loading>
+        <div *ngIf="!loading">
+          <div class="info-box bg-light" style="min-height: 0px">
+            <div class="info-box-content">
+              <span class="info-box-text text-muted">
+                {{ titulo.nombre }}
+              </span>
+            </div>
+          </div>
+          <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body p-0">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col" style="width: 10px">#</th>
+                      <th scope="col" style="text-align: center;">Cumple</th>
+                      <th scope="col" style="text-align: center;">Tipo</th>
+                      <th scope="col" style="text-align: center;">Texto</th>
+                      <th scope="col" style="text-align: center;">Captura imágenes</th>
+                      <th scope="col" style="text-align: center;">Activo</th>
+                      <th scope="col" *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let lista of listado; let i = index">
+                      <td>{{ i+1 }}</td>
+                      <td style="text-align: center;">
+                        <span *ngIf="lista.cumple == 1" class="badge badge-success">
+                          Si
+                        </span>
+                        <span *ngIf="lista.cumple == 0" class="badge badge-danger">
+                          No
+                        </span>
+                      <td>{{ lista.tipo}}</td>
+                      <td>{{ lista.etiqueta }}</td>
+                      <td scope="col" style="text-align: center;">
+                        <span *ngIf="lista.imagen == 1" class="badge badge-primary">
+                          Si
+                        </span>
+                        <span *ngIf="lista.imagen == 0" class="badge badge-warning">
+                          No
+                        </span>
+                      </td>
+                      <td scope="col" style="text-align: center;">
+                        <span *ngIf="lista.activo == 1" class="badge badge-success">
+                          Si
+                        </span>
+                        <span *ngIf="lista.activo == 0" class="badge badge-danger">
+                          No
+                        </span>
+                      </td>
+                      <td scope="col" *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+                        <div class="row">
+                          <div class="col-2">
+                            <a [routerLink]="['/editaritemactividades', actividad, lista._id]" title="Editar">
+                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                          <div class="col-2">
+                            <a (click)="deleteItemsActividad(lista._id)" title="Eliminar" style="color: #dc3545;cursor: pointer">
+                              <i class="fa fa-times-circle" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+          </div>
+          <a class="btn btn-primary" [routerLink]="['../../crearitemactividades', actividad]"
+            *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+            Nuevo Item
+          </a>
+          <a class="btn btn-default ml-1" title="Cancelar" [routerLink]="['../../listaractividades']">
+            Cancelar
+          </a>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+<aside class="control-sidebar control-sidebar-dark">
+</aside>
+
+</div>

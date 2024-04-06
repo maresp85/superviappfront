@@ -1,0 +1,99 @@
+<div class="wrapper">
+
+    <app-navbar></app-navbar>
+
+    <app-sidebar></app-sidebar>
+
+    <div class="content-wrapper">
+
+        <section class="content">
+
+            <div class="container-fluid">
+
+                <app-title [title]="title"
+                           [breadcrumbtitle]="breadcrumbtitle"
+                           [breadcrumbtitle2]="breadcrumbtitle2">
+                </app-title>
+                <app-loading *ngIf="loading"></app-loading>
+                <div *ngIf="!loading">
+                    <div class="card">
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form (ngSubmit)="onSubmit(f)" #f="ngForm" class="form-group">
+                                <div class="form-group">
+                                  <label for="ubicacion">Ubicación:</label>
+                                  <input type="text"
+                                         name="ubicacion"
+                                         class="form-control"
+                                         [(ngModel)]="lectura.ubicacion"
+                                         [ngClass]="{'is-invalid':f.submitted && f.controls['ubicacion'].errors}"
+                                         required />
+                                </div>
+                                <div class="form-group">
+                                  <label for="lectura_inicial">Lectura inicial:</label>
+                                  <input type="text"
+                                         name="lectura_inicial"
+                                         class="form-control"
+                                         [(ngModel)]="lectura.lectura_inicial"
+                                         [ngClass]="{'is-invalid':f.submitted && f.controls['lectura_inicial'].errors}"
+                                         required />
+                                </div>
+                                <div class="form-group">
+                                  <label for="fecha_inicial">Fecha inicial:</label>
+                                  <input type="datetime-local"
+                                         name="fecha_inicial"
+                                         class="form-control"
+                                         [(ngModel)]="lectura.fecha_inicial"
+                                         [ngClass]="{'is-invalid':f.submitted && f.controls['fecha_inicial'].errors}"
+                                         required />
+                                </div>
+                                <div class="form-group">
+                                  <label for="image">Imagen inicial:</label>
+                                  <input type="file" #Image accept="image/*"
+                                         name="image"
+                                         class="form-control-file"
+                                         (change)="fileUpload($event)"
+                                         required>
+                                  <div *ngIf="existsFile" class="alert alert-danger mt-1" role="alert">
+                                      La imagen inicial es obligatoria
+                                  </div>
+                                </div>
+                                <div class="form-group">
+                                  <label for="realizo">Realizó:</label>
+                                  <input type="text"
+                                         name="realizo"
+                                         class="form-control"
+                                         [(ngModel)]="lectura.realizo"
+                                         [ngClass]="{'is-invalid':f.submitted && f.controls['realizo'].errors}"
+                                         required />
+                                </div>
+                                <div class="form-group">
+                                  <label for="observaciones">Observaciones:</label>
+                                  <textarea type="text"
+                                            name="observaciones"
+                                            class="form-control"
+                                            [(ngModel)]="lectura.observaciones"
+                                            maxlength="650">
+                                  </textarea>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i [ngClass]="{'fa-refresh fa-spin':loadingButton}" class="fa"></i>
+                                        Guardar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <aside class="control-sidebar control-sidebar-dark">
+    </aside>
+
+</div>

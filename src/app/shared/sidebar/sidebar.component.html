@@ -1,0 +1,164 @@
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a routerLink="/home" class="brand-link" style="text-align: center; background-color: #fece14;">
+      <span class="brand-text font-weight-light">
+        <img src="../../../assets/logo_st.jpg" width="150px">
+      </span>
+    </a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <!--<div class="image">
+          <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+        </div>-->
+        <div class="info">
+          <a href="#" class="d-block">
+            {{ (_usService.leerNombreUsuario().length>25) ?
+               (_usService.leerNombreUsuario() | slice:0:26)+' ..' :
+               (_usService.leerNombreUsuario())
+            }}
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item has-treeview">
+            <a class="nav-link" routerLinkActive="active" routerLink="/home">
+              <i class="nav-icon fa fa-tachometer"></i>
+              <p>
+                Dashboard
+              </p>
+            </a>
+          </li>
+          <li class="nav-item has-treeview menu-open" *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-cogs"></i>
+              <p>
+                Administración
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" routerLink="/listarempresas">
+                  <i class="fa fa-circle-thin nav-icon"></i>
+                  <p>Empresas</p>
+                </a>
+              </li>
+            </ul>
+             <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" routerLink="/listarusuarios">
+                  <i class="fa fa-circle-thin nav-icon"></i>
+                  <p>Usuarios</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item has-treeview menu-open" *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-cog"></i>
+              <p>
+                Configuración
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" routerLink="/listarobras">
+                  <i class="fa fa-circle-thin nav-icon"></i>
+                  <p>Obras</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" routerLink="/listartrabajos">
+                  <i class="fa fa-circle-thin nav-icon"></i>
+                  <p>Trabajos</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" routerLink="/listartipotrabajos">
+                  <i class="fa fa-circle-thin nav-icon"></i>
+                  <p>Tipo de Trabajos</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" routerLink="/listaractividades">
+                  <i class="fa fa-circle-thin nav-icon"></i>
+                  <p>Actividades</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-check-square-o"></i>
+              <p>
+                Gestión
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" routerLink="/listarordenes">
+                  <i class="fa fa-circle-thin nav-icon text-success"></i>
+                  <p>Ordenes</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" routerLink="/listarbitacoras">
+                  <i class="fa fa-circle-thin nav-icon text-success"></i>
+                  <p>Bitácoras</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-file-pdf-o"></i>
+              <p>
+                Reportes
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" routerLink="/listareportes">
+                  <i class="fa fa-circle-thin nav-icon text-danger"></i>
+                  <p>Semanales</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" routerLink="/listarhermeticidad">
+                  <i class="fa fa-circle-thin nav-icon text-warning"></i>
+                  <p>Hermeticidad</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a class="nav-link" routerLinkActive="active" routerLink="/listarnoconformidad">
+                  <i class="fa fa-circle-thin nav-icon text-info"></i>
+                  <p>No Conformidad</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

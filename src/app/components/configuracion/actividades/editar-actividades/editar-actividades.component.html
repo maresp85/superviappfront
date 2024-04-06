@@ -1,0 +1,149 @@
+<div class="wrapper">
+
+    <app-navbar></app-navbar>
+  
+    <app-sidebar></app-sidebar>
+  
+    <div class="content-wrapper">
+  
+        <section class="content">
+  
+            <div class="container-fluid">
+
+                <app-title [title]="title" 
+                           [breadcrumbtitle]="breadcrumbtitle" 
+                           [breadcrumbtitle2]="breadcrumbtitle2">
+                </app-title>
+
+                <app-loading *ngIf="loading"></app-loading>        
+                
+                <div *ngIf="!loading">
+                
+                    <div class="card"> 
+
+                        <div class="card-body">
+                            <form (ngSubmit)="onSubmit(f)" #f="ngForm" class="form-group">                                
+                                      
+                                <div class="form-group">
+                                    <label for="nombre">Nombre:</label>
+                                    <textarea 
+                                        type="text" 
+                                        name="nombre"
+                                        class="form-control"
+                                        [(ngModel)]="actividad.nombre"
+                                        [ngClass]="{'is-invalid':f.submitted && f.controls['nombre'].errors}"
+                                        maxlength="450"
+                                        required
+                                    >
+                                    </textarea>
+                                </div> 
+                                <div class="form-group">
+                                    <label for="tipotrabajo">Tipo de Trabajo:</label>
+                                    <select 
+                                        name="tipotrabajo"                         
+                                        class="form-control" 
+                                        [(ngModel)]="actividad.tipotrabajo" 
+                                        [ngClass]="{'is-invalid':f.submitted && f.controls['tipotrabajo'].errors}"    
+                                        required
+                                    >                            
+                                        <option [value]="t._id" *ngFor="let t of listadoTipoTrabajo">{{ t.nombre }}</option>
+                                    </select>
+                                </div>    
+                                <div class="form-group">
+                                    <label for="orden">Orden:</label>
+                                    <input 
+                                        type="number"
+                                        name="orden"                         
+                                        class="form-control" 
+                                        [(ngModel)]="actividad.orden" 
+                                        [ngClass]="{'is-invalid':f.submitted && f.controls['tipotrabajo'].errors}"    
+                                        required
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label for="role">Perfil:</label>
+                                    <select 
+                                        name="role"
+                                        class="form-control"
+                                        [(ngModel)]="actividad.role"
+                                        [ngClass]="{'is-invalid':f.submitted && f.controls['role'].errors}"
+                                        required
+                                    >
+                                    <option 
+                                        value="COORDINADOR"
+                                        [selected]="actividad.role == 'COORDINADOR'"
+                                    >
+                                        COORDINADOR
+                                    </option>
+                                    <option 
+                                        value="SUPERVISOR"
+                                        [selected]="actividad.role == 'SUPERVISOR'"
+                                    >
+                                        SUPERVISOR
+                                    </option>
+                                    <option 
+                                        value="INGENIERO"
+                                        [selected]="actividad.role == 'INGENIERO'"
+                                    >
+                                        INGENIERO
+                                    </option>
+                                    
+                                    <option 
+                                        value="RESIDENTE DE OBRA"
+                                        [selected]="actividad.role == 'RESIDENTE DE OBRA'"
+                                    >
+                                        RESIDENTE DE OBRA
+                                    </option>
+                                    <option 
+                                        value="DIRECTOR DE OBRA"
+                                        [selected]="actividad.role == 'DIRECTOR DE OBRA'"
+                                    >
+                                        DIRECTOR DE OBRA
+                                    </option>
+                                    <option 
+                                        value="GERENCIA-DIRECCIÓN CONSTRUCCIONES"
+                                        [selected]="actividad.role == 'GERENCIA-DIRECCIÓN CONSTRUCCIONES'"
+                                    >
+                                        GERENCIA-DIRECCIÓN CONSTRUCCIONES
+                                    </option>
+                                    <option 
+                                        value="SSTT"
+                                        [selected]="actividad.role == 'SSTT'"
+                                    >
+                                        SSTT
+                                    </option>
+                                    <option 
+                                        value="OTROS"
+                                        [selected]="actividad.role == 'OTROS'"
+                                    >
+                                        OTROS
+                                    </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i [ngClass]="{'fa-refresh fa-spin':loadingButton}" class="fa"></i>
+                                        Guardar
+                                    </button>  
+                                    <a class="btn btn-default ml-1" [routerLink]="['../../listaractividades']">
+                                        Cancelar
+                                    </a>
+                                </div>      
+                                    
+                            </form>
+                        </div>
+
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+        </section>  
+
+    </div>
+
+    <aside class="control-sidebar control-sidebar-dark">
+    </aside>
+
+</div>

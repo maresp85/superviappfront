@@ -1,0 +1,129 @@
+<div class="wrapper">
+
+    <app-navbar></app-navbar>
+  
+    <app-sidebar></app-sidebar>
+  
+    <div class="content-wrapper">
+  
+      <section class="content">
+  
+        <div class="container-fluid">
+                  
+          <app-title [title]="title" 
+                     [breadcrumbtitle]="breadcrumbtitle" 
+                     [breadcrumbtitle2]="breadcrumbtitle2">
+          </app-title>
+          <app-loading *ngIf="loading"></app-loading>    
+              
+          <div *ngIf="!loading">
+
+            <div *ngFor="let lista of listado" class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">
+                  {{ lista.tipotrabajo.nombre }}               
+                </h3>        
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                  </button>
+                </div>
+              </div>              
+              <div class="card-body" style="display: block;">
+                <table class="table">
+                  <span *ngFor="let actividad of listadoActividades | paginate:{itemsPerPage: 30, currentPage: pb}">
+                    <div *ngIf="actividad.ordentipotrabajo === lista._id && actividad.actividad && actividad.estado !== 'PENDIENTE'">
+                      <tr>
+                        <td style="width: 720px">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              {{ actividad.consecutivo }} - {{ actividad.actividad.nombre }}
+                            </div>
+                            <div class="col-sm-6 text-left">
+                              <span *ngIf="actividad.estado === 'CUMPLE' || actividad.estado === 'NO CUMPLE'">                     
+                                <a 
+                                  style="cursor:pointer; color: #434645"
+                                  (click)="consultarActividad(actividad._id)"
+                                >
+                                  <i class="fa fa-folder-open fa-lg" aria-hidden="true"></i>
+                                </a>  
+                              </span> 
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span *ngIf="actividad.estado === 'PENDIENTE'" class="badge badge-secondary">
+                            {{ actividad.estado }}
+                          </span>
+                          <span *ngIf="actividad.estado === 'CUMPLE'" class="badge badge-success">
+                            CERRADA
+                          </span>
+                          <span *ngIf="actividad.estado === 'NO CUMPLE'" class="badge badge-danger">
+                            ABIERTA
+                          </span>
+                        </td>
+                        <td>
+                          <span *ngIf="actividad.estado === 'NO CUMPLE' && _usService.leerRoleUsuario() == 'COORDINADOR'">
+                            <a 
+                              (click)="cerrarNota(actividad._id)"
+                              style="cursor: pointer;color:#4e9c21"
+                              title="Cerrar Nota"
+                            >
+                              <i class="fa fa-arrow-up"></i>
+                            </a>
+                          </span>
+                        </td>
+                      </tr>
+                    </div>
+                  </span>
+                </table>
+              </div>                   
+            </div>
+            
+            <div class="row text-center">
+              <div class="col-md-12 col-lg-12">
+                  <pagination-controls 
+                    (pageChange)="pb=$event"
+                    previousLabel="Anterior"
+                    nextLabel="Siguiente">
+                  </pagination-controls>
+              </div>
+            </div>
+            
+          </div>
+  
+        </div>
+  
+      </section>  
+    
+    </div>
+  
+    <aside class="control-sidebar control-sidebar-dark">
+    </aside>
+  
+  </div>
+
+
+
+<!-- /.card-header 
+<div class="card-body">
+    <form [formGroup]="myGroup" (ngSubmit)="onSubmit()">
+        <div class="form-group" *ngFor="let c of camposordenes">
+            <label for="{{c.name}}">{{c.label}}:</label>
+            <input type="{{c.type}}" formControlName={{c.name}} class="form-control" maxlength="1200" required>
+        </div>    
+        <div class="form-group" >
+            <label for="image">Imágenes:</label>
+            <input type="file" #Image accept="image/*" 
+                    class="form-control-file" 
+                    (change)="fileUpload($event)"
+                    multiple>
+        </div>                     
+        <div class="form-group">
+            <button class="btn btn-primary" type="submit">
+                <i [ngClass]="{'fa-refresh fa-spin':loadingButton}" class="fa"></i>
+                Legalizar
+            </button>  
+        </div>
+    </form>
+</div>-->

@@ -1,0 +1,94 @@
+<div class="wrapper">
+
+  <app-navbar></app-navbar>
+
+  <app-sidebar></app-sidebar>
+
+  <div class="content-wrapper">
+
+    <section class="content">
+
+      <div class="container-fluid">
+
+        <app-title [title]="title"
+                   [breadcrumbtitle]="breadcrumbtitle"
+                   [breadcrumbtitle2]="breadcrumbtitle2">
+        </app-title>
+
+        <app-loading *ngIf="loading"></app-loading>
+
+        <div *ngIf="!loading">
+
+          <div class="card">
+            <div class="card-body p-0">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: 10px">N°</th>
+                      <th scope="col" style="text-align: center;">Obra</th>
+                      <th scope="col" style="text-align: center;">Ingeniero(a)</th>
+                      <th scope="col" style="text-align: center;">Fecha Creación</th>
+                      <th scope="col">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let lista of listado | paginate:{itemsPerPage: 20, currentPage: p}">
+                      <td>{{ lista.id }}</td>
+                      <td>{{ lista.obra.nombre }}</td>
+                      <td>{{ lista.usuario.nombre }}</td>
+                      <td scope="col" style="text-align: center;">{{ lista.fecha | date:'dd/MM/yyyy HH:mm':'UTC -5' }}</td>
+                      <td scope="col">
+                        <div class="row">
+                          <div class="col-2">
+                            <a style="cursor: pointer;color:#007bff"
+                               [routerLink]="['/listarlectura', lista.id, lista._id]"
+                               title="Lecturas">
+                              <i class="fa fa-tachometer" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                          <div class="col-2">
+                            <a style="cursor: pointer;color:#007bff"
+                               title="Descargar"
+                               (click)="generatePdf(lista._id)">
+                              <i class="fa fa-cloud-download" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                          <div class="col-2" *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+                            <a (click)="deleteHermeticidad(lista._id)"
+                               title="Eliminar"
+                               style="color: #dc3545;cursor: pointer">
+                              <i class="fa fa-times-circle" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+          </div>
+          <a class="btn btn-primary"
+             routerLink="/crearhermeticidad"
+             *ngIf="_usService.leerRoleUsuario() != 'ADMIN' && _usService.leerRoleUsuario() != 'SUPERVISOR'">
+              Nuevo Reporte de Hermeticidad
+          </a>
+          <div class="row text-center">
+            <div class="col-md-12 col-lg-12">
+                <pagination-controls (pageChange)="p=$event"
+                    previousLabel="Anterior"
+                    nextLabel="Siguiente">
+                </pagination-controls>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+
+</div>

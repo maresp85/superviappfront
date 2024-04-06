@@ -1,0 +1,107 @@
+<div class="wrapper">
+
+  <app-navbar></app-navbar>
+
+  <app-sidebar></app-sidebar>
+
+  <div class="content-wrapper">
+
+    <section class="content">
+
+      <div class="container-fluid">
+
+        <app-title [title]="title"
+                   [breadcrumbtitle]="breadcrumbtitle"
+                   [breadcrumbtitle2]="breadcrumbtitle2">
+        </app-title>
+
+        <app-loading *ngIf="loading"></app-loading>
+
+        <div *ngIf="!loading">
+
+          <div class="card">
+            <div class="card-body p-0">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col" style="text-align: center;">Ubicación</th>
+                      <th scope="col" style="text-align: center;">Lectura Inicial</th>
+                      <th scope="col" style="text-align: center;">Fecha Inicial</th>
+                      <th scope="col" style="text-align: center;">Realizó</th>
+                      <th scope="col" style="text-align: center;">Lectura Final</th>
+                      <th scope="col" style="text-align: center;">Fecha Final</th>
+                      <th scope="col" style="text-align: center;">Observaciones</th>
+                      <th scope="col" style="text-align: center;">Imágenes</th>
+                      <th scope="col" style="text-align: center;">Finalizar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let lista of listado | paginate:{itemsPerPage: 30, currentPage: p}">
+                      <td>{{ lista.ubicacion }}</td>
+                      <td style="text-align: center;">{{ lista.lecturainicial }}</td>
+                      <td style="text-align: center;">{{ lista.fechainicial | date:'dd/MM/yyyy HH:mm':'UTC -5' }}</td>
+                      <td>{{ lista.realizo }}</td>
+                      <td style="text-align: center;">{{ lista.lecturafinal }}</td>
+                      <td style="text-align: center;">{{ lista.fechafinal | date:'dd/MM/yyyy HH:mm':'UTC -5' }}</td>
+                      <td>
+                        <span *ngIf="lista.observaciones != 'undefined'">
+                          {{ lista.observaciones }}
+                        </span>
+                      </td>
+                      <td style="text-align: center;">
+                        <div class="row">
+                          <div *ngIf="lista.imageninicial" class="col-6">
+                            <a href="{{ urluploadimghermeticidad }}{{ lista.imageninicial }}" target="_blank">
+                              <img src="{{ urluploadimghermeticidad }}{{ lista.imageninicial }}"
+                                  height="55px"
+                                  width="55px">
+                            </a>
+                          </div>
+                          <div *ngIf="lista.imagenfinal" class="col-6">
+                            <a href="{{ urluploadimghermeticidad }}{{ lista.imagenfinal }}" target="_blank">
+                              <img src="{{ urluploadimghermeticidad }}{{ lista.imagenfinal }}"
+                                   height="55px"
+                                   width="55px">
+                            </a>
+                          </div>
+                        </div>
+                      </td>
+                      <td style="text-align: center;">
+                        <div *ngIf="!lista.finalizada">
+                          <a style="cursor: pointer;color:#007bff"
+                             [routerLink]="['/actualizarlectura', lista._id, hermeticidad, _hermeticidad]"
+                             title="Actualizar">
+                            <i class="fa fa-external-link-square" aria-hidden="true"></i>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+          </div>
+          <a class="btn btn-primary"
+             [routerLink]="['/crearlectura', hermeticidad, _hermeticidad]"
+             *ngIf="_usService.leerRoleUsuario() != 'ADMIN' && _usService.leerRoleUsuario() != 'SUPERVISOR'">
+              Nueva Lectura
+          </a>
+          <div class="row text-center">
+            <div class="col-md-12 col-lg-12">
+                <pagination-controls (pageChange)="p=$event"
+                    previousLabel="Anterior"
+                    nextLabel="Siguiente">
+                </pagination-controls>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+
+</div>
