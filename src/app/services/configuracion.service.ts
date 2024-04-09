@@ -17,11 +17,18 @@ export class ConfiguracionService {
     this.url = environment.url;
   }
 
-  getQuery(query: string) {
+  getQuery = (query: string) => {
     const url = `${ this.url }/${ query }/`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': this._usService.leerToken() });
 
     return this.http.get(url, { headers });
+  }
+
+  putQuery = (url: any, myObj: any) => {
+    const params = JSON.stringify(myObj);   
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': this._usService.leerToken() });
+
+    return this.http.put(url, params, { headers });
   }
 
   //GET todas las empresas
@@ -98,14 +105,14 @@ export class ConfiguracionService {
   }
 
     // Edita trabajo
-  putTrabajo(
+  putTrabajo = (
     _id: any,
     nombre: any,
     activo: any,
     fechaMejora: any,
     legalizaCualquierOrden: any,
     bitacora: any
-  ) {
+  ) => {
     const myObj = {
       'nombre': nombre,
       'activo': activo,
@@ -113,16 +120,31 @@ export class ConfiguracionService {
       'legalizaCualquierOrden': legalizaCualquierOrden,
       'bitacora': bitacora,
     };
-    const params = JSON.stringify(myObj);
+    
     const url = `${ this.url }/trabajo/editar/${ _id }`;
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': this._usService.leerToken() });
+    return this.putQuery(url, myObj);
+  }
 
-    return this.http.put(url, params, { headers });
+  addTrabajoExtraFields = (_id: any, extraFields: any) => {
+    const myObj = {
+      'extraFields': extraFields,
+    };
+
+    const url = `${ this.url }/trabajo/editar/${ _id }`;
+    return this.putQuery(url, myObj);
   }
 
     // GET Obras
   getObra() {
     return this.getQuery('obra/listar');
+  }
+
+    // Elimina una obra
+  deleteObra(_id: any) {
+    const url = `${ this.url }/obra/eliminar/${ _id }`;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': this._usService.leerToken() });
+
+    return this.http.delete(url, { headers });
   }
 
    // GET Obras x Empresa
@@ -242,7 +264,7 @@ export class ConfiguracionService {
   }
 
    // Obtiene actividad x id
-  getUnaActividad(id: any) {
+  getUnaActividad = (id: any) => {
     return this.getQuery(`actividad/listaruna/${ id }`);
   }
 
@@ -262,7 +284,7 @@ export class ConfiguracionService {
   }
 
     // Editar Actividad
-  putActividad(
+  putActividad = (
     _id: any,
     nombre: any,
     orden: any,
@@ -270,7 +292,7 @@ export class ConfiguracionService {
     trabajo: any,
     tipotrabajo: any,
     empresa: any
-  ) {
+  ) => {
 
     const myObj = {
       'nombre': nombre,

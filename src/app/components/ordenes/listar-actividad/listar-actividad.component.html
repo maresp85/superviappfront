@@ -57,23 +57,7 @@
                           <span class="text">{{ lista.etiqueta.toUpperCase() }}</span>
                         </li>
                       </ul>
-                    </span>
-                    
-                    <span class="text" *ngIf="lista.tipo.toUpperCase() == 'CHECKLIST'">
-                      <span *ngFor="let l of checkList; let i = index">
-                        <span *ngIf="l.etiqueta == lista.etiqueta && l.fechaMejora" class="text">
-                          <ul class="todo-list ui-sortable">
-                            <li>
-                              <span class="text">{{ lista.etiqueta.toUpperCase() }}</span>
-                              <span class="ml-4">
-                                <i class="fa fa-check" aria-hidden="true" style="color:rgb(98, 158, 8)"></i>
-                                <strong> Fecha Mejora:</strong> {{ l.fechaMejora }}
-                              </span>
-                            </li>
-                          </ul>
-                        </span>
-                      </span>                      
-                    </span>
+                    </span>                    
                     
                     <div *ngIf="lista.tipo.toUpperCase() == 'FIRMA DIGITAL'">
                       <ul class="todo-list ui-sortable">
@@ -86,7 +70,23 @@
                           </div>
                         </li>
                       </ul>
-                    </div>                    
+                    </div>
+
+                    <span class="text" *ngIf="lista.tipo.toUpperCase() === 'CHECKLIST'">
+                      <span *ngFor="let l of checkList; let i = index">
+                        <span *ngIf="l.etiqueta === lista.etiqueta" class="text">
+                          <ul class="todo-list ui-sortable">
+                            <li>
+                              <span class="text">{{ lista.etiqueta.toUpperCase() }}</span>
+                              <span class="ml-4" *ngIf="l.fechaMejora">
+                                <i class="fa fa-check" aria-hidden="true" style="color:rgb(98, 158, 8)"></i>
+                                <strong> Fecha Mejora:</strong> {{ l.fechaMejora }}
+                              </span>
+                            </li>
+                          </ul>
+                        </span>
+                      </span>                      
+                    </span>
                      
                     <div *ngIf="lista.tipo.toUpperCase() == 'EVIDENCIAS'">
                       <ul class="todo-list ui-sortable">

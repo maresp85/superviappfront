@@ -107,25 +107,25 @@ export class OrdenesService {
   }
 
    // Buscar orden de trabajo
-  buscarOrdenes(empresa: any,
-                id: any,
-                usuario: any,
-                estado: any,
-                idviga: any,
-                trabajo: any,
-                obra: any,
-                fecha: any,
-                fechaf: any) {
+  buscarOrdenes = (
+    empresa: any,
+    id: any,
+    usuario: any,
+    estado: any,
+    trabajo: any,
+    obra: any,
+    fecha: any,
+    fechaf: any
+  ) => {
     const myObj = {
-      "empresa": empresa,
-      "id": id,
-      "usuario": usuario,
-      "estado": estado,
-      "idviga": idviga,
-      "trabajo": trabajo,
-      "obra": obra,
-      "fecha": fecha,
-      "fechaf": fechaf,
+      'empresa': empresa,
+      'id': id,
+      'usuario': usuario,
+      'estado': estado,
+      'trabajo': trabajo,
+      'obra': obra,
+      'fecha': fecha,
+      'fechaf': fechaf,
     };
 
     const params = JSON.stringify(myObj);

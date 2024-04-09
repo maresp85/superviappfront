@@ -13,9 +13,9 @@ import Swal from 'sweetalert2';
 })
 export class EditarObrasComponent implements OnInit {
 
-  title: string = "Editar Obra";
+  title: string = "Editar aliado";
   breadcrumbtitle: string = "Configuración";
-  breadcrumbtitle2: string = "Obras";
+  breadcrumbtitle2: string = "Aliados";
   obra: ObraModel;
   loadingButton: boolean = false;
   listadoObra: any = [];
@@ -56,28 +56,29 @@ export class EditarObrasComponent implements OnInit {
     if (form.invalid) { return; }
 
     this.loadingButton = true;    
-    this._conService.putObra(this._obra,
-                             this.obra.nombre,
-                             this.obra.direccion,
-                             this.obra.activo)
-                    .subscribe((res: any) => { 
-                      if (res.ok == true) {
-                        this.loadingButton = false;    
-                        Swal.fire({    
-                          text: 'Obra editada',
-                          icon: 'success',
-                          confirmButtonText: 'OK',
-                          allowOutsideClick: false
-                        }).then((result) => {
-                          this.loadingButton = false;
-                          this.router.navigate(['/listarobras']);
-                        });                  
-                      } else {
-                        this.error();
-                      }         
-                    }, error => {
-                      this.error();
-                    }); 
+    this._conService.putObra(
+      this._obra,
+      this.obra.nombre,
+      this.obra.direccion,
+      this.obra.activo
+    ).subscribe((res: any) => { 
+        if (res.ok == true) {
+          this.loadingButton = false;    
+          Swal.fire({    
+            text: 'Aliado editado',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            allowOutsideClick: false
+          }).then((result) => {
+            this.loadingButton = false;
+            this.router.navigate(['/listarobras']);
+          });                  
+        } else {
+          this.error();
+        }         
+      }, error => {
+        this.error();
+      }); 
   }
 
   error() {

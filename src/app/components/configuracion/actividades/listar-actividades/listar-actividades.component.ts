@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ConfiguracionService } from 'src/app/services/configuracion.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-listar-actividades',
@@ -11,9 +11,9 @@ import { Router } from '@angular/router';
 })
 export class ListarActividadesComponent implements OnInit {
 
-  title: string = "Actividades";
-  breadcrumbtitle: string = "Configuración";
-  breadcrumbtitle2: string = "Actividades";
+  title: string = 'Actividades';
+  breadcrumbtitle: string = 'Configuración';
+  breadcrumbtitle2: string = 'Actividades';
   empresa: any 
   loading: boolean = false;
   listado: any = [];
@@ -24,9 +24,17 @@ export class ListarActividadesComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private _conService: ConfiguracionService,
     public _usService: UsuarioService
-  ) { }
+  ) {
+    this.activatedRoute.params.subscribe(params => {
+      if (params['_empresa']) {
+        this.empresa = params['_empresa'];
+        this.onChangeStateEmpresa(this.empresa);
+      }
+    });
+  }
 
   ngOnInit() {
     this.validateRole();

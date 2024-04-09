@@ -23,7 +23,7 @@ export class CrearOrdenesComponent implements OnInit {
   ordenes: OrdenesModel = new OrdenesModel();
   usuarios: any = [];
   usuarioid: any;
-  usuarionombre: any;
+  usuarioNombre: any;
   trabajo: any = [];
   obra: any = [];  
   empresa: any;
@@ -43,7 +43,7 @@ export class CrearOrdenesComponent implements OnInit {
     this.loading = true;
     this.empresa = this._usService.leerEmpresaUsuario(); 
     this.usuarioid = this._usService.leerIDUsuario();
-    this.usuarionombre = this._usService.leerNombreUsuario();
+    this.usuarioNombre = this._usService.leerNombreUsuario();
     this.role = this._usService.leerRoleUsuario();
 
     this._conService
@@ -54,15 +54,15 @@ export class CrearOrdenesComponent implements OnInit {
           this.error();
         });
 
-    if (this.role == 'COORDINADOR') {
+    if (this.role === 'SUPERVISOR LEGAL') {      
       this._usService
-      .getUsuarioEmpresa(this.empresa)
-      .subscribe((res: any) => {               
-        this.usuarios = res['usuarioDB'];
-        this.loading = false;       
-      }, error => {
-        this.error();
-      });
+        .getUsuarioEmpresa(this.empresa)
+        .subscribe((res: any) => {               
+          this.usuarios = res['usuarioDB'];
+          this.loading = false;       
+        }, error => {
+          this.error();
+        });
     } else {
       this._conService
           .getObraEmpresasxUsuario(this.usuarioid)
@@ -79,13 +79,13 @@ export class CrearOrdenesComponent implements OnInit {
     this.obra = [];
     this.loading = true;
     this._conService
-          .getObraEmpresasxUsuario(usuarioId)
-          .subscribe((res: any) => {    
-            this.obra = res['obraDB'];                                                                  
-            this.loading = false;  
-          }, error => {
-            this.error();
-          });
+        .getObraEmpresasxUsuario(usuarioId)
+        .subscribe((res: any) => {    
+          this.obra = res['obraDB'];                                                                  
+          this.loading = false;  
+        }, error => {
+          this.error();
+        });
   }
 
   onSubmit(form: NgForm) {   
@@ -101,8 +101,7 @@ export class CrearOrdenesComponent implements OnInit {
         this.ordenes.usuario,
         this.ordenes.fecha,
         this.ordenes.observaciones
-      )
-        .subscribe((res: any) => {                       
+      ).subscribe((res: any) => {                       
           if (res.ok == true) {  
             this.loadingButton = false;                    
             Swal.fire({    

@@ -76,6 +76,7 @@ export const ROUTES: Routes = [
     { path: 'creartipotrabajos', component: CrearTipoTrabajosComponent, canActivate: [ AuthGuard ] },
     { path: 'editartipotrabajos/:_tipotrabajo', component: EditarTipoTrabajosComponent, canActivate: [ AuthGuard ] },
     { path: 'listaractividades', component: ListarActividadesComponent, canActivate: [ AuthGuard ] },
+    { path: 'listaractividades/:_empresa', component: ListarActividadesComponent, canActivate: [ AuthGuard ] },
     { path: 'crearactividades', component: CrearActividadesComponent, canActivate: [ AuthGuard ] },
     { path: 'editaractividades/:_actividad', component: EditarActividadesComponent, canActivate: [ AuthGuard ] },
     { path: 'listaritemactividades/:actividad', component: ListarItemActividadesComponent, canActivate: [ AuthGuard ] },

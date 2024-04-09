@@ -105,7 +105,7 @@
                     <div class="row">                      
                       <div class="col-3">
                         <div class="form-group">
-                          <label for="trabajo">Obra:</label>
+                          <label for="trabajo">Aliado:</label>
                           <select name="obra"
                                   class="form-control"
                                   [(ngModel)]="ordenes.obra">
@@ -146,11 +146,12 @@
 
           <div class="card">
             <div class="card-body p-0">
+              <div class="table-responsive">
                 <table class="table table-striped">
                   <thead>
                     <tr>
                       <th style="width: 10px">N°</th>
-                      <th scope="col" style="text-align: center;">Obra</th>
+                      <th scope="col" style="text-align: center;">Aliado</th>
                       <th scope="col" style="text-align: center;">Fecha Creación</th>
                       <th scope="col" style="text-align: center;">Estado</th>
                       <th scope="col">Opciones</th>
@@ -228,6 +229,7 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
             </div>
           </div>
           <a 

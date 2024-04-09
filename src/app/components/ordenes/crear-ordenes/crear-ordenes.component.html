@@ -22,15 +22,17 @@
                             <form (ngSubmit)="onSubmit(f)" #f="ngForm" class="form-group">
                                 <div class="form-group">
                                     <label for="trabajo">Trabajo:</label>
-                                    <select name="trabajo"
-                                            class="form-control"
-                                            [(ngModel)]="ordenes.trabajo"
-                                            [ngClass]="{'is-invalid':f.submitted && f.controls['trabajo'].errors}"
-                                            required>
+                                    <select 
+                                        name="trabajo"
+                                        class="form-control"
+                                        [(ngModel)]="ordenes.trabajo"
+                                        [ngClass]="{'is-invalid':f.submitted && f.controls['trabajo'].errors}"
+                                        required
+                                    >
                                         <option [value]="t._id" *ngFor="let t of trabajo">{{ t.nombre }}</option>
                                     </select>
                                 </div>                                
-                                <div class="form-group" *ngIf="role === 'COORDINADOR'">
+                                <div class="form-group" *ngIf="role === 'SUPERVISOR LEGAL'">
                                     <label for="usuario">Usuario:</label>
                                     <select
                                         #myUsuario
@@ -44,7 +46,7 @@
                                         <option [value]="i._id" *ngFor="let i of usuarios">{{ i.nombre }} ({{ i.role }})</option>
                                     </select>
                                 </div>
-                                <div class="form-group" *ngIf="role != 'COORDINADOR'">
+                                <div class="form-group" *ngIf="role !== 'SUPERVISOR LEGAL'">
                                     <label for="usuario">Usuario:</label>
                                     <select
                                         #myUsuario
@@ -54,16 +56,18 @@
                                         [ngClass]="{'is-invalid': f.submitted && f.controls['usuario'].errors}"
                                         required
                                     >
-                                        <option [value]="usuarioid">{{ usuarionombre }}</option>
+                                        <option [value]="usuarioid">{{ usuarioNombre }}</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="obra">Obra:</label>
-                                    <select name="obra"
-                                            class="form-control"
-                                            [(ngModel)]="ordenes.obra"
-                                            [ngClass]="{'is-invalid': f.submitted && f.controls['obra'].errors}"
-                                            required>
+                                    <label for="obra">Aliado:</label>
+                                    <select 
+                                        name="obra"
+                                        class="form-control"
+                                        [(ngModel)]="ordenes.obra"
+                                        [ngClass]="{'is-invalid': f.submitted && f.controls['obra'].errors}"
+                                        required
+                                    >
                                         <option [value]="t._id" *ngFor="let t of obra">{{ t.nombre }}</option>
                                     </select>
                                 </div>

@@ -18,6 +18,7 @@ export class EditarNoConformidadComponent implements OnInit {
   title: string = "Editar Reporte de No Conformidad";
   breadcrumbtitle: string = "Reportes";
   breadcrumbtitle2: string = "No Conformidad";
+  email: string = '';
   empresa: any;
   image1: File = null;
   image2: File = null;
@@ -30,10 +31,13 @@ export class EditarNoConformidadComponent implements OnInit {
   urluploadimgnoconformidad: any = environment.url + environment.uploadimgnoconformidad;
   usuarioDB: any;
 
-  constructor(private router: Router,
-              private activatedRoute: ActivatedRoute,
-              public _usService: UsuarioService,
-              private _repoService: ReportesService) {
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    public _usService: UsuarioService,
+    private _repoService: ReportesService,
+  ) {
+    this.email = this._usService.leerEmailUsuario();   
     this.activatedRoute.params.subscribe(params => {
       this._noconformidad = params['_id'];
       this.title += ' N° ' + params['id'];
@@ -58,7 +62,7 @@ export class EditarNoConformidadComponent implements OnInit {
           this.noconformidad.fecha_verificacion = moment(this.noconformidadDB.fecha_verificacion).format().slice(0, 16);
           this.noconformidad.estado = this.noconformidadDB.estado;
           this._usService
-              .getUnUsuario()
+              .getUsuarioEmail(this.email)
               .subscribe((res: any) => {
                 this.usuarioDB = res['usuarioDB'];
                 this.loading = false;

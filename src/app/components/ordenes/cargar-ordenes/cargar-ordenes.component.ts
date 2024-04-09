@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { OrdenesService } from 'src/app/services/ordenes.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
 
@@ -12,28 +13,33 @@ import Swal from 'sweetalert2';
 })
 export class CargarOrdenesComponent implements OnInit {
 
-  title: string = "Legalizar Orden de Trabajo";
-  breadcrumbtitle: string = "Gestión";
-  breadcrumbtitle2: string = "Legalización Ordenes";
+  title: string = 'Legalizar Orden de Trabajo';
+  breadcrumbtitle: string = 'Gestión';
+  breadcrumbtitle2: string = 'Legalización Ordenes';
   listadoActividades: any = [];
   fechaMejora: boolean;
   loadingButton: boolean = false;
   loading: boolean = false;
-  idviga: any;
   listado: any = [];
   ordenes: any;
+  ordenTrabajo: any = [];
   _ordenes: any;
+  urlUploadFirmaUsuario: any = environment.url + environment.uploadImgFirmaUsuario;
 
-  constructor(private router: Router,
-              private activatedRoute: ActivatedRoute,
-              private _orService: OrdenesService,
-              public _usService: UsuarioService) {
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private _orService: OrdenesService,
+    public _usService: UsuarioService,
+  ) {
 
-    if (this._usService.leerRoleUsuario() == '' ||
-        this._usService.leerEmailUsuario() == '' ||
-        this._usService.leerEmpresaUsuario() == '' ||
-        this._usService.leerIDUsuario() == '') {
-          this.router.navigate(["/login"]);
+    if (
+      this._usService.leerRoleUsuario() === '' ||
+      this._usService.leerEmailUsuario() === '' ||
+      this._usService.leerEmpresaUsuario() === '' ||
+      this._usService.leerIDUsuario() === ''
+    ) {
+      this.router.navigate(["/login"]);
     }
 
     this.activatedRoute.params.subscribe(params => {
@@ -45,82 +51,40 @@ export class CargarOrdenesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.unaOrden();
+  }
+  
+  unaOrden = () => {
     this.loading = true;
     this._orService
         .getUnaOrden(this._ordenes)
         .subscribe((res: any) => {
-          this.fechaMejora = res.ordentrabajoDB[0].trabajo.fechaMejora;          
-          this.idviga = res.ordentrabajoDB[0].idviga;
+          this.fechaMejora = res.ordentrabajoDB[0].trabajo.fechaMejora;
+          this.ordenTrabajo = res.ordentrabajoDB[0];
+          // Llamar a getOrdenes después de obtener unaOrden
+          this.getOrdenes();
         }, (err: any) => {
           this.error("Ocurrió un error al consultar la orden, intente de nuevo")
         });
+  }
+  
+  getOrdenes = () => {
     this._orService
-        .getOrdenesTipo(this._ordenes)
-        .subscribe((res: any) => {
-          this.listado = res['ordentipotrabajoDB'];
-          this._orService
-              .getOrdenesActividades(this._ordenes, 1)
-              .subscribe((res: any) => {
-                this.loading = false;
-                this.listadoActividades = res['ordenactividadDB'];
-                if (this.idviga == "NO") {
-                  if (this._usService.leerRoleUsuario() == 'INGENIERO') {
-                    this.verificarViga();
-                  }
-                }
-              }, (err: any) => {
-                this.error('Ocurrió un error, intente de nuevo');
-              });
-        }, (err: any) => {
-          this.error('Ocurrió un error, intente de nuevo');
-        });
-  }
-
-    // Permite asociar el Identificador a una orden de trabajo - IDViga
-  verificarViga() {
-    let title = ' el identificador';
-    if (this.fechaMejora) {
-      title = ' el n° de apartamento';
-    }
-    Swal.fire({
-      title: `Digite ${ title }`,
-      input: 'text',
-      inputAttributes: {
-        autocapitalize: 'off'
-      },
-      showCancelButton: true,
-      confirmButtonText: 'Enviar',
-      cancelButtonText: 'Cancelar',
-      showLoaderOnConfirm: true,
-      allowOutsideClick: false,
-      preConfirm: (valueIdViga) => {
-        if (valueIdViga == "") {
-          Swal.showValidationMessage(
-            `Ingrese ${ title }`
-          );
-        } else {
-          this._orService
-              .putIdVigaOrdenTrabajo(this._ordenes, valueIdViga)
-              .subscribe((res: any) => {
-                return true
-              }, (err: any) =>{
-                Swal.showValidationMessage(
-                  `Error al enviar el dato`
-                );
-              });
-        }
-      },
-    }).then((result: any) => {
-      if (result.dismiss == "cancel") {
-        this.router.navigate(['/listarordenes']);
-      }
-      if (result.value) {
-        Swal.fire({
-          title: 'Continúe con la legalización'
-        })
-      }
-    })
-  }
+    .getOrdenesTipo(this._ordenes)
+    .subscribe((res: any) => {
+      this.listado = res['ordentipotrabajoDB'];      
+      this._orService
+          .getOrdenesActividades(this._ordenes, 1)
+          .subscribe((res: any) => {
+            this.loading = false;
+            this.listadoActividades = res['ordenactividadDB'];            
+          }, (err: any) => {
+            this.error('Ocurrió un error, intente de nuevo');
+          });
+    }, (err: any) => {
+      this.error('Ocurrió un error, intente de nuevo');
+    });
+  }  
 
    // Legaliza orden de trabajo
   legalizarActividad(actividad: any) {

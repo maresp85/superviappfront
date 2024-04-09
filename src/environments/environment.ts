@@ -12,4 +12,5 @@ export const environment = {
   uploadimgreportes: "/uploads/reportes/semanal/",
   uploadimghermeticidad: "/uploads/reportes/hermeticidad/",
   uploadimgnoconformidad: "/uploads/reportes/noconformidad/",
+  uploadImgFirmaUsuario: "/uploads/ordenes/firma_usuario/",
 };

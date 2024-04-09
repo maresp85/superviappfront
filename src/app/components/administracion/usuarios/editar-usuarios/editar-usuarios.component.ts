@@ -20,6 +20,7 @@ export class EditarUsuariosComponent implements OnInit {
   usuario: UsuarioModel;
   loadingButton: boolean = false;
   listado: any = [];
+  listadoEmpresa: any = [];
   loading: boolean = false;
   options: any = ['1', '0'];
   email: any;
@@ -32,6 +33,7 @@ export class EditarUsuariosComponent implements OnInit {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private _conService: ConfiguracionService,
     private _usService: UsuarioService
   ) {
     this.usuario = new UsuarioModel();
@@ -41,9 +43,14 @@ export class EditarUsuariosComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getEmpresa();
+    this.getUser();
+  }
+
+  getUser = () => {
     this.loading = true;
     this._usService
-      .getUsuarioEmail(this.email)
+      .getUsuarioEmailFromAdmin(this.email)
       .subscribe((res: any) => {
         this.loading = false;
         this.listado = res['usuarioDB'];
@@ -51,6 +58,7 @@ export class EditarUsuariosComponent implements OnInit {
         this.usuario.nombre = this.listado.nombre;
         this.usuario.email = this.listado.email;
         this.usuario.role = this.listado.role;
+        this.usuario.empresa = this.listado.empresa[0];
         this.usuario.estado = this.listado.estado ? 1 : 0;
         this.usuario.sendemail = this.listado.sendemail ? 1 : 0;
         this.usuario.enterweb = this.listado.enterweb ? 1 : 0;
@@ -58,6 +66,18 @@ export class EditarUsuariosComponent implements OnInit {
         this.usuario.editorder = this.listado.editorder ? 1 : 0;
       }, (error: any) => {
         this.error(error.error.err.message);
+      });
+  }
+
+  getEmpresa = () => {
+    this.loading = true;
+    this._conService
+      .getEmpresa()
+      .subscribe((res: any) => {
+        this.loading = false;
+        this.listadoEmpresa = res['empresaDB'];
+      }, (error: any) => {
+        this.error(error);
       });
   }
 
@@ -76,6 +96,7 @@ export class EditarUsuariosComponent implements OnInit {
       this.usuario.nombre,
       this.usuario.email,
       this.usuario.role,
+      this.usuario.empresa,
       this.usuario.estado,
       this.usuario.sendemail,
       this.usuario.enterweb,

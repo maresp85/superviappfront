@@ -62,20 +62,15 @@
                             [(ngModel)]="usuario.role" 
                             [ngClass]="{'is-invalid':f.submitted && f.controls['role'].errors}"    
                             required
-                        >                            
+                        >                                        
                             <option value='ADMIN'>ADMINISTRADOR</option>
-                            <option value='COORDINADOR'>COORDINADOR</option>
-                            <option value='SUPERVISOR'>SUPERVISOR</option>
-                            <option value='INGENIERO'>INGENIERO</option>
-                            <option value='RESIDENTE DE OBRA'>RESIDENTE DE OBRA</option>
-                            <option value='DIRECTOR DE OBRA'>DIRECTOR DE OBRA</option>
-                            <option value='GERENCIA-DIRECCIÓN CONSTRUCCIONES'>GERENCIA-DIRECCIÓN CONSTRUCCIONES</option>
-                            <option value='SSTT'>SSTT</option>
-                            <option value='OTROS'>OTROS</option>
+                            <option value='SUPERVISOR SSTA'>SUPERVISOR SSTA</option>
+                            <option value='SUPERVISOR LEGAL LABORAL'>SUPERVISOR LEGAL LABORAL</option>                  
+                            <option value='SUPERVISOR DEL CONTRATO'>SUPERVISOR DEL CONTRATO</option>                  
                         </select>
                     </div> 
                     <div class="form-group">
-                        <label for="trabajo">Empresa:</label>
+                        <label for="empresa">Empresa:</label>
                         <select 
                             name='empresa'                         
                             class="form-control" 

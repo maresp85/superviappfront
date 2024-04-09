@@ -23,10 +23,12 @@ export class EditarTrabajosComponent implements OnInit {
   loading: boolean = false;  
   _trabajo: any;
 
-  constructor(private router: Router,
-              private activatedRoute: ActivatedRoute,
-              private _conService: ConfiguracionService,
-              public _usService: UsuarioService) {
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private _conService: ConfiguracionService,
+    public _usService: UsuarioService
+  ) {
     this.trabajo = new TrabajoModel();
     this.activatedRoute.params.subscribe(params => {
       this._trabajo = params['_trabajo']; 
@@ -48,7 +50,7 @@ export class EditarTrabajosComponent implements OnInit {
         }, (err: any) => {
           this.error();
         });
-  }  
+  }
 
   onSubmit(form: NgForm) {   
   

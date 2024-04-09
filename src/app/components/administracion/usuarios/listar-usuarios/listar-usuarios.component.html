@@ -55,28 +55,13 @@
                         <span *ngIf="lista.role == 'ADMIN'" class="badge badge-success">
                           {{ lista.role }}
                         </span>
-                        <span *ngIf="lista.role == 'COORDINADOR'" class="badge badge-warning">
+                        <span *ngIf="lista.role == 'SUPERVISOR SSTA'" class="badge badge-warning">
                           {{ lista.role }}
                         </span>
-                        <span *ngIf="lista.role == 'INGENIERO'" class="badge badge-primary">
+                        <span *ngIf="lista.role == 'SUPERVISOR LEGAL LABORAL'" class="badge badge-primary">
                           {{ lista.role }}
                         </span>
-                        <span *ngIf="lista.role == 'SUPERVISOR'" class="badge badge-secondary">
-                          {{ lista.role }}
-                        </span>                          
-                        <span *ngIf="lista.role == 'RESIDENTE DE OBRA'" class="badge badge-secondary">
-                          {{ lista.role }}
-                        </span>
-                        <span *ngIf="lista.role == 'DIRECTOR DE OBRA'" class="badge badge-info">
-                          {{ lista.role }}
-                        </span>
-                        <span *ngIf="lista.role == 'GERENCIA-DIRECCIÓN CONSTRUCCIONES'" class="badge badge-success">
-                          {{ lista.role }}
-                        </span>
-                        <span *ngIf="lista.role == 'SSTT'" class="badge badge-secondary">
-                          {{ lista.role }}
-                        </span>
-                        <span *ngIf="lista.role == 'OTROS'" class="badge badge-secondary">
+                        <span *ngIf="lista.role == 'SUPERVISOR DEL CONTRATO'" class="badge badge-success">
                           {{ lista.role }}
                         </span>
                       </td>
@@ -123,18 +108,28 @@
                       <td>
                         <img *ngIf="lista.imgfirma" src="{{url}}{{lista.imgfirma}}" width="90"/>
                       </td>
-                      <td *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+                      <td *ngIf="_usService.leerRoleUsuario() === 'ADMIN'">
                         <div class="row">
-                          <div class="col-4">
+                          <div class="col-3">
                             <a [routerLink]="['/editarusuarios', lista.email]"
                               title="Editar">
                               <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             </a>
                           </div>
-                          <div class="col-4">
+                          <div class="col-3">
                             <a [routerLink]="['/editarusuariosclave', lista.email]"
                               title="Cambiar Clave">
                               <i class="fa fa-key" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                          <div class="col-3">
+                            <a 
+                              *ngIf="lista.role !== 'ADMIN'"
+                              (click)="deleteUsuario(lista._id)"
+                              title="Eliminar"
+                              style="color: #dc3545;cursor: pointer"
+                            >
+                              <i class="fa fa-times-circle" aria-hidden="true"></i>
                             </a>
                           </div>
                         </div>

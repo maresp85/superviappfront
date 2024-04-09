@@ -91,17 +91,6 @@
                           </select>
                         </div>
                       </div>
-                      <div class="col-3">
-                        <div class="form-group">
-                          <label for="idviga">Identificación:</label>
-                          <input 
-                            name="idviga"
-                            type="text"
-                            class="form-control"
-                            [(ngModel)]="ordenes.idviga" 
-                          />
-                        </div>
-                      </div>
                     </div>
                     <div class="row">
                       <div class="col-3">
@@ -112,16 +101,18 @@
                             class="form-control"
                             [(ngModel)]="ordenes.trabajo"
                           >
-                              <option [value]="i._id" *ngFor="let i of trabajo">{{ i.nombre }}</option>
+                            <option [value]="i._id" *ngFor="let i of trabajo">{{ i.nombre }}</option>
                           </select>
                         </div>
                       </div>
                       <div class="col-3">
                         <div class="form-group">
-                          <label for="trabajo">Obra:</label>
-                          <select name="obra"
-                                  class="form-control"
-                                  [(ngModel)]="ordenes.obra">
+                          <label for="trabajo">Aliado:</label>
+                          <select 
+                            name="obra"
+                            class="form-control"
+                            [(ngModel)]="ordenes.obra"
+                          >
                               <option [value]="i._id" *ngFor="let i of obra">{{ i.nombre }}</option>
                           </select>
                         </div>
@@ -159,15 +150,15 @@
 
           <div class="card">
             <div class="card-body p-0">
+              <div class="table-responsive">
                 <table class="table table-striped">
                   <thead>
                     <tr>
                       <th style="width: 10px">N°</th>
                       <th scope="col" style="text-align: center;">Trabajo</th>
-                      <th scope="col" style="text-align: center;">Obra</th>
+                      <th scope="col" style="text-align: center;">Aliado</th>
                       <th scope="col" style="text-align: center;">Usuario(a)</th>
-                      <th scope="col" style="text-align: center;">Fecha Creación</th>
-                      <th scope="col" style="text-align: center;">Id/Apto</th>
+                      <th scope="col" style="text-align: center;">Fecha Creación</th>                
                       <th scope="col" style="text-align: center;">Estado</th>
                       <th scope="col" style="text-align: center;">Opciones</th>
                     </tr>
@@ -182,26 +173,7 @@
                           {{ lista.usuario.nombre }} ({{ lista.usuario.role }})
                         </span>
                       </td>
-                      <td scope="col" style="text-align: center;">{{ lista.fecha | date:'dd/MM/yyyy HH:mm':'UTC -5' }}</td>
-                      <td scope="col" style="text-align: center;">
-                        <div class="row">
-                          <div class="col-10">
-                            {{ lista.idviga }}
-                          </div>
-                          <div class="col-2">
-                            <div>
-                              <a (click)="actualizaIDViga(lista._id, lista.trabajo.fechaMejora)"
-                                  *ngIf="_usService.leerRoleUsuario() == 'COORDINADOR'
-                                  || _usService.leerRoleUsuario() == 'ADMIN'
-                                  && lista.estado != 'ASIGNADA'"
-                                  title="Editar Id/Apto"
-                                  style="color: #0da5eb;cursor: pointer">
-                                <i class="fa fa-pencil" aria-hidden="true"></i>
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
+                      <td scope="col" style="text-align: center;">{{ lista.fecha | date:'dd/MM/yyyy HH:mm':'UTC -5' }}</td>        
                       <td scope="col" style="text-align: center;">
                         <span *ngIf="lista.estado == 'ASIGNADA'" class="badge badge-primary">
                           {{ lista.estado }}
@@ -272,6 +244,7 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
             </div>
           </div>
           <a 
@@ -282,11 +255,11 @@
           </a>
           <div class="row text-center">
             <div class="col-md-12 col-lg-12">
-                <pagination-controls 
-                  (pageChange)="p=$event"
-                  previousLabel="Anterior"
-                  nextLabel="Siguiente">
-                </pagination-controls>
+              <pagination-controls 
+                (pageChange)="p=$event"
+                previousLabel="Anterior"
+                nextLabel="Siguiente">
+              </pagination-controls>
             </div>
           </div>
         </div>

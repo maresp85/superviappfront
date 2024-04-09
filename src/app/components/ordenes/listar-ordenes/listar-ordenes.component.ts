@@ -77,7 +77,7 @@ export class ListarOrdenesComponent implements OnInit {
       this._usService.leerEmpresaUsuario() == '' ||
       this._usService.leerIDUsuario() == ''
     ) {
-      this.router.navigate(["/login"]);
+      this.router.navigate(['/login']);
     }
 
   }
@@ -114,7 +114,7 @@ export class ListarOrdenesComponent implements OnInit {
         this.error(err);
       });
 
-    if (role === 'INGENIERO') {
+    if (role === 'SUPERVISOR SSTA' || role === 'SUPERVISOR LEGAL LABORAL') {
       this._orService
         .getOrdenesBitacoraUsuario(idusuario, this.empresa, false)
         .subscribe((res: any) => {
@@ -123,7 +123,7 @@ export class ListarOrdenesComponent implements OnInit {
         }, error => {
           this.error(error);
         });
-    } else if (role === 'COORDINADOR') {
+    } else {
       this._orService
         .getOrdenesBitacoraTodas(this.empresa, false)
         .subscribe((res: any) => {
@@ -132,8 +132,6 @@ export class ListarOrdenesComponent implements OnInit {
         }, (err: any) => {
           this.error(err);
         });
-    } else {
-      this.loading = false;
     }
   }
 
@@ -195,7 +193,6 @@ export class ListarOrdenesComponent implements OnInit {
           this.ordenes.id,
           this.ordenes.usuario,
           this.ordenes.estado,
-          this.ordenes.idviga,
           this.ordenes.trabajo,
           this.ordenes.obra,
           this.ordenes.fecha,
@@ -364,9 +361,8 @@ export class ListarOrdenesComponent implements OnInit {
               ''
             ],
             [
-              { text: (ordentrabajo.trabajo.nombre).toUpperCase(), alignment: 'center', fontSize: 10, bold: true },
               { text: 'N° ORDEN: ' + ordentrabajo.id, alignment: 'center', fontSize: 10, bold: true },
-              { text: titleIdentification + ordentrabajo.idviga, alignment: 'center', fontSize: 10, bold: true }
+              { text: (ordentrabajo.trabajo.nombre).toUpperCase(), alignment: 'center', colSpan: 2, fontSize: 10, bold: true },              
             ],
             [
               { text: (ordentrabajo.obra.nombre).toUpperCase(), alignment: 'center', fontSize: 10, bold: true },
@@ -378,6 +374,39 @@ export class ListarOrdenesComponent implements OnInit {
         margin: [0, 0, 0, 10]
       }
     ];
+
+    let extraFieldsData: any = [];
+    ordentrabajo.extraFieldsData.forEach((element: any) => {
+      extraFieldsData.push([
+        { text: element.field, fontSize: 11, bold: true },
+        { text: element.value, fontSize: 11 }
+      ]);
+    });
+
+    content.push({ table: {
+      widths: ['*'],
+      headerRows: 1,
+        body: [
+          [
+            {
+              alignment: 'center',
+              bold: true,
+              fillColor: '#fff',
+              fontSize: 12,
+              text: 'DATOS ADICIONALES DE LA ORDEN',
+            }
+          ]
+        ]
+    }, margin: [0, 20, 0, 0], layout: 'noBorders'});
+
+    content.push({ 
+      table: {
+        widths: [180, '*'], 
+        headerRows: 1,
+        body: extraFieldsData 
+      }, 
+      margin: [0, 10, 0, 10]
+    });
 
     content.push({ table: {
       widths: ['*'],
@@ -393,7 +422,7 @@ export class ListarOrdenesComponent implements OnInit {
             }
           ]
         ]
-    }, margin: [0, 20, 0, 10], layout: 'noBorders'});
+    }, margin: [0, 20, 0, 0], layout: 'noBorders'});
 
     ordentipotrabajo.forEach((element: any) => {
 
@@ -676,13 +705,13 @@ export class ListarOrdenesComponent implements OnInit {
 
                 if (item.actividad == elementact.actividad._id && item.cumple == estado) {
 
-                  if (item.tipo == 'ETIQUETA') {
+                  if (item.tipo === 'ETIQUETA') {
 
                     content.push({ ul: [
                       { text: item.etiqueta, fontSize: 10, bold: true, margin: [0, 15, 0, 0] } //
                     ]});
 
-                  } else if (item.tipo == 'EVIDENCIAS') {
+                  } else if (item.tipo === 'EVIDENCIAS') {
 
                     content.push({ ul: [
                       ({ text: item.etiqueta + ':', fontSize: 10, bold: true, margin: [0, 15, 0, 0] })
@@ -690,7 +719,7 @@ export class ListarOrdenesComponent implements OnInit {
 
                     let value = [];
                     for (let img of this.imagenesOrdenes) {
-                      if (elementact._id == img.ordenactividad && img.tipo == "EVIDENCIAS") {
+                      if (elementact._id == img.ordenactividad && img.tipo === "EVIDENCIAS") {
                         value.push({ image: img.image, width: 126 });
                       }
                     }
@@ -702,7 +731,7 @@ export class ListarOrdenesComponent implements OnInit {
                         ]
                     }, layout: 'noBorders', margin: [3, 5, 0, 5]});
 
-                  } else if (item.tipo == 'FOTO BITÁCORA') {
+                  } else if (item.tipo === 'FOTO BITÁCORA') {
 
                     content.push({ ul: [
                       ({ text: item.etiqueta + ':', fontSize: 10, bold: true })
@@ -727,15 +756,13 @@ export class ListarOrdenesComponent implements OnInit {
                 }
 
               });  //itemactividad
-              
-              content.push({ ul: [
-                ({ text: 'Lista de Chequeo: ', fontSize: 10, bold: true, margin: [0, 5, 0, 0] })
-              ]});
-                  
+                   
               for (let item of this.checkOrdenes) {
-                if (elementact._id == item.ordenactividad) {
+                if (elementact._id === item.ordenactividad) {
                   let value = [];
-                  value.push({ text: item.etiqueta, fontSize: 10, bold: true });
+                  value.push({ ul: [
+                    ({ text: item.etiqueta, fontSize: 10, bold: true })
+                  ]});
                   if (item.fechaMejora) {
                     value.push({ text: '- Fecha de mejora: ' + item.fechaMejora, fontSize: 10, bold: false });
                   }
@@ -744,7 +771,7 @@ export class ListarOrdenesComponent implements OnInit {
                       body: [
                           value
                       ]
-                  }, layout: 'noBorders', margin: [10, 4, 0, 0]});
+                  }, layout: 'noBorders', margin: [0, 10, 0, 0]});
                 }
               }  
         

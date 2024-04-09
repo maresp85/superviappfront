@@ -21,6 +21,7 @@ export class ListarNotaComponent implements OnInit {
   cumple: any;
   editaObservacion: boolean = false;
   disabledbutton: boolean = true;
+  email: string = '';
   loadingButton: boolean = false;
   loading: boolean = false;
   estadolegaliza: any;
@@ -41,10 +42,13 @@ export class ListarNotaComponent implements OnInit {
   usuariolegaliza: any;
   usuarioDB: any;
 
-  constructor(private router: Router,
-              private activatedRoute: ActivatedRoute,
-              public _usService: UsuarioService,
-              private _orService: OrdenesService) {
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    public _usService: UsuarioService,
+    private _orService: OrdenesService
+  ) {
+    this.email = this._usService.leerEmailUsuario();       
     this.activatedRoute.params.subscribe(params => {
       this._actividad = params['_actividad'];
     });
@@ -57,7 +61,7 @@ export class ListarNotaComponent implements OnInit {
   getUnaOrdenActividad() {
     this.loading = true;
     this._usService
-        .getUnUsuario()
+        .getUsuarioEmail(this.email)
         .subscribe((res: any) => {
           this.usuarioDB = res['usuarioDB'];
         }, (err: any) => {

@@ -38,16 +38,17 @@ export class EditarActividadesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loading = true;  
-    this.empresa = this._usService.leerEmpresaUsuario();
+    this.loading = true;    
     this._conService
         .getUnaActividad(this._actividad)
-        .subscribe((res: any) => {                            
+        .subscribe((res: any) => {
           this.listado = res['actividadDB'];
           this.actividad.nombre = this.listado.nombre;
           this.actividad.orden = this.listado.orden;
           this.actividad.role = this.listado.role;
           this.actividad.tipotrabajo = this.listado.tipotrabajo[0];
+          this.empresa = this.listado.empresa;
+          // obtener tipos de trabajo para la empresa
           this._conService
               .getTipoTrabajoEmpresa(this.empresa)
               .subscribe((res: any) => {    
@@ -68,35 +69,35 @@ export class EditarActividadesComponent implements OnInit {
     this._conService
         .getUnTipoTrabajo(this.actividad.tipotrabajo)
         .subscribe((res: any) => {
-            var trabajo = res['tipotrabajoDB'][0].trabajo[0]._id;
-            this._conService
-                .putActividad(
-                  this._actividad,
-                  this.actividad.nombre,
-                  this.actividad.orden,
-                  this.actividad.role,
-                  trabajo,
-                  this.actividad.tipotrabajo,
-                  this.empresa
-                )
-                .subscribe((res: any) => { 
-                  if (res.ok == true) {
-                    this.loadingButton = false;    
-                    Swal.fire({    
-                      text: 'Actividad Editada',
-                      icon: 'success',
-                      confirmButtonText: 'OK',
-                      allowOutsideClick: false
-                    }).then((result) => {
-                      this.loadingButton = false;
-                      this.router.navigate(['/listaractividades']);
-                    });                  
-                  } else {
-                    this.error();
-                  }         
-                }, (err: any) => {
+          let trabajo = res['tipotrabajoDB'][0].trabajo[0]._id;
+          this._conService
+              .putActividad(
+                this._actividad,
+                this.actividad.nombre,
+                this.actividad.orden,
+                this.actividad.role,
+                trabajo,
+                this.actividad.tipotrabajo,
+                this.empresa
+              )
+              .subscribe((res: any) => { 
+                if (res.ok == true) {
+                  this.loadingButton = false;    
+                  Swal.fire({    
+                    text: 'Actividad Editada',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false
+                  }).then((result) => {
+                    this.loadingButton = false;
+                    this.router.navigate(['/listaractividades', this.empresa]);
+                  });                  
+                } else {
                   this.error();
-                });                      
+                }         
+              }, (err: any) => {
+                this.error();
+              });                      
         }, (err: any) => {
           this.error();
         });

@@ -10,102 +10,138 @@
   
         <div class="container-fluid">
                   
-          <app-title [title]="title" 
-                     [breadcrumbtitle]="breadcrumbtitle" 
-                     [breadcrumbtitle2]="breadcrumbtitle2">
+          <app-title 
+            [title]="title" 
+            [breadcrumbtitle]="breadcrumbtitle" 
+            [breadcrumbtitle2]="breadcrumbtitle2"
+          >
           </app-title>
           <app-loading *ngIf="loading"></app-loading>    
               
           <div *ngIf="!loading">
 
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">
+                  CAMPOS ADICIONALES DE LA ORDEN
+                </h3>
+              </div>
+              <div class="card-body">
+                <table class="table">
+                  <tbody>
+                    <ng-container *ngFor="let item of ordenTrabajo.extraFieldsData">
+                      <tr>
+                        <td style="width: 50%">
+                          <div class="row">
+                            {{ item.field }}
+                          </div>
+                        </td>
+                        <td style="width: 50%">
+                          <div class="row">
+                            {{ item.value }}
+                          </div>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
             <div *ngFor="let lista of listado" class="card card-primary">
-                <div class="card-header">
-                  <h3 class="card-title">
-                    {{ lista.tipotrabajo.nombre }}
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    
-                    <span *ngIf="lista.estado == 'EN PROCESO'" class="badge badge-light">
-                      {{ lista.estado }}
-                    </span>
-                    <span *ngIf="lista.estado == 'CUMPLE'" class="badge badge-success">
-                      {{ lista.estado }}
-                    </span>
-                    <span *ngIf="lista.estado == 'NO CUMPLE'" class="badge badge-danger">
-                      {{ lista.estado }}
-                    </span>                  
-                  </h3>        
-                  <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                      <i class="fa fa-minus"></i>
-                    </button>
-                  </div>
-                </div>              
-                <div class="card-body" style="display: block;">
-                    <table class="table">
-                      <span *ngFor="let actividad of listadoActividades">
-                        <tr *ngIf="actividad.ordentipotrabajo == lista._id && actividad.actividad">
-                          <td style="width: 90%">
-                            <div class="row">
-                              {{ actividad.actividad.nombre }}
-                            </div>
-                            <div class="row mt-2">
-                              <span>
-                                <a 
-                                  *ngIf="actividad.estado == 'PENDIENTE' && _usService.leerRoleUsuario() == 'INGENIERO'" 
-                                  class="nav-link badge badge-success" 
-                                  style="margin-right: 4px; cursor:pointer; color: #ffffff"
-                                  (click)="legalizarActividad(actividad._id)"
-                                >
-                                  <i class="fa fa-hand-o-right fa-lg" aria-hidden="true"></i>
-                                </a>
-                              </span>       
-                              <span 
-                                *ngIf="actividad.estado == 'CUMPLE' || actividad.estado == 'NO CUMPLE'"
-                              >                     
-                                <a 
-                                  style="cursor:pointer; color: #434645"
-                                  (click)="consultarActividad(actividad._id)"
-                                >
-                                  <i class="fa fa-folder-open fa-lg" aria-hidden="true"></i>
-                                </a>  
-                              </span>
-                              <span 
-                                class="px-1" 
-                                *ngIf="actividad.estado == 'NO CUMPLE' && _usService.leerRoleUsuario() == 'INGENIERO'"
-                              >
-                                <a style="cursor:pointer; color: #4f6285"
-                                  title="Re-legalizar Actividad"
-                                  (click)="reLegalizarActividad(actividad._id)">
-                                  <i class="fa fa-handshake-o fa-lg" aria-hidden="true"></i>
-                                </a>    
-                              </span> 
-                              <span *ngIf="actividad.estado != 'PENDIENTE'">
-                                <a 
-                                  style="cursor:pointer; margin-left: 4px; color: #e4810f"
-                                  title="Historial Actividad"
-                                  (click)="historialActividad(actividad._id, actividad.ordentipotrabajo)"
-                                >
-                                  <i class="fa fa-outdent fa-lg" fa-lg aria-hidden="true"></i>
-                                </a>    
-                              </span>  
-                            </div>
-                          </td>
-                          <td>
-                            <span *ngIf="actividad.estado == 'PENDIENTE'" class="badge badge-secondary">
-                              {{ actividad.estado }}
-                            </span>
-                            <span *ngIf="actividad.estado == 'CUMPLE'" class="badge badge-success">
-                              {{ actividad.estado }}
-                            </span>
-                            <span *ngIf="actividad.estado == 'NO CUMPLE'" class="badge badge-danger">
-                              {{ actividad.estado }}
-                            </span>
-                          </td>
-                        </tr>
-                      </span>
-                    </table>
+              <div class="card-header">
+                <h3 class="card-title">
+                  {{ lista.tipotrabajo.nombre }}
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    
+                  <span *ngIf="lista.estado == 'EN PROCESO'" class="badge badge-light">
+                    {{ lista.estado }}
+                  </span>
+                  <span *ngIf="lista.estado == 'CUMPLE'" class="badge badge-success">
+                    {{ lista.estado }}
+                  </span>
+                  <span *ngIf="lista.estado == 'NO CUMPLE'" class="badge badge-danger">
+                    {{ lista.estado }}
+                  </span>                  
+                </h3>        
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                  </button>
                 </div>
-                   
-            </div>            
+              </div>
+              <div class="card-body">
+                <table class="table">
+                  <tbody>
+                    <ng-container *ngFor="let actividad of listadoActividades">
+                      <tr *ngIf="actividad.ordentipotrabajo == lista._id && actividad.actividad">
+                        <td style="width: 90%">
+                          <div class="row">
+                            {{ actividad.actividad.nombre }}
+                          </div>
+                          <div class="row mt-2">
+                            <span *ngIf="actividad.estado == 'PENDIENTE' && _usService.leerRoleUsuario() == 'INGENIERO'">
+                              <a class="nav-link badge badge-success" style="margin-right: 4px; cursor:pointer; color: #ffffff"
+                                (click)="legalizarActividad(actividad._id)">
+                                <i class="fa fa-hand-o-right fa-lg" aria-hidden="true"></i>
+                              </a>
+                            </span>       
+                            <span *ngIf="actividad.estado == 'CUMPLE' || actividad.estado == 'NO CUMPLE'">                     
+                              <a style="cursor:pointer; color: #434645"
+                                (click)="consultarActividad(actividad._id)">
+                                <i class="fa fa-folder-open fa-lg" aria-hidden="true"></i>
+                              </a>  
+                            </span>
+                            <span class="px-1" *ngIf="actividad.estado == 'NO CUMPLE' && _usService.leerRoleUsuario() == 'INGENIERO'">
+                              <a style="cursor:pointer; color: #4f6285" title="Re-legalizar Actividad"
+                                (click)="reLegalizarActividad(actividad._id)">
+                                <i class="fa fa-handshake-o fa-lg" aria-hidden="true"></i>
+                              </a>    
+                            </span> 
+                            <span *ngIf="actividad.estado != 'PENDIENTE'">
+                              <a style="cursor:pointer; margin-left: 4px; color: #e4810f" title="Historial Actividad"
+                                (click)="historialActividad(actividad._id, actividad.ordentipotrabajo)">
+                                <i class="fa fa-outdent fa-lg" fa-lg aria-hidden="true"></i>
+                              </a>    
+                            </span>  
+                          </div>
+                        </td>
+                        <td style="width: 10%">
+                          <span *ngIf="actividad.estado == 'PENDIENTE'" class="badge badge-secondary">
+                            {{ actividad.estado }}
+                          </span>
+                          <span *ngIf="actividad.estado == 'CUMPLE'" class="badge badge-success">
+                            {{ actividad.estado }}
+                          </span>
+                          <span *ngIf="actividad.estado == 'NO CUMPLE'" class="badge badge-danger">
+                            {{ actividad.estado }}
+                          </span>
+                        </td>
+                      </tr>
+                      <!-- Extra fields -->
+                      
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">
+                  FIRMA DIGITAL
+                </h3>
+              </div>
+              <div class="card-body">
+                <a *ngIf="ordenTrabajo.firmaUsuario" href="{{ urlUploadFirmaUsuario }}{{ ordenTrabajo.firmaUsuario }}" target="_blank">
+                  <img 
+                    src="{{ urlUploadFirmaUsuario }}{{ ordenTrabajo.firmaUsuario }}"
+                    class=""
+                    height="199px"
+                    width="199px"
+                  >
+                </a>
+              </div>
+            </div>
             
           </div>
   

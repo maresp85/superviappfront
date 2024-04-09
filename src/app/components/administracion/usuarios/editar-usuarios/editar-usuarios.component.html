@@ -64,54 +64,35 @@
                                         ADMINISTRADOR
                                     </option>
                                     <option 
-                                        value="COORDINADOR"
-                                        [selected]="usuario.role == 'COORDINADOR'"
+                                        value="SUPERVISOR SSTA"
+                                        [selected]="usuario.role == 'SUPERVISOR SSTA'"
                                     >
-                                        COORDINADOR
+                                        SUPERVISOR SSTA
                                     </option>
                                     <option 
-                                        value="SUPERVISOR"
-                                        [selected]="usuario.role == 'SUPERVISOR'"
+                                        value="SUPERVISOR LEGAL LABORAL"
+                                        [selected]="usuario.role == 'SUPERVISOR LEGAL LABORAL'"
                                     >
-                                        SUPERVISOR
+                                        SUPERVISOR LEGAL LABORAL
                                     </option>
                                     <option 
-                                        value="INGENIERO"
-                                        [selected]="usuario.role == 'INGENIERO'"
+                                        value="SUPERVISOR DEL CONTRATO"
+                                        [selected]="usuario.role == 'SUPERVISOR DEL CONTRATO'"
                                     >
-                                        INGENIERO
-                                    </option>
-                                    
-                                    <option 
-                                        value="RESIDENTE DE OBRA"
-                                        [selected]="usuario.role == 'RESIDENTE DE OBRA'"
-                                    >
-                                        RESIDENTE DE OBRA
-                                    </option>
-                                    <option 
-                                        value="DIRECTOR DE OBRA"
-                                        [selected]="usuario.role == 'DIRECTOR DE OBRA'"
-                                    >
-                                        DIRECTOR DE OBRA
-                                    </option>
-                                    <option 
-                                        value="GERENCIA-DIRECCIÓN CONSTRUCCIONES"
-                                        [selected]="usuario.role == 'GERENCIA-DIRECCIÓN CONSTRUCCIONES'"
-                                    >
-                                        GERENCIA-DIRECCIÓN CONSTRUCCIONES
-                                    </option>
-                                    <option 
-                                        value="SSTT"
-                                        [selected]="usuario.role == 'SSTT'"
-                                    >
-                                        SSTT
-                                    </option>
-                                    <option 
-                                        value="OTROS"
-                                        [selected]="usuario.role == 'OTROS'"
-                                    >
-                                        OTROS
-                                    </option>
+                                        SUPERVISOR DEL CONTRATO
+                                    </option>                                 
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="empresa">Empresa:</label>
+                                <select 
+                                    name='empresa'                         
+                                    class="form-control" 
+                                    [(ngModel)]="usuario.empresa" 
+                                    [ngClass]="{'is-invalid':f.submitted && f.controls['empresa'].errors}"    
+                                    required
+                                >                            
+                                    <option [value]='t._id' *ngFor='let t of listadoEmpresa'>{{ t.nombre }}</option>
                                 </select>
                             </div>
                             <div class="form-group">

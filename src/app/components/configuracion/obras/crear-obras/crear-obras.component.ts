@@ -14,9 +14,9 @@ import Swal from 'sweetalert2';
 
 export class CrearObrasComponent implements OnInit {
  
-  title: string = 'Obras';
+  title: string = 'Crear aliado';
   breadcrumbtitle: string = 'Configuración';
-  breadcrumbtitle2: string = 'Obras';
+  breadcrumbtitle2: string = 'Aliados';
   listadoEmpresa: any = [];
   loadingButton: boolean = false;
   loading: boolean = false;
@@ -67,7 +67,7 @@ export class CrearObrasComponent implements OnInit {
         ).subscribe((res: any) => { 
           if (res.ok == true) {
             Swal.fire({    
-              text: 'Obra creada',
+              text: 'Aliado creado',
               icon: 'success',
               confirmButtonText: 'OK',
               allowOutsideClick: false

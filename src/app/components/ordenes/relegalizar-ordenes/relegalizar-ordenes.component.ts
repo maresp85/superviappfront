@@ -21,6 +21,7 @@ export class ReLegalizarOrdenesComponent implements OnInit {
   observaciones: any;
   loading: boolean = false;
   disabledbutton: boolean = true;
+  email: string = '';
   existsFile: boolean = false;
   existeimagen: boolean = false;
   fechaMejora: boolean = false;
@@ -35,10 +36,13 @@ export class ReLegalizarOrdenesComponent implements OnInit {
   usuarioDB: any;
   cumple: any;
 
-  constructor(private router: Router,
-              private activatedRoute: ActivatedRoute,
-              private _usService: UsuarioService,
-              private _orService: OrdenesService) {
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private _usService: UsuarioService,
+    private _orService: OrdenesService
+  ) {
+    this.email = this._usService.leerEmailUsuario();
     this.activatedRoute.params.subscribe(params => {
       this._actividad = params['_actividad'];
       this.cumple = params['cumple'];
@@ -63,7 +67,7 @@ export class ReLegalizarOrdenesComponent implements OnInit {
                   }
                 }
                 this._usService
-                    .getUnUsuario()
+                  .getUsuarioEmail(this.email)
                     .subscribe((res: any) => {
                       this.usuarioDB = res['usuarioDB'];
                       this.imgfirma = this.url + this.usuarioDB.imgfirma;

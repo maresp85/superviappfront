@@ -1,0 +1,8 @@
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.show-modal {
+    display: block !important;
+    padding-right: 15px !important;
+}

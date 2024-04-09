@@ -70,9 +70,24 @@
                       </span>
                     </td>
                     <td *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
-                      <a class="nav-link" [routerLink]="['/editartrabajos', lista._id]">
-                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                      </a>
+                      <div class="row">
+                        <div class="col-2">
+                          <a class="nav-link" [routerLink]="['/editartrabajos', lista._id]">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                          </a>
+                        </div>
+                        <div class="col-2">
+                          <a 
+                            class="nav-link cursor-pointer" 
+                            (click)="modalExtraFields(lista)"  
+                            data-toggle="modal" 
+                            data-target="#modal-default" 
+                            data-dashlane-label="true"
+                          >
+                            <i class="fa fa-list-alt" aria-hidden="true"></i>
+                          </a>
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -98,6 +113,48 @@
 
         </div>
 
+      </div>
+
+      <div class="modal" [ngClass]="{'show-modal': showModalExtraFields}">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Campos extras</h4>
+              <button type="button" class="close" (click)="showModalExtraFields=!showModalExtraFields" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="card" *ngIf="extraFieldsList.length > 0">
+                <div class="card-body p-0">                 
+                  <table class="table table-striped">
+                    <tbody>
+                      <tr *ngFor="let list of extraFieldsList">              
+                        <td>{{ list }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <form (ngSubmit)="onSubmit(f)" #f="ngForm" class="form-group">                                
+                <div class="form-group">
+                  <label for="newExtraField">Agregue un nuevo campo:</label>
+                  <input 
+                    type="text" 
+                    name="newExtraField"
+                    class="form-control"
+                    [(ngModel)]="newExtraField"
+                    [ngClass]="{'is-invalid':f.submitted && f.controls['newExtraField'].errors}"
+                    maxlength="64"
+                    required
+                  >
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+              </form>                      
+            </div>
+          </div>
+        </div>
       </div>
 
     </section>

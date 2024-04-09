@@ -12,9 +12,9 @@ import Swal from 'sweetalert2';
 })
 export class AsignarUsuarioObraComponent implements OnInit {
 
-  title: string = "Asignar usuario a la Obra";
+  title: string = "Asignar usuario a un aliado";
   breadcrumbtitle: string = "Configuración";
-  breadcrumbtitle2: string = "Obras";
+  breadcrumbtitle2: string = "Aliados";
   empresa: any;
   loadingButton: boolean = false;
   listadoEmpresa: any = [];
@@ -118,7 +118,7 @@ export class AsignarUsuarioObraComponent implements OnInit {
 
   deleteObraUsuario(_id: any) {
     Swal.fire({    
-      text: '¿Está seguro que desea retirar este usuario de la Obra?',
+      text: '¿Está seguro que desea retirar este usuario del aliado?',
       icon: 'question',
       showCancelButton: true,
       showCloseButton: true,      
@@ -135,7 +135,7 @@ export class AsignarUsuarioObraComponent implements OnInit {
               this.usuarioObra();     
               if (res['ok'] == true) {                
                 Swal.fire({    
-                  text: 'Usuario retirado de la obra',
+                  text: 'Usuario retirado del aliado',
                   icon: 'success',
                   confirmButtonText: 'OK',
                   allowOutsideClick: false

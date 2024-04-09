@@ -47,14 +47,12 @@ export class UsuarioService {
     return this.getQuery(`usuario/${ empresa }`);
   }
 
-   // Consulta de un usuario
-  getUnUsuario() {
-    let email = this.leerEmailUsuario();
+  getUsuarioEmail(email: any) {
     return this.getQuery(`unusuario/${ email }`);
   }
 
-  getUsuarioEmail(email: any) {
-    return this.getQuery(`unusuario/${ email }`);
+  getUsuarioEmailFromAdmin(email: any) {
+    return this.getQuery(`unusuario-from-admin/${ email }`);
   }
 
   getUsuarioId(id: any) {
@@ -89,29 +87,29 @@ export class UsuarioService {
   }
 
    // Edita Usuario
-  putUsuario(
+  putUsuario = (
     _id: any,
     nombre: any,
     email: any,
     role: any,
+    empresa: any,
     estado: any,
     sendemail: any,
     enterweb: any,
     entermovil: any,
     editorder: any,
     signimg: File,
-  ) {    
+  ) => {    
     const params = new FormData();
     params.append('nombre', nombre);
     params.append('email', email);
     params.append('role', role);
+    params.append('empresa', empresa);
     params.append('estado', estado);
     params.append('sendemail', sendemail);
     params.append('enterweb', enterweb);
     params.append('entermovil', entermovil);
     params.append('editorder', editorder);
-    
-    console.log(email)
 
     if (signimg) {
       let imgfirma: any = Date.now() + signimg.name;
@@ -126,8 +124,10 @@ export class UsuarioService {
   }
 
     // Edita la clave de Usuario
-  putUsuarioClave(_id: any,
-                  password: any) {
+  putUsuarioClave = (
+    _id: any,
+    password: any
+  ) => {
 
     const myObj = {
       "password": password
@@ -143,8 +143,18 @@ export class UsuarioService {
     return this.http.put(url, params, { headers });
   }
 
+  deleteUsuario(_id: any) {
+    const url = `${ this.url }/usuario/eliminar/${ _id }`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': this.leerToken()
+    });
+
+    return this.http.delete(url, { headers });
+  }
+
     // Cuando el usuario se autentica, se almacena información
-  guardarLocalUsuario(
+  guardarLocalUsuario = (
     _id: any,
     email: any,
     role: any,
@@ -152,7 +162,7 @@ export class UsuarioService {
     empresa: any,
     empresaNombre: any,
     token: any
-  ) {
+  ) => {
 
     return new Promise((resolve, reject) => {
 

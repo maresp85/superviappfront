@@ -119,7 +119,7 @@ export class ListarBitacorasComponent implements OnInit {
         this.error(err);
       });
 
-    if (role === 'INGENIERO') {
+    if (role === 'SUPERVISOR SSTA' || role === 'SUPERVISOR LEGAL LABORAL') {
       this._orService
         .getOrdenesBitacoraUsuario(idusuario, this.empresa, true)
         .subscribe((res: any) => {
@@ -127,15 +127,6 @@ export class ListarBitacorasComponent implements OnInit {
           this.loading = false;
         }, error => {
           this.error(error);
-        });
-    } else if (role === 'DIRECTOR DE OBRA') {
-      this._orService
-        .getOrdenesBitacora(idusuario, true)
-        .subscribe((res: any) => {
-          this.listado = res['ordentrabajoDB'];
-          this.loading = false;
-        }, (err: any) => {
-          this.error(err);
         });
     } else {
       this._orService
@@ -161,7 +152,6 @@ export class ListarBitacorasComponent implements OnInit {
           this.ordenes.id,
           this.ordenes.usuario,
           this.ordenes.estado,
-          this.ordenes.idviga,
           this.ordenes.trabajo,
           this.ordenes.obra,
           this.ordenes.fecha,

@@ -76,55 +76,24 @@
                             [ngClass]="{'is-invalid':f.submitted && f.controls['role'].errors}"
                             required
                         >                            
-                        <option 
-                            value="COORDINADOR"
-                            [selected]="actividad.role == 'COORDINADOR'"
-                        >
-                            COORDINADOR
-                        </option>
-                        <option 
-                            value="SUPERVISOR"
-                            [selected]="actividad.role == 'SUPERVISOR'"
-                        >
-                            SUPERVISOR
-                        </option>
-                        <option 
-                            value="INGENIERO"
-                            [selected]="actividad.role == 'INGENIERO'"
-                        >
-                            INGENIERO
-                        </option>
-                        
-                        <option 
-                            value="RESIDENTE DE OBRA"
-                            [selected]="actividad.role == 'RESIDENTE DE OBRA'"
-                        >
-                            RESIDENTE DE OBRA
-                        </option>
-                        <option 
-                            value="DIRECTOR DE OBRA"
-                            [selected]="actividad.role == 'DIRECTOR DE OBRA'"
-                        >
-                            DIRECTOR DE OBRA
-                        </option>
-                        <option 
-                            value="GERENCIA-DIRECCIÓN CONSTRUCCIONES"
-                            [selected]="actividad.role == 'GERENCIA-DIRECCIÓN CONSTRUCCIONES'"
-                        >
-                            GERENCIA-DIRECCIÓN CONSTRUCCIONES
-                        </option>
-                        <option 
-                            value="SSTT"
-                            [selected]="actividad.role == 'SSTT'"
-                        >
-                            SSTT
-                        </option>
-                        <option 
-                            value="OTROS"
-                            [selected]="actividad.role == 'OTROS'"
-                        >
-                            OTROS
-                        </option>
+                            <option 
+                                value="SUPERVISOR SSTA"
+                                [selected]="actividad.role == 'SUPERVISOR SSTA'"
+                            >
+                                SUPERVISOR SSTA
+                            </option>
+                            <option 
+                                value="SUPERVISOR LEGAL LABORAL"
+                                [selected]="actividad.role == 'SUPERVISOR LEGAL LABORAL'"
+                            >
+                                SUPERVISOR LEGAL LABORAL
+                            </option>
+                            <option 
+                                value="SUPERVISOR DEL CONTRATO"
+                                [selected]="actividad.role == 'SUPERVISOR DEL CONTRATO'"
+                            >
+                                SUPERVISOR DEL CONTRATO
+                            </option>
                         </select>
                     </div>   
                     <div class="form-group">

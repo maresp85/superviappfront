@@ -11,9 +11,9 @@ import Swal from 'sweetalert2';
 })
 export class ListarObrasComponent implements OnInit {
 
-  title: string = "Obras";
+  title: string = "Aliados";
   breadcrumbtitle: string = "Configuración";
-  breadcrumbtitle2: string = "Obras";
+  breadcrumbtitle2: string = "Aliados";
   listado: any = [];
   loading: boolean = false;
   p: number = 1;
@@ -45,6 +45,39 @@ export class ListarObrasComponent implements OnInit {
       }, (error: any) => {
         this.error(error);
       });
+  }
+
+  deleteObra(_id: any) {    
+    Swal.fire({
+      text: '¿Está seguro que desea eliminar este aliado permanentemente?',
+      icon: 'question',
+      showCancelButton: true,
+      showCloseButton: true,
+      cancelButtonColor: '#aaa',
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Si, estoy seguro',
+      cancelButtonText: 'No',
+    }).then((result: any) => {
+      if (result.value == true) {
+        this.loading = true;
+        this._conService
+          .deleteObra(_id)
+          .subscribe((res: any) => {
+            this.loading = false;
+            if (res['ok'] == true) {
+              this.getObraEmpresa();
+              Swal.fire({
+                text: 'Aliado Eliminado',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
+              }).then((result) => { });
+            }
+          }, (err: any) => {
+            this.error(err);
+          });
+      }
+    });
   }
 
   error(error: any) {

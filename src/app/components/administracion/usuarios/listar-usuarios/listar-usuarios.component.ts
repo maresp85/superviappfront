@@ -27,7 +27,10 @@ export class ListarUsuariosComponent implements OnInit {
 
   ngOnInit() {
     this.validateRole();
-  
+    this.getUsuarios();
+  }
+
+  getUsuarios = () => {
     this.loading = true;
     this._usService
         .getUsuarios()
@@ -43,6 +46,39 @@ export class ListarUsuariosComponent implements OnInit {
     if (this._usService.leerRoleUsuario() !== 'ADMIN') {
       this.router.navigate(['/']);
     }
+  }
+
+  deleteUsuario(_id: any) {    
+    Swal.fire({
+      text: '¿Está seguro que desea eliminar este usuario permanentemente?',
+      icon: 'question',
+      showCancelButton: true,
+      showCloseButton: true,
+      cancelButtonColor: '#aaa',
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Si, estoy seguro',
+      cancelButtonText: 'No',
+    }).then((result: any) => {
+      if (result.value == true) {
+        this.loading = true;
+        this._usService
+          .deleteUsuario(_id)
+          .subscribe((res: any) => {
+            this.loading = false;
+            if (res['ok'] == true) {
+              this.getUsuarios();
+              Swal.fire({
+                text: 'Usuario Eliminado',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
+              }).then((result) => { });
+            }
+          }, (err: any) => {
+            this.error(err);
+          });
+      }
+    });
   }
 
   error(error: any) {   

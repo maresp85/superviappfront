@@ -39,7 +39,7 @@ export class EditarUsuariosClaveComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
     this._usService
-        .getUsuarioEmail(this.email)
+        .getUsuarioEmailFromAdmin(this.email)
         .subscribe((res: any) => {    
           this.loading = false;  
           this.listado = res['usuarioDB'];  

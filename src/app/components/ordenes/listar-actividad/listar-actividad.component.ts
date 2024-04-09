@@ -12,14 +12,15 @@ import Swal from 'sweetalert2';
 })
 export class ListarActividadComponent implements OnInit {
 
-  title: string = "Consulta Actividad";
-  breadcrumbtitle: string = "Gestión";
-  breadcrumbtitle2: string = "Consulta Actividad";
+  title: string = 'Consulta Actividad';
+  breadcrumbtitle: string = 'Gestión';
+  breadcrumbtitle2: string = 'Consulta Actividad';
   _actividad: any;
   _idimagenes: any;
   cantImg: number = 0;
   cumple: any;
   editaObservacion: boolean = false;
+  email: string = '';
   disabledbutton: boolean = true;
   loadingButton: boolean = false;
   loading: boolean = false;
@@ -41,29 +42,35 @@ export class ListarActividadComponent implements OnInit {
   usuariolegaliza: any;
   usuarioDB: any;
 
-  constructor(private router: Router,
-              private activatedRoute: ActivatedRoute,
-              public _usService: UsuarioService,
-              private _orService: OrdenesService) {
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    public _usService: UsuarioService,
+    private _orService: OrdenesService
+  ) {
+    this.email = this._usService.leerEmailUsuario()
     this.activatedRoute.params.subscribe(params => {
       this._actividad = params['_actividad'];
     });
   }
 
   ngOnInit() {
-    this.getUnaOrdenActividad();
+    this.getUsuario();
   }
 
-  getUnaOrdenActividad() {
+  getUsuario = () => {
     this.loading = true;
     this._usService
-        .getUnUsuario()
+        .getUsuarioEmail(this.email)
         .subscribe((res: any) => {
           this.usuarioDB = res['usuarioDB'];
+          this.unaOrdenActividad();
         }, (err: any) => {
           this.error();
         });
+  }
 
+  unaOrdenActividad = () => {
     this._orService
         .getUnaOrdenActividad(this._actividad)
         .subscribe((res: any) => {
@@ -83,6 +90,7 @@ export class ListarActividadComponent implements OnInit {
             .getItemsActividadEstado(this.ordenActividad[0].actividad._id, estado)
             .subscribe((res: any) => {
               this.listado = res['itemactividadDB'];
+              console.log(this.listado)
               this._orService
                 .getUnaOrden(this.ordenActividad[0].ordentrabajo._id)
                 .subscribe((res: any) => {
@@ -98,7 +106,7 @@ export class ListarActividadComponent implements OnInit {
                   this.imagenes = res['imgordenactividadDB'][0]['files'];
                   this._idimagenes = res['imgordenactividadDB'][0]['_id'];
                   this.imagenes.forEach((img: any) => {
-                    if ('EVIDENCIAS' == this.checkTipoImagen(img.filename)) {
+                    if ('EVIDENCIAS' === this.checkTipoImagen(img.filename)) {
                       this.cantImg += 1;
                     }
                   });
@@ -110,6 +118,7 @@ export class ListarActividadComponent implements OnInit {
                 .getCheckOrdenActividad(this.ordenActividad[0]._id)
                 .subscribe((res: any) => {
                   this.checkList = res['checkOrdenActividadDB'];
+                  console.log(this.checkList)
                 }, (err: any) => {
                   this.error();
                 });
@@ -153,21 +162,22 @@ export class ListarActividadComponent implements OnInit {
     }).then((result: any) => {
       if (result.value == true) {
         this.loading = true;
-        this._orService.deleteImgOrdenActividad(id, this._idimagenes)
-                       .subscribe((res: any) => {
-                          this.loading = false;
-                          if (res['ok'] == true) {
-                            this.getUnaOrdenActividad();
-                            Swal.fire({
-                              text: 'Imagen Eliminada',
-                              icon: 'success',
-                              confirmButtonText: 'OK',
-                              allowOutsideClick: false
-                            }).then((result) => {});
-                          }
-                        }, error => {
-                          this.error();
-                        });
+        this._orService
+          .deleteImgOrdenActividad(id, this._idimagenes)
+          .subscribe((res: any) => {
+            this.loading = false;
+            if (res['ok'] == true) {
+              this.unaOrdenActividad();
+              Swal.fire({
+                text: 'Imagen Eliminada',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
+              }).then((result) => {});
+            }
+          }, error => {
+            this.error();
+          });
       }
     });
   }
@@ -192,7 +202,7 @@ export class ListarActividadComponent implements OnInit {
               confirmButtonText: 'OK',
               allowOutsideClick: false
             }).then((result) => {
-              this.getUnaOrdenActividad();
+              this.unaOrdenActividad();
             });
           } else {
             this.error();
