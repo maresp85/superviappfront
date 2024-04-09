@@ -80,7 +80,7 @@ export class ListarNoConformidadComponent implements OnInit {
   generatePdf(_noconformidad: any) {
     this.loading = true;
     let noconformidad: any;
-    this.getBase64ImageFromURL("assets/logo_st_bn.jpg").then((base64data) => {
+    this.getBase64ImageFromURL('assets/logo_pdf.png').then((base64data) => {
       this.logo = base64data;
       this._repoService
           .getReporteNoConformidadUno(_noconformidad)

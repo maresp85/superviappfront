@@ -250,8 +250,9 @@
           <a 
             class="btn btn-primary"
             routerLink="/crearordenes"
+            *ngIf="_usService.leerRoleUsuario() === 'SUPERVISOR DEL CONTRATO'"
           >
-              Nueva Orden de Trabajo
+            Nueva Orden de Trabajo
           </a>
           <div class="row text-center">
             <div class="col-md-12 col-lg-12">

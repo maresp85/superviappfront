@@ -175,7 +175,7 @@ export class ListarBitacorasComponent implements OnInit {
 
   generatePdf(_id: any) {
     this.loading = true;
-    this.getBase64ImageFromURL('assets/logo_st_bn.jpg').then((base64data) => {
+    this.getBase64ImageFromURL('assets/logo_pdf.png').then((base64data) => {
       this.logo = base64data;
     });     
 

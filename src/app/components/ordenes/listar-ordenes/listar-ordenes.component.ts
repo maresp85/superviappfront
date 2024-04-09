@@ -216,7 +216,7 @@ export class ListarOrdenesComponent implements OnInit {
 
   generatePdf(_id: any) {
     this.loading = true;
-    this.getBase64ImageFromURL("assets/logo_st_bn.jpg").then((base64data) => {
+    this.getBase64ImageFromURL('assets/logo_pdf.png').then((base64data) => {
       this.logo = base64data;
     });
     this._orService
@@ -332,11 +332,6 @@ export class ListarOrdenesComponent implements OnInit {
 
   getDocument(ordentrabajo: any, ordentipotrabajo: any, ordenactividad: any, itemactividad: any) {
     
-    let titleIdentification: string = "IDENTIFICACIÓN: ";
-    if (ordentrabajo.trabajo.fechaMejora) {
-      titleIdentification = "N° APARTAMENTO: ";
-    }
-
     let estado: any = ordentrabajo.estado;
     if (ordentrabajo.trabajo.bitacora) {
       if (ordentrabajo.estado == 'NO CUMPLE') {

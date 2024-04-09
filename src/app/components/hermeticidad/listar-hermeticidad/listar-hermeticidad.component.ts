@@ -81,7 +81,7 @@ export class ListarHermeticidadComponent implements OnInit {
     this.getBase64ImageFromURL("assets/no-disponible.png").then((base64data) => {
       this.imagenNoDisponible = base64data;
     });
-    this.getBase64ImageFromURL("assets/logo_st_bn.jpg").then((base64data) => {
+    this.getBase64ImageFromURL('assets/logo_pdf.png').then((base64data) => {
       this.logo = base64data;
       this._herService
           .getHermeticidadUna(_hermeticidad)

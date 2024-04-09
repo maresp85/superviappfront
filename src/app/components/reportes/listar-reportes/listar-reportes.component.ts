@@ -140,7 +140,7 @@ export class ListarReportesComponent implements OnInit {
     this.ordenTrabajoDB = [];
     this.ordenActividadDB = [];
 
-    this.getBase64ImageFromURL("assets/logo_st_bn.jpg")
+    this.getBase64ImageFromURL('assets/logo_pdf.png')
         .then((base64data) => {
       this.logo = base64data;
     });
