@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   url: "http://localhost:3000",
-  //url: "https://supervision-tecnica.com/node",
+  //url: "https://superviapp.com/node",
   uploadfirmas: "/uploads/usuarios/firmas/",
   uploadimgordenes: "/uploads/ordenes/legalizaciones/",
   uploadimgordenes_pdf: "/uploads/ordenes/legalizaciones_pdf/",

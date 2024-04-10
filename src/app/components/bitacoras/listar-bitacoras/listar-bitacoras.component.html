@@ -39,7 +39,7 @@
         <div *ngIf="!loading">
 
           <div 
-            id="accordion" *ngIf="_usService.leerRoleUsuario() !== 'INGENIERO'"
+            id="accordion"
           >
             <div class="card">
               <div class="card-header" id="headingThree">
@@ -64,9 +64,9 @@
                           />
                         </div>
                       </div>
-                      <div class="col-3">
+                      <div class="col-3" *ngIf="_usService.leerRoleUsuario() === 'SUPERVISOR DEL CONTRATO'">
                         <div class="form-group">
-                          <label for="usuario">Usuario(a):</label>
+                          <label for="usuario">Supervisor(a):</label>
                           <select 
                             name="usuario"
                             class="form-control"

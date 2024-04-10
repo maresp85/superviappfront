@@ -245,9 +245,17 @@ export class ConfiguracionService {
     return this.http.put(url, params, { headers });
   }
 
-   // Elimina Orden de Trabajo
+   // Elimina Tipo de Trabajo
   deleteTipoTrabajo(_id: any) {
     const url = `${ this.url }/tipotrabajo/eliminar/${ _id }`;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': this._usService.leerToken() });
+
+    return this.http.delete(url, { headers });
+  }
+
+  // Elimina Trabajo
+  deleteTrabajo(_id: any) {
+    const url = `${ this.url }/trabajo/eliminar/${ _id }`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': this._usService.leerToken() });
 
     return this.http.delete(url, { headers });
@@ -417,6 +425,11 @@ export class ConfiguracionService {
     // Obtiene usuarios x obra
   getObraUsuario(obra: any) {
     return this.getQuery(`obrausuario/listar/${ obra }`);
+  }
+
+  // Obtiene usuarios x obra
+  getObraListarUsuario(usuarioId: any) {
+    return this.getQuery(`obra/listar-usuario-app/${ usuarioId }`);
   }
 
     // Asignar usuario a una obra

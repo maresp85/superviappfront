@@ -93,7 +93,7 @@ export class ListarBitacorasComponent implements OnInit {
   getOrdenes() {
     this.loading = true;
     let role: any = this._usService.leerRoleUsuario();
-    let idusuario: any = this._usService.leerIDUsuario();
+    let usuarioId: any = this._usService.leerIDUsuario();
 
     this._usService
       .getUsuarioEmpresa(this.empresa)
@@ -105,7 +105,7 @@ export class ListarBitacorasComponent implements OnInit {
 
               this.trabajo = res['trabajoDB'];
               this._conService
-                  .getObraEmpresa(this.empresa)
+                  .getObraListarUsuario(usuarioId)
                   .subscribe((res: any) => {
                     this.obra = res['obraDB'];
                   }, (err: any) => {
@@ -121,7 +121,7 @@ export class ListarBitacorasComponent implements OnInit {
 
     if (role === 'SUPERVISOR SSTA' || role === 'SUPERVISOR LEGAL LABORAL') {
       this._orService
-        .getOrdenesBitacoraUsuario(idusuario, this.empresa, true)
+        .getOrdenesBitacoraUsuario(usuarioId, this.empresa, true)
         .subscribe((res: any) => {
           this.listado = res['ordentrabajoDB'];
           this.loading = false;
@@ -144,13 +144,17 @@ export class ListarBitacorasComponent implements OnInit {
   onSearch(form: NgForm) {
     if (form.invalid) { return; }
 
+    let usuarioId: any = this._usService.leerIDUsuario();
+    if (this.ordenes.usuario) {
+      usuarioId = this.ordenes.usuario;
+    }
+
     this.loading = true;
     this.loadingButton = true;
     this._orService
         .buscarOrdenes(
-          this.empresa,
           this.ordenes.id,
-          this.ordenes.usuario,
+          usuarioId,
           this.ordenes.estado,
           this.ordenes.trabajo,
           this.ordenes.obra,

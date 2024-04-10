@@ -41,6 +41,7 @@ export class ListarObrasComponent implements OnInit {
       .getObra()
       .subscribe((res: any) => {
         this.listado = res['obraDB'];
+        console.log(this.listado)
         this.loading = false;
       }, (error: any) => {
         this.error(error);

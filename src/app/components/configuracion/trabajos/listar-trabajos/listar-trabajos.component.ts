@@ -91,6 +91,41 @@ export class ListarTrabajosComponent implements OnInit {
       }); 
   }
 
+
+  deleteTrabajo(_id: any) {
+    Swal.fire({    
+      text: '¿Está seguro que desea eliminar este trabajo permanentemente?',
+      icon: 'question',
+      showCancelButton: true,
+      showCloseButton: true,      
+      cancelButtonColor: '#aaa',
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Si, estoy seguro',
+      cancelButtonText: 'No',
+    }).then((result: any) => {
+      if (result.value == true) {
+        this.loading = true;  
+        this._conService
+            .deleteTrabajo(_id)
+            .subscribe((res: any) => {      
+              this.loading = false;          
+              if (res['ok'] == true) {
+                this.getTrabajo();
+                Swal.fire({    
+                  text: 'Tipo de Trabajo Eliminado',
+                  icon: 'success',
+                  confirmButtonText: 'OK',
+                  allowOutsideClick: false
+                }).then((result: any) => { });     
+              }                        
+            }, error => {
+              this.error(error);
+            });
+      } 
+    });
+  }
+
+
   error(error: any) {
     this.loading = false;
     if (error.error.err.message == 'Token no válido') {

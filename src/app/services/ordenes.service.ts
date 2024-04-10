@@ -108,9 +108,8 @@ export class OrdenesService {
 
    // Buscar orden de trabajo
   buscarOrdenes = (
-    empresa: any,
     id: any,
-    usuario: any,
+    usuarioId: any,
     estado: any,
     trabajo: any,
     obra: any,
@@ -118,9 +117,8 @@ export class OrdenesService {
     fechaf: any
   ) => {
     const myObj = {
-      'empresa': empresa,
       'id': id,
-      'usuario': usuario,
+      'usuarioId': usuarioId,
       'estado': estado,
       'trabajo': trabajo,
       'obra': obra,
@@ -129,7 +127,7 @@ export class OrdenesService {
     };
 
     const params = JSON.stringify(myObj);
-    const url = `${ this.url }/ordentrabajo/buscar/`;
+    const url = `${ this.url }/ordentrabajo/buscar-app/`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': this._usService.leerToken()

@@ -60,21 +60,22 @@ export class ListarTipoTrabajosComponent implements OnInit {
     }).then((result: any) => {
       if (result.value == true) {
         this.loading = true;  
-        this._conService.deleteTipoTrabajo(_id)
-                        .subscribe((res: any) => {      
-                          this.loading = false;          
-                          if (res['ok'] == true) {
-                            this.getTiposTrabajo();
-                            Swal.fire({    
-                              text: 'Tipo de Trabajo Eliminado',
-                              icon: 'success',
-                              confirmButtonText: 'OK',
-                              allowOutsideClick: false
-                            }).then((result: any) => { });     
-                          }                        
-                        }, error => {
-                          this.error(error);
-                        });
+        this._conService
+            .deleteTipoTrabajo(_id)
+            .subscribe((res: any) => {      
+              this.loading = false;          
+              if (res['ok'] == true) {
+                this.getTiposTrabajo();
+                Swal.fire({    
+                  text: 'Tipo de Trabajo Eliminado',
+                  icon: 'success',
+                  confirmButtonText: 'OK',
+                  allowOutsideClick: false
+                }).then((result: any) => { });     
+              }                        
+            }, error => {
+              this.error(error);
+            });
       } 
     });
   }

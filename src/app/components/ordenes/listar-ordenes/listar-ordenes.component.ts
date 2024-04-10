@@ -43,6 +43,7 @@ export class ListarOrdenesComponent implements OnInit {
   breadcrumbtitle2: string = "Ordenes";
   empresa: any = this._usService.leerEmpresaUsuario();
   firmaImg: any;
+  firmaImgUsuario: any;
   imagenesOrdenes: any = [];
   checkOrdenes: any = [];
   listado: any = [];
@@ -56,6 +57,7 @@ export class ListarOrdenesComponent implements OnInit {
   usuarios: any = [];
   urluploadimgordenes: any = environment.url + environment.uploadimgordenes_pdf;
   urluploadfirmas: any = environment.url + environment.uploadfirmas;
+  uploadImgFirmaUsuario: any = environment.url + environment.uploadImgFirmaUsuario;
 
   showChart: boolean = false;
   series: any = [0, 0, 0];
@@ -90,23 +92,26 @@ export class ListarOrdenesComponent implements OnInit {
   getOrdenes() {
     this.loading = true;
     let role: any = this._usService.leerRoleUsuario();
-    let idusuario: any = this._usService.leerIDUsuario();
+    let usuarioId: any = this._usService.leerIDUsuario();
 
     this._usService
       .getUsuarioEmpresa(this.empresa)
       .subscribe((res: any) => {
         this.usuarios = res['usuarioDB'];
+
         this._conService
           .getTrabajoEmpresaFiltroBitacora(this.empresa, false)
           .subscribe((res: any) => {
               this.trabajo = res['trabajoDB'];
+
               this._conService
-                .getObraEmpresa(this.empresa)
-                .subscribe((res: any) => {
-                  this.obra = res['obraDB'];
-                }, (err: any) => {
-                  this.error(err);
-                });
+                  .getObraListarUsuario(usuarioId)
+                  .subscribe((res: any) => {
+                    this.obra = res['obraDB'];
+                  }, (err: any) => {
+                    this.error(err);
+                  });
+
           }, (err: any) => {
             this.error(err);
           });
@@ -116,7 +121,7 @@ export class ListarOrdenesComponent implements OnInit {
 
     if (role === 'SUPERVISOR SSTA' || role === 'SUPERVISOR LEGAL LABORAL') {
       this._orService
-        .getOrdenesBitacoraUsuario(idusuario, this.empresa, false)
+        .getOrdenesBitacoraUsuario(usuarioId, this.empresa, false)
         .subscribe((res: any) => {
           this.listado = res['ordentrabajoDB'];
           this.loading = false;
@@ -135,63 +140,21 @@ export class ListarOrdenesComponent implements OnInit {
     }
   }
 
-    // Actualiza Identificador - IDViga
-  actualizaIDViga(_id: any, fechaMejora: boolean) {  
-    let title: string = ' el identificador';
-
-    if (fechaMejora) {
-      title = ' el n° de apartamento';
-    }
-
-    Swal.fire({
-      title: `Digite ${ title }`,
-      input: 'text',
-      inputAttributes: {
-        autocapitalize: 'off'
-      },
-      showCancelButton: true,
-      confirmButtonText: 'Actualizar',
-      cancelButtonText: 'Cancelar',
-      showLoaderOnConfirm: true,
-      allowOutsideClick: false,
-      preConfirm: (valueIdViga) => {
-        if (valueIdViga == "") {
-          Swal.showValidationMessage(
-            `Ingrese ${ title }`
-          );
-        } else {
-          this._orService
-              .putIdVigaOrdenTrabajo(_id, valueIdViga)
-              .subscribe((res: any) => {
-                return true
-              }, (err: any) => {
-                Swal.showValidationMessage(
-                  `Error al enviar el dato`
-                );
-              });
-        }
-      },
-    }).then((result: any) => {
-      if (result.value) {
-        this.getOrdenes();
-        Swal.fire({
-          title: 'Actualización Exitosa'
-        });
-      }
-    })
-  }
-
   // Submit para la búsqueda de ordenes
   onSearch(form: NgForm) {
     if (form.invalid) { return; }
+
+    let usuarioId: any = this._usService.leerIDUsuario();
+    if (this.ordenes.usuario) {
+      usuarioId = this.ordenes.usuario;
+    }
 
     this.loading = true;
     this.loadingButton = true;
     this._orService
         .buscarOrdenes(
-          this.empresa,
           this.ordenes.id,
-          this.ordenes.usuario,
+          usuarioId,
           this.ordenes.estado,
           this.ordenes.trabajo,
           this.ordenes.obra,
@@ -214,6 +177,73 @@ export class ListarOrdenesComponent implements OnInit {
         });
   }
 
+  cerrarOrdenTrabajo(_id: any) {    
+    Swal.fire({
+      text: '¿Está seguro de cerrar esta orden de trabajo permanentemente?',
+      icon: 'question',
+      showCancelButton: true,
+      showCloseButton: true,
+      cancelButtonColor: '#aaa',
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Si, estoy seguro',
+      cancelButtonText: 'No',
+    }).then((result: any) => {
+      if (result.value == true) {
+        this.loading = true;
+        this._orService
+          .cerrarOrdenTrabajo(_id)
+          .subscribe((res: any) => {
+            this.loading = false;
+            if (res['ok'] == true) {
+              this.getOrdenes();
+              Swal.fire({
+                text: 'Orden de Trabajo Cerrada',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
+              }).then((result) => { });
+            }
+          }, (err: any) => {           
+            this.error(err);
+          });
+      }
+    });
+  }
+
+  deleteOrdenTrabajo(_id: any) {    
+    Swal.fire({
+      text: '¿Está seguro que desea eliminar esta orden de trabajo permanentemente?',
+      icon: 'question',
+      showCancelButton: true,
+      showCloseButton: true,
+      cancelButtonColor: '#aaa',
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Si, estoy seguro',
+      cancelButtonText: 'No',
+    }).then((result: any) => {
+      if (result.value == true) {
+        this.loading = true;
+        this._orService
+          .deleteOrdenTrabajo(_id)
+          .subscribe((res: any) => {
+            this.loading = false;
+            if (res['ok'] == true) {
+              this.getOrdenes();
+              Swal.fire({
+                text: 'Orden de Trabajo Eliminada',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
+              }).then((result) => { });
+            }
+          }, (err: any) => {
+            this.error(err);
+          });
+      }
+    });
+  }
+
+
   generatePdf(_id: any) {
     this.loading = true;
     this.getBase64ImageFromURL('assets/logo_pdf.png').then((base64data) => {
@@ -226,65 +256,73 @@ export class ListarOrdenesComponent implements OnInit {
           let ordentrabajo: any = res.ordentrabajoDB[0];
 
           try {
-            this.getBase64ImageFromURL(this.urluploadfirmas+ordentrabajo.usuario.imgfirma)
-                .then((base64data) => {
-              this.firmaImg = base64data;
-            });
-          } catch {}          
+            this
+              .getBase64ImageFromURL(this.urluploadfirmas+ordentrabajo.usuario.imgfirma)
+              .then((base64data) => {
+              
+               this.firmaImg = base64data;
 
-          this._orService
-            .getOrdenesTipo(_id)
-            .subscribe((res: any) => {
+                this.getBase64ImageFromURL(this.uploadImgFirmaUsuario+ordentrabajo.firmaUsuario)
+                  .then((base64data) => {
+                    this.firmaImgUsuario = base64data;              
+                });
 
-                let ordentipotrabajo: any = res['ordentipotrabajoDB'];
                 this._orService
-                  .getOrdenesActividadesTodas(_id)
+                  .getOrdenesTipo(_id)
                   .subscribe((res: any) => {
-
-                    let ordenactividad: any = res['ordenactividadDB'];
-               
+    
+                    let ordentipotrabajo: any = res['ordentipotrabajoDB'];
+    
                     this._orService
-                        .getItemsActividadTodos()
-                        .subscribe((res: any) => {
-                          let itemactividad: any = res['itemactividadDB'];
-                          this._orService
-                            .getImgOrdenTrabajo(_id)
+                      .getOrdenesActividadesTodas(_id)
+                      .subscribe((res: any) => {
+    
+                        let ordenactividad: any = res['ordenactividadDB'];
+                   
+                        this._orService
+                            .getItemsActividadTodos()
                             .subscribe((res: any) => {
 
-                              let imgOrdenActividadDB = res['imgordenactividadDB'];
-
+                              let itemactividad: any = res['itemactividadDB'];
                               this._orService
-                                  .getCheckOrdenActividadTrabajo(ordentrabajo._id)
-                                  .subscribe((res: any) => {
-                                    this.checkOrdenes = res['checkOrdenActividadDB'];
-
-                                    this.getImgOrdenTrabajoBase64(imgOrdenActividadDB)
-                                        .then(() => {
-                                          
-                                          this.getDocument(
-                                            ordentrabajo,
-                                            ordentipotrabajo,
-                                            ordenactividad,
-                                            itemactividad
-                                          );
-                                          this.loading = false;
-
-                                    }, (err: any) => {
-                                      this.error(err);
-                                    });
-
-                                  });
-
+                                .getImgOrdenTrabajo(_id)
+                                .subscribe((res: any) => {
+    
+                                  let imgOrdenActividadDB = res['imgordenactividadDB'];
+    
+                                  this._orService
+                                      .getCheckOrdenActividadTrabajo(ordentrabajo._id)
+                                      .subscribe((res: any) => {
+                                        this.checkOrdenes = res['checkOrdenActividadDB'];
+    
+                                        this.getImgOrdenTrabajoBase64(imgOrdenActividadDB)
+                                            .then(() => {                                              
+                                              this.getDocument(
+                                                ordentrabajo,
+                                                ordentipotrabajo,
+                                                ordenactividad,
+                                                itemactividad
+                                              );
+                                              this.loading = false;    
+                                        }, (err: any) => {
+                                          this.error(err);
+                                        });
+    
+                                      });    
+                                });
                             });
-                        });
-
+    
+                    }, (err: any) => {
+                      this.error(err);
+                    });
+    
                 }, (err: any) => {
                   this.error(err);
                 });
-
-            }, (err: any) => {
-              this.error(err);
             });
+          } catch {}          
+
+         
 
         }, (err: any) => {
           this.error(err);
@@ -378,30 +416,32 @@ export class ListarOrdenesComponent implements OnInit {
       ]);
     });
 
-    content.push({ table: {
-      widths: ['*'],
-      headerRows: 1,
-        body: [
-          [
-            {
-              alignment: 'center',
-              bold: true,
-              fillColor: '#fff',
-              fontSize: 12,
-              text: 'DATOS ADICIONALES DE LA ORDEN',
-            }
-          ]
-        ]
-    }, margin: [0, 20, 0, 0], layout: 'noBorders'});
-
-    content.push({ 
-      table: {
-        widths: [180, '*'], 
+    if (extraFieldsData.length > 0) {
+      content.push({ table: {
+        widths: ['*'],
         headerRows: 1,
-        body: extraFieldsData 
-      }, 
-      margin: [0, 10, 0, 10]
-    });
+          body: [
+            [
+              {
+                alignment: 'center',
+                bold: true,
+                fillColor: '#fff',
+                fontSize: 12,
+                text: 'DATOS ADICIONALES DE LA ORDEN',
+              }
+            ]
+          ]
+      }, margin: [0, 20, 0, 0], layout: 'noBorders'});
+
+      content.push({ 
+        table: {
+          widths: [180, '*'], 
+          headerRows: 1,
+          body: extraFieldsData 
+        }, 
+        margin: [0, 10, 0, 10]
+      });
+    }
 
     content.push({ table: {
       widths: ['*'],
@@ -423,9 +463,9 @@ export class ListarOrdenesComponent implements OnInit {
 
       let estado = element.estado;
       if (ordentrabajo.trabajo.bitacora) {
-        if (ordentrabajo.estado == 'NO CUMPLE') {
+        if (ordentrabajo.estado === 'NO CUMPLE') {
           estado = 'ABIERTA';
-        } else if (ordentrabajo.estado == 'CUMPLE') {       
+        } else if (ordentrabajo.estado === 'CUMPLE') {       
           estado = 'CERRADA';
         }  
       }
@@ -505,9 +545,7 @@ export class ListarOrdenesComponent implements OnInit {
 
     });
 
-    content.push(
-      { text: '', alignment: 'center', fontSize: 12, pageBreak: 'before' }
-    );
+    content.push({ text: '', pageBreak: 'before' });
 
     this.chartOptions = {
       series: this.series,        
@@ -598,9 +636,7 @@ export class ListarOrdenesComponent implements OnInit {
           }, margin: [50, 0, 50, 0]
         });
        
-        content.push(
-          { text: '', alignment: 'center', fontSize: 12, pageBreak: 'before' }
-        );
+        content.push({ text: '', pageBreak: 'before' });
 
         // Detalle de las actividades
         content.push({ table: {
@@ -623,12 +659,12 @@ export class ListarOrdenesComponent implements OnInit {
 
           let estado = element.estado;
           if (ordentrabajo.trabajo.bitacora) {
-            if (ordentrabajo.estado == 'NO CUMPLE') {
+            if (ordentrabajo.estado === 'NO CUMPLE') {
               estado = 'ABIERTA';
-            } else if (ordentrabajo.estado == 'CUMPLE') {       
+            } else if (ordentrabajo.estado === 'CUMPLE') {       
               estado = 'CERRADA';
             }  
-          }
+          }        
 
           content.push({table: {
             widths: ['*'],
@@ -647,7 +683,7 @@ export class ListarOrdenesComponent implements OnInit {
     
           ordenactividad.forEach((elementact: any) => {
 
-            if (elementact.ordentipotrabajo == element._id && elementact.actividad) {
+            if (elementact.ordentipotrabajo === element._id && elementact.actividad) {
 
               content.push({table: {
                 widths: [300, 120, '*'],
@@ -671,10 +707,10 @@ export class ListarOrdenesComponent implements OnInit {
               let estadoAct = elementact.estado;
               let fechalegaliza = new Date(elementact.fechalegaliza).toLocaleString();
 
-              if (elementact.estado == 'NO CUMPLE') {
+              if (elementact.estado === 'NO CUMPLE') {
                 color = 'red';
                 if (ordentrabajo.trabajo.bitacora) estadoAct = 'ABIERTA';
-              } else if (elementact.estado == 'CUMPLE') {
+              } else if (elementact.estado === 'CUMPLE') {
                 color = 'green';
                 if (ordentrabajo.trabajo.bitacora) estadoAct = 'CERRADA';
               } else {
@@ -694,7 +730,7 @@ export class ListarOrdenesComponent implements OnInit {
                   ]
               }, layout: 'lightHorizontalLines', margin: [0, 10, 0, 0]});
 
-              let estado = elementact.estado == 'CUMPLE' ? 1 : 0;
+              let estado = elementact.estado === 'CUMPLE' ? 1 : 0;
 
               itemactividad.forEach((item: any) => {
 
@@ -714,7 +750,7 @@ export class ListarOrdenesComponent implements OnInit {
 
                     let value = [];
                     for (let img of this.imagenesOrdenes) {
-                      if (elementact._id == img.ordenactividad && img.tipo === "EVIDENCIAS") {
+                      if (elementact._id === img.ordenactividad && img.tipo === "EVIDENCIAS") {
                         value.push({ image: img.image, width: 126 });
                       }
                     }
@@ -734,7 +770,7 @@ export class ListarOrdenesComponent implements OnInit {
 
                     var value = [];
                     for (let img of this.imagenesOrdenes) {
-                      if (elementact._id == img.ordenactividad && img.tipo == 'FOTOBITACORA') {
+                      if (elementact._id == img.ordenactividad && img.tipo === 'FOTOBITACORA') {
                         value.push({ image: img.image, width: 126 });
                       }
                     }  
@@ -764,7 +800,7 @@ export class ListarOrdenesComponent implements OnInit {
                   content.push({table: {
                     headerRows: 1,
                       body: [
-                          value
+                        value
                       ]
                   }, layout: 'noBorders', margin: [0, 10, 0, 0]});
                 }
@@ -784,7 +820,7 @@ export class ListarOrdenesComponent implements OnInit {
                 content.push({ text: elementact.fechaMejora, fontSize: 10, margin: [10, 5, 0, 0] });
               }
               //línea en blanco
-              content.push({ text: ' ', fontSize: 10, margin: [0, 10, 0, 0] });
+              content.push({ text: ' ', margin: [0, 10, 0, 0] });
 
             }
 
@@ -792,9 +828,34 @@ export class ListarOrdenesComponent implements OnInit {
 
         });
 
+        if (this.firmaImgUsuario) {
+          content.push({ text: '', pageBreak: 'before' });     
+
+          content.push({table: {
+            widths: ['*'],
+            headerRows: 1,
+              body: [
+                [
+                {
+                  text: 'FIRMA DIGITAL USUARIO',
+                  fillColor: '#ececec',
+                  fontSize: 11,
+                  bold: true
+                  }
+                ]
+              ]
+          }, margin: [0, 10, 0, 0], layout: 'noBorders'});
+
+          content.push({ image: this.firmaImgUsuario, width: 140, margin: [0, 0, 0, 0] });
+        }
+
+        //línea en blanco
+        content.push({ text: ' ', margin: [0, 10, 0, 0] });
+      
         content.push({ image: this.firmaImg, width: 140, margin: [0, 100, 0, 0] });
         content.push({ text: "_______________________________________" });
         content.push({ text: ordentrabajo.usuario.nombre });
+        content.push({ text: (ordentrabajo.usuario.role).toUpperCase(), fontSize: 10 });
         content.push({ text: fecha.toLocaleString(), fontSize: 8 });
 
       });
@@ -910,74 +971,7 @@ export class ListarOrdenesComponent implements OnInit {
       img.src = imageBlobURL;
     });
   }
-
-  cerrarOrdenTrabajo(_id: any) {    
-    Swal.fire({
-      text: '¿Está seguro de cerrar esta orden de trabajo permanentemente?',
-      icon: 'question',
-      showCancelButton: true,
-      showCloseButton: true,
-      cancelButtonColor: '#aaa',
-      confirmButtonColor: '#dc3545',
-      confirmButtonText: 'Si, estoy seguro',
-      cancelButtonText: 'No',
-    }).then((result: any) => {
-      if (result.value == true) {
-        this.loading = true;
-        this._orService
-          .cerrarOrdenTrabajo(_id)
-          .subscribe((res: any) => {
-            this.loading = false;
-            if (res['ok'] == true) {
-              this.getOrdenes();
-              Swal.fire({
-                text: 'Orden de Trabajo Cerrada',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                allowOutsideClick: false
-              }).then((result) => { });
-            }
-          }, (err: any) => {
-            console.log(err);
-            this.error(err);
-          });
-      }
-    });
-  }
-
-  deleteOrdenTrabajo(_id: any) {    
-    Swal.fire({
-      text: '¿Está seguro que desea eliminar esta orden de trabajo permanentemente?',
-      icon: 'question',
-      showCancelButton: true,
-      showCloseButton: true,
-      cancelButtonColor: '#aaa',
-      confirmButtonColor: '#dc3545',
-      confirmButtonText: 'Si, estoy seguro',
-      cancelButtonText: 'No',
-    }).then((result: any) => {
-      if (result.value == true) {
-        this.loading = true;
-        this._orService
-          .deleteOrdenTrabajo(_id)
-          .subscribe((res: any) => {
-            this.loading = false;
-            if (res['ok'] == true) {
-              this.getOrdenes();
-              Swal.fire({
-                text: 'Orden de Trabajo Eliminada',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                allowOutsideClick: false
-              }).then((result) => { });
-            }
-          }, (err: any) => {
-            this.error(err);
-          });
-      }
-    });
-  }
-
+  
   error(error: any) {
     this.loading = false;
     this.loadingButton = false;

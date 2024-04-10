@@ -90,7 +90,7 @@ export class ListarActividadComponent implements OnInit {
             .getItemsActividadEstado(this.ordenActividad[0].actividad._id, estado)
             .subscribe((res: any) => {
               this.listado = res['itemactividadDB'];
-              console.log(this.listado)
+        
               this._orService
                 .getUnaOrden(this.ordenActividad[0].ordentrabajo._id)
                 .subscribe((res: any) => {
@@ -117,8 +117,7 @@ export class ListarActividadComponent implements OnInit {
               this._orService
                 .getCheckOrdenActividad(this.ordenActividad[0]._id)
                 .subscribe((res: any) => {
-                  this.checkList = res['checkOrdenActividadDB'];
-                  console.log(this.checkList)
+                  this.checkList = res['checkOrdenActividadDB'];        
                 }, (err: any) => {
                   this.error();
                 });

@@ -28,7 +28,7 @@
                     <th style="text-align: center;">Dirección</th>
                     <th style="text-align: center;">Empresa</th>
                     <th style="text-align: center;">Activo</th>
-                    <th *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">Opciones</th>
+                    <th>Opciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -44,7 +44,7 @@
                         No
                       </span>    
                     </td>
-                    <td style="text-align: center;" *ngIf="_usService.leerRoleUsuario() === 'ADMIN'">  
+                    <td style="text-align: center;"> 
                       <div class="row">
                         <div class="col-2">
                           <a [routerLink]="['/editarobras', lista._id]">
@@ -52,7 +52,7 @@
                           </a>
                         </div>
                         <div class="col-2">
-                          <a c[routerLink]="['/asignarusuario', lista._id]">
+                          <a [routerLink]="['/asignarusuario', lista._id]">
                             <i class="fa fa-users" aria-hidden="true"></i>
                           </a>
                         </div>

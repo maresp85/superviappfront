@@ -20,78 +20,89 @@
         <div *ngIf="!loading">
           <div class="card">
             <!-- /.card-header -->
-            <div class="card-body p-0">
-              <table class="table table-striped">
-                <thead>
-                  <tr>         
-                    <th style="text-align: center;">Nombre</th>
-                    <th style="text-align: center;">Empresa</th>
-                    <th style="text-align: center;">¿Campo Fecha Mejora?</th>
-                    <th style="text-align: center;">¿Legaliza en Cualquier Orden?</th>
-                    <th style="text-align: center;">Bitácora</th>
-                    <th style="text-align: center;">Activo</th>
-                    <th *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">Opciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let lista of listado | paginate:{itemsPerPage: 12, currentPage:p}; let i = index">              
-                    <td>{{ lista.nombre }}</td>
-                    <td>{{ lista.empresa.nombre }}</td>
-                    <td style="text-align: center;">
-                      <span *ngIf="lista.fechaMejora == true" class="badge badge-primary">
-                        Si
-                      </span>
-                      <span *ngIf="lista.fechaMejora == false" class="badge badge-secondary">
-                        No
-                      </span>
-                    </td>
-                    <td style="text-align: center;">
-                      <span *ngIf="lista.legalizaCualquierOrden == true" class="badge badge-primary">
-                        Si
-                      </span>
-                      <span *ngIf="lista.legalizaCualquierOrden == false" class="badge badge-secondary">
-                        No
-                      </span>
-                    </td>
-                    <td style="text-align: center;">
-                      <span *ngIf="lista.bitacora == true" class="badge badge-primary">
-                        Si
-                      </span>
-                      <span *ngIf="lista.bitacora == false" class="badge badge-danger">
-                        No
-                      </span>    
-                    </td>
-                    <td style="text-align: center;">
-                      <span *ngIf="lista.activo == true" class="badge badge-success">
-                        Si
-                      </span>
-                      <span *ngIf="lista.activo == false" class="badge badge-danger">
-                        No
-                      </span>
-                    </td>
-                    <td *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
-                      <div class="row">
-                        <div class="col-3">
-                          <a class="nav-link" [routerLink]="['/editartrabajos', lista._id]">
-                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                          </a>
+            <div class="table-responsive">
+              <div class="card-body p-0">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>         
+                      <th style="text-align: center;">Nombre</th>
+                      <th style="text-align: center;">Empresa</th>
+                      <th style="text-align: center;">¿Campo Fecha Mejora?</th>
+                      <th style="text-align: center;">¿Legaliza en Cualquier Orden?</th>
+                      <th style="text-align: center;">Bitácora</th>
+                      <th style="text-align: center;">Activo</th>
+                      <th *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let lista of listado | paginate:{itemsPerPage: 12, currentPage:p}; let i = index">              
+                      <td>{{ lista.nombre }}</td>
+                      <td>{{ lista.empresa.nombre }}</td>
+                      <td style="text-align: center;">
+                        <span *ngIf="lista.fechaMejora == true" class="badge badge-primary">
+                          Si
+                        </span>
+                        <span *ngIf="lista.fechaMejora == false" class="badge badge-secondary">
+                          No
+                        </span>
+                      </td>
+                      <td style="text-align: center;">
+                        <span *ngIf="lista.legalizaCualquierOrden == true" class="badge badge-primary">
+                          Si
+                        </span>
+                        <span *ngIf="lista.legalizaCualquierOrden == false" class="badge badge-secondary">
+                          No
+                        </span>
+                      </td>
+                      <td style="text-align: center;">
+                        <span *ngIf="lista.bitacora == true" class="badge badge-primary">
+                          Si
+                        </span>
+                        <span *ngIf="lista.bitacora == false" class="badge badge-danger">
+                          No
+                        </span>    
+                      </td>
+                      <td style="text-align: center;">
+                        <span *ngIf="lista.activo == true" class="badge badge-success">
+                          Si
+                        </span>
+                        <span *ngIf="lista.activo == false" class="badge badge-danger">
+                          No
+                        </span>
+                      </td>
+                      <td *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">
+                        <div class="row">
+                          <div class="col-3">
+                            <a class="" [routerLink]="['/editartrabajos', lista._id]">
+                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                          <div class="col-3">
+                            <a 
+                              class="cursor-pointer" 
+                              (click)="modalExtraFields(lista)"  
+                              data-toggle="modal" 
+                              data-target="#modal-default" 
+                              data-dashlane-label="true"
+                            >
+                              <i class="fa fa-list-alt" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                          <div class="col-3">
+                            <a 
+                              (click)="deleteTrabajo(lista._id)" 
+                              title="Eliminar"
+                              style="color: #dc3545;cursor: pointer"
+                            >
+                              <i class="fa fa-times-circle" aria-hidden="true"></i>
+                            </a>   
+                          </div>
                         </div>
-                        <div class="col-3">
-                          <a 
-                            class="nav-link cursor-pointer" 
-                            (click)="modalExtraFields(lista)"  
-                            data-toggle="modal" 
-                            data-target="#modal-default" 
-                            data-dashlane-label="true"
-                          >
-                            <i class="fa fa-list-alt" aria-hidden="true"></i>
-                          </a>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
             <!-- /.card-body -->   
           </div>

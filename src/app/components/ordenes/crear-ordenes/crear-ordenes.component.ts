@@ -54,10 +54,10 @@ export class CrearOrdenesComponent implements OnInit {
           this.error();
         });
 
-    if (this.role === 'SUPERVISOR LEGAL') {      
+    if (this.role === 'SUPERVISOR DEL CONTRATO') {
       this._usService
         .getUsuarioEmpresa(this.empresa)
-        .subscribe((res: any) => {               
+        .subscribe((res: any) => {        
           this.usuarios = res['usuarioDB'];
           this.loading = false;       
         }, error => {

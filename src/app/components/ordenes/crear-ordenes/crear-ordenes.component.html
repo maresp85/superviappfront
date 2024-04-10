@@ -32,7 +32,7 @@
                                         <option [value]="t._id" *ngFor="let t of trabajo">{{ t.nombre }}</option>
                                     </select>
                                 </div>                                
-                                <div class="form-group" *ngIf="role === 'SUPERVISOR LEGAL'">
+                                <div class="form-group" *ngIf="role === 'SUPERVISOR DEL CONTRATO'">
                                     <label for="usuario">Usuario:</label>
                                     <select
                                         #myUsuario
@@ -46,7 +46,7 @@
                                         <option [value]="i._id" *ngFor="let i of usuarios">{{ i.nombre }} ({{ i.role }})</option>
                                     </select>
                                 </div>
-                                <div class="form-group" *ngIf="role !== 'SUPERVISOR LEGAL'">
+                                <div class="form-group" *ngIf="role !== 'SUPERVISOR DEL CONTRATO'">
                                     <label for="usuario">Usuario:</label>
                                     <select
                                         #myUsuario
