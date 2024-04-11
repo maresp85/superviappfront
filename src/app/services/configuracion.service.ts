@@ -53,8 +53,6 @@ export class ConfiguracionService {
     params.append('logo', logo);
     params.append('logoImage', logoImage);
 
-    console.log(logoImage)
-
     const url = `${ this.url }/empresa/crear/`;
     const headers = new HttpHeaders({ 'Authorization': this._usService.leerToken() });
 

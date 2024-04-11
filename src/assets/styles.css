@@ -6,3 +6,9 @@
     display: block !important;
     padding-right: 15px !important;
 }
+
+.input-calendar {
+    font-size: 9pt;
+    width: 120px;
+    height: 30px;
+}

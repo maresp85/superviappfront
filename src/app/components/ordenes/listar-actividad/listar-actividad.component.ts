@@ -21,7 +21,6 @@ export class ListarActividadComponent implements OnInit {
   cumple: any;
   editaObservacion: boolean = false;
   email: string = '';
-  disabledbutton: boolean = true;
   loadingButton: boolean = false;
   loading: boolean = false;
   estadolegaliza: any;
@@ -89,7 +88,7 @@ export class ListarActividadComponent implements OnInit {
           this._orService
             .getItemsActividadEstado(this.ordenActividad[0].actividad._id, estado)
             .subscribe((res: any) => {
-              this.listado = res['itemactividadDB'];
+              this.listado = res['itemactividadDB'];              
         
               this._orService
                 .getUnaOrden(this.ordenActividad[0].ordentrabajo._id)
@@ -141,11 +140,6 @@ export class ListarActividadComponent implements OnInit {
 
   fileUpload(event: any, tipo: any) {
     this.files = event.target.files;
-    this.disabledbutton = false;
-  }
-
-  changeDate() {
-    this.disabledbutton = false;
   }
 
   deleteImagen(id: any) {
@@ -193,7 +187,6 @@ export class ListarActividadComponent implements OnInit {
         ).subscribe((res: any) => {
           if (res.ok == true) {
             this.loadingButton = false;
-            this.disabledbutton = true;
             this.editaObservacion = false;
             Swal.fire({
               text: 'Actividad Actualizada',

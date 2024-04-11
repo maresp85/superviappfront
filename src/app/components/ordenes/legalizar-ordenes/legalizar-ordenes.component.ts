@@ -20,16 +20,13 @@ export class LegalizarOrdenesComponent implements OnInit {
   ordenActividad: any[] = [];
   loadingButton: boolean = false;
   loading: boolean = false;
-  disabledbutton: boolean = true;
   email: string = '';
-  existsFile: boolean = false;
-  existeimagen: boolean = false;
   fechaMejora: boolean = false;
   files: Array<File> = [];
   files2: Array<File> = [];
   subtitle: string = '';
-  imgfirma: any;
-  isChecked: any = [];
+  imgfirma: any; 
+  checkList: any = [];
   listado: any = [];
   observaciones: any;
   orden: any = [];
@@ -51,6 +48,10 @@ export class LegalizarOrdenesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getUnaOrden();
+  }
+
+  getUnaOrden = () => {
     this.loading = true;
     this._orService
         .getUnaOrdenActividad(this._actividad)
@@ -61,19 +62,16 @@ export class LegalizarOrdenesComponent implements OnInit {
           this._orService
               .getItemsActividadEstado(this.ordenActividad[0].actividad._id, this.cumple)
               .subscribe((res: any) => {
-                this.listado = res['itemactividadDB'];
-                for (let l of this.listado) {
-                  if (l.imagen == true) {
-                    this.existeimagen = true;
-                  }
-                }
+                this.listado = res['itemactividadDB'];       
+                this.setInformationCheck(this.listado);
+
                 this._usService
                   .getUsuarioEmail(this.email)
                   .subscribe((res: any) => {
                     this.usuarioDB = res['usuarioDB'];
                     this.imgfirma = this.url + this.usuarioDB.imgfirma;
                   }, (err: any) => {
-                    this.error();
+                    this.error('Ocurrió un error.');
                   });
                   this._orService.getUnaOrden(this.ordenActividad[0].ordentrabajo._id)
                       .subscribe((res: any) => {
@@ -81,44 +79,72 @@ export class LegalizarOrdenesComponent implements OnInit {
                         this.fechaMejora = this.orden.trabajo.fechaMejora;
                         this.loading = false;
                       }, (err: any) => {
-                        this.error();
+                        this.error('Ocurrió un error.');
                       });
               }, (err: any) => {
-                this.error();
+                this.error('Ocurrió un error.');
               });
         }, (err: any) => {
-          this.error();
+          this.error('Ocurrió un error.');
         });
-
   }
 
-  listaChequeo(pos: any, event: any) {
-    let disabled = false;
-    this.isChecked[pos] = true;
-    //se revisa si todos los indices son true
-    for (let _i = 0; _i < this.listado.length; _i++) {
-      if (!this.isChecked[_i]) {
-        disabled = true;
+  setInformationCheck = (res: any) => {
+    let temp: any = []; 
+    res.forEach((item: any) => {           
+      temp.push({ 
+        _id: item._id, 
+        etiqueta: item.etiqueta, 
+        tipo: item.tipo,
+        isChecked: false,
+        fechaMejora: '',
+      });           
+    });        
+    this.checkList = temp;    
+  }
+
+  checkboxChange = (_id: any) => {
+    let temp: any = this.checkList.map((item: any) => {
+      if (_id === item._id) {
+        return { ...item, isChecked: !item.isChecked };
       }
-    }
+      return item;
+    });
+    this.checkList = temp;    
+  };
 
-    if (disabled) {
-      this.disabledbutton = true;
-    } else {
-      this.disabledbutton = false;
-    }
-
+  verifiedDates(dateReference: any): boolean {
+    const currentDate = new Date();
+    return new Date(dateReference) < currentDate;
   }
 
-  fileUpload(event: any, tipo: any) {
-    if (tipo == 'EVIDENCIAS') {
+  onChangeFechaMejora = (itemId: any, fechaMejora: any) => {
+    if (this.verifiedDates(fechaMejora)) {
+      this.error('La fecha seleccionada debe ser mayor a la fecha actual.');
+      return;
+    }
+    let temp: any = this.checkList.map((item: any) => {
+      if (itemId === item._id) {
+        return { ...item, fechaMejora: fechaMejora };
+      }
+      return item;
+    });
+    this.checkList = temp;
+  }
+
+  fileUpload =(event: any, tipo: any) => {
+    if (event.target.files.length > 2) {
+      this.error('Solo se permiten dos imágenes');
+      return;
+    }
+    if (tipo === 'EVIDENCIAS') {
       this.files = event.target.files;
     } else {
       this.files2 = event.target.files;
     }
   }
 
-  legalizarOrdenActividad() {
+  legalizarOrdenActividad = () => {
     this.loadingButton = true;
     this._orService
         .putEstadoOrdenActividad(
@@ -128,12 +154,13 @@ export class LegalizarOrdenesComponent implements OnInit {
           this.files,
           this.files2,
           this.observaciones,
-          this.fechaMejora
+          this.fechaMejora,
+          this.checkList,
         ).subscribe((res: any) => {
           if (res.ok == true) {
             this.loadingButton = false;
             Swal.fire({
-              text: 'Actividad Legalizada',
+              text: 'Orden Legalizada correctamente',
               icon: 'success',
               confirmButtonText: 'OK',
               allowOutsideClick: false
@@ -141,18 +168,18 @@ export class LegalizarOrdenesComponent implements OnInit {
               this.router.navigate(['/cargarordenes', this.orden.id, this.orden._id]);
             });
           } else {
-            this.error();
+            this.error('Ocurrió un error.');
           }
         }, (err: any) => {
-          this.error();
+          this.error('Ocurrió un error.');
         });
   }
 
-  error() {
+  error(msg: string) {
     this.loading = false;
     this.loadingButton = false;
     Swal.fire({
-      text: 'Ocurrió un error, intente de nuevo',
+      text: msg,
       icon: 'error',
       confirmButtonText: 'OK',
       allowOutsideClick: false

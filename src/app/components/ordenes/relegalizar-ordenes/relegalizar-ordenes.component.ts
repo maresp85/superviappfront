@@ -17,13 +17,12 @@ export class ReLegalizarOrdenesComponent implements OnInit {
   breadcrumbtitle2: string = "ReLegalización Ordenes";
   url: any = environment.url + environment.uploadfirmas;
   ordenActividad: any[] = [];
+  checkList: any = [];
   loadingButton: boolean = false;
   observaciones: any;
   loading: boolean = false;
   disabledbutton: boolean = true;
   email: string = '';
-  existsFile: boolean = false;
-  existeimagen: boolean = false;
   fechaMejora: boolean = false;
   files: Array<File> = [];
   files2: Array<File> = [];
@@ -50,6 +49,10 @@ export class ReLegalizarOrdenesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getUnaOrden();
+  }
+
+  getUnaOrden = () => {
     this.loading = true;
     this._orService
         .getUnaOrdenActividad(this._actividad)
@@ -60,19 +63,16 @@ export class ReLegalizarOrdenesComponent implements OnInit {
           this._orService
               .getItemsActividadEstado(this.ordenActividad[0].actividad._id, this.cumple)
               .subscribe((res: any) => {
-                this.listado = res['itemactividadDB'];
-                for (let l of this.listado) {
-                  if (l.imagen == true) {
-                    this.existeimagen = true;
-                  }
-                }
+                this.listado = res['itemactividadDB'];          
+                this.setInformationCheck(this.listado);
+
                 this._usService
                   .getUsuarioEmail(this.email)
                     .subscribe((res: any) => {
                       this.usuarioDB = res['usuarioDB'];
                       this.imgfirma = this.url + this.usuarioDB.imgfirma;
                     }, (err: any) => {
-                      this.error();
+                      this.error('Ocurrió un error.');
                     });
                 this._orService.
                     getUnaOrden(this.ordenActividad[0].ordentrabajo._id)
@@ -81,37 +81,65 @@ export class ReLegalizarOrdenesComponent implements OnInit {
                       this.orden = res.ordentrabajoDB[0];
                       this.fechaMejora = this.orden.trabajo.fechaMejora;
                     }, (err: any) => {
-                      this.error();
+                      this.error('Ocurrió un error.');
                     });
               }, (err: any) => {
-                this.error();
+                this.error('Ocurrió un error.');
               });
         }, (err: any) => {
-          this.error();
+          this.error('Ocurrió un error.');
         });
-
   }
 
-  listaChequeo(pos: any, event: any) {
-    var disabled = false;
-    this.isChecked[pos] = event;
-    //se revisa si todos los indices son true
-    for (var _i = 0; _i < this.listado.length; _i++) {
-      if (!this.isChecked[_i]) {
-        disabled = true;
+  setInformationCheck = (res: any) => {
+    let temp: any = []; 
+    res.forEach((item: any) => {           
+      temp.push({ 
+        _id: item._id, 
+        etiqueta: item.etiqueta, 
+        tipo: item.tipo,
+        isChecked: false,
+        fechaMejora: '',
+      });           
+    });        
+    this.checkList = temp;    
+  }
+
+  checkboxChange = (_id: any) => {
+    let temp: any = this.checkList.map((item: any) => {
+      if (_id === item._id) {
+        return { ...item, isChecked: !item.isChecked };
       }
-    }
+      return item;
+    });
+    this.checkList = temp;    
+  };
 
-    if (disabled) {
-      this.disabledbutton = true;
-    } else {
-      this.disabledbutton = false;
-    }
-
+  verifiedDates(dateReference: any): boolean {
+    const currentDate = new Date();
+    return new Date(dateReference) < currentDate;
   }
 
-  fileUpload(event: any, tipo: any) {
-    if (tipo == 'EVIDENCIAS') {
+  onChangeFechaMejora = (itemId: any, fechaMejora: any) => {
+    if (this.verifiedDates(fechaMejora)) {
+      this.error('La fecha seleccionada debe ser mayor a la fecha actual.');
+      return;
+    }
+    let temp: any = this.checkList.map((item: any) => {
+      if (itemId === item._id) {
+        return { ...item, fechaMejora: fechaMejora };
+      }
+      return item;
+    });
+    this.checkList = temp;
+  }
+
+  fileUpload =(event: any, tipo: any) => {
+    if (event.target.files.length > 2) {
+      this.error('Solo se permiten dos imágenes');
+      return;
+    }
+    if (tipo === 'EVIDENCIAS') {
       this.files = event.target.files;
     } else {
       this.files2 = event.target.files;
@@ -119,27 +147,22 @@ export class ReLegalizarOrdenesComponent implements OnInit {
   }
 
   legalizarOrdenActividad() {
-    if (this.files.length == 0 && this.existeimagen) {
-      this.existsFile = true;
-      return;
-    } else {
-      this.existsFile = false;
-    }
-
     this.loadingButton = true;
     this._orService
         .putInactivaOrdenActividad(this._actividad)
         .subscribe((res: any) => {
           if (res.ok == true) {
-            ///
             this._orService
-                .putEstadoOrdenActividad(res['ordenactividadDB']._id,
-                                        this.cumple,
-                                        this.usuarioDB._id,
-                                        this.files,
-                                        this.files2,
-                                        this.observaciones,
-                                        this.fechaMejora)
+                .putEstadoOrdenActividad(
+                  res['ordenactividadDB']._id,
+                  this.cumple,
+                  this.usuarioDB._id,
+                  this.files,
+                  this.files2,
+                  this.observaciones,
+                  this.fechaMejora,
+                  this.checkList,
+                )
               .subscribe((res: any) => {
                 this.loadingButton = false;
                 if (res.ok == true) {
@@ -152,25 +175,25 @@ export class ReLegalizarOrdenesComponent implements OnInit {
                     this.router.navigate(['/cargarordenes', this.orden.id, this.orden._id]);
                   });
                 } else {
-                  this.error();
+                  this.error('Ocurrió un error.');
                 }
               }, (err: any) => {
-                this.error();
+                this.error('Ocurrió un error.');
               });
             ///
           } else {
-            this.error();
+            this.error('Ocurrió un error.');
           }
         }, (err: any) => {
-          this.error();
+          this.error('Ocurrió un error.');
         });
   }
 
-  error() {
+  error(msg: string) {
     this.loading = false;
     this.loadingButton = false;
     Swal.fire({
-      text: 'Ocurrió un error, intente de nuevo',
+      text: msg,
       icon: 'error',
       confirmButtonText: 'OK',
       allowOutsideClick: false

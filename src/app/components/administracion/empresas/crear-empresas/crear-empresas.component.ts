@@ -46,7 +46,7 @@ export class CrearEmpresasComponent implements OnInit {
     this.logoImage = <File>fileInput.target.files[0];
   }
 
-  onSubmit( form: NgForm ) {   
+  onSubmit(form: NgForm) {
   
     if ( form.invalid ) { return; }
 
@@ -56,7 +56,6 @@ export class CrearEmpresasComponent implements OnInit {
     } else {
       this.existsFile = false;
     }
-
 
     this.loadingButton = true;
      

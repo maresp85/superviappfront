@@ -10,14 +10,18 @@ export class OrdenesService {
 
   url: any;
 
-  constructor(private http: HttpClient,
-              private _usService: UsuarioService) {
+  constructor(
+    private http: HttpClient,
+    private _usService: UsuarioService
+  ) {
     this.url = environment.url;
   }
 
   getQuery(query: string) {
     const url = `${ this.url }/${ query }/`;
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': this._usService.leerToken() });
+    const headers = new HttpHeaders(
+      { 'Content-Type': 'application/json', 'Authorization': this._usService.leerToken() }
+    );
 
     return this.http.get(url, { headers });
   }
@@ -159,7 +163,7 @@ export class OrdenesService {
   }
 
     // Cierra Nota
-  cerrarNota(_id: any) {
+  cerrarNota = (_id: any) => {
     const url = `${ this.url }/ordenactividad/cerrar/${ _id }`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -167,6 +171,20 @@ export class OrdenesService {
     });
 
     return this.http.put(url, { headers });
+  }
+
+  updateExtraFieldsData = (_id: any, extraFieldsData: any) => {
+    const myObj = {
+      'extraFieldsData': extraFieldsData
+    };
+    const params = JSON.stringify(myObj);
+    const url = `${ this.url }/ordentrabajo/extraFields/${ _id }`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': this._usService.leerToken()
+    });
+
+    return this.http.put(url, params, { headers });
   }
 
     // Obtener ordenes tipo trabajo
@@ -230,6 +248,17 @@ export class OrdenesService {
     return this.http.delete(url, { headers });
   }
 
+  // Elimina Orden de Trabajo
+  deleteOrdenActividad(_id: any) {
+    const url = `${ this.url }/ordenactividad/eliminar/${ _id }`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': this._usService.leerToken()
+    });
+
+    return this.http.delete(url, { headers });
+  }
+
    // Actualizar id viga orden trabajo
   putIdVigaOrdenTrabajo(_id: any, idviga: any) {
     const myObj = {
@@ -253,32 +282,50 @@ export class OrdenesService {
     files: Array<File>,
     files2: Array<File>,
     observacion: any,
-    fechaMejora: any
+    fechaMejora: any,
+    checkList: any,
   ) {
 
     (estado == 1) ? estado = "CUMPLE" : estado = "NO CUMPLE";
     var fechalegaliza: any = Date.now();
 
     const params = new FormData();
-    params.append("estado", estado);
-    params.append("usuariolegaliza", usuario);
-    params.append("fechalegaliza", fechalegaliza);
-    params.append("observacion", observacion);
-    params.append("fechaMejora", fechaMejora);
+    params.append('estado', estado);
+    params.append('usuariolegaliza', usuario);
+    params.append('fechalegaliza', fechalegaliza);
+    params.append('observacion', observacion);
+    params.append('fechaMejora', fechaMejora);
+    params.append('checklist', JSON.stringify(checkList));
 
     if (files) {
       for (let i=0; i < files.length; i++) {
-        params.append("uploads[]", files[i], 'EVIDENCIAS=' + Date.now() + files[i]['name']);
+        params.append('uploads[]', files[i], 'EVIDENCIAS=' + Date.now() + files[i]['name']);
       }
     }
 
     if (files2) {
       for (let i=0; i < files2.length; i++) {
-        params.append("uploads[]", files2[i], 'FOTOBITACORA=' + Date.now() + files2[i]['name']);
+        params.append('uploads[]', files2[i], 'FOTOBITACORA=' + Date.now() + files2[i]['name']);
       }
     }
 
     const url = `${ this.url }/ordenactividad/editar/${ _id }`;
+    const headers = new HttpHeaders({ 'Authorization': this._usService.leerToken() });
+
+    return this.http.put(url, params, { headers });
+  }
+
+  putDigitalSignature = (
+    _id: any,
+    signatureImage: File,
+  ) => {
+
+    let firmaUsuario: any = Date.now() + signatureImage.name;
+    const params = new FormData();
+    params.append('firmaUsuario', firmaUsuario);
+    params.append('image', signatureImage);
+
+    const url = `${ this.url }/signature-order-web/${ _id }`;
     const headers = new HttpHeaders({ 'Authorization': this._usService.leerToken() });
 
     return this.http.put(url, params, { headers });

@@ -51,7 +51,7 @@
 
                   <span *ngFor="let lista of listado; let i = index">
                   
-                    <span class="text" *ngIf="lista.tipo.toUpperCase() == 'ETIQUETA'">
+                    <span class="text" *ngIf="lista.tipo.toUpperCase() === 'ETIQUETA'">
                       <ul class="todo-list ui-sortable">
                         <li>
                           <span class="text">{{ lista.etiqueta.toUpperCase() }}</span>
@@ -59,7 +59,7 @@
                       </ul>
                     </span>                    
                     
-                    <div *ngIf="lista.tipo.toUpperCase() == 'FIRMA DIGITAL'">
+                    <div *ngIf="lista.tipo.toUpperCase() === 'FIRMA DIGITAL'">
                       <ul class="todo-list ui-sortable">
                         <li>
                           <span class="text">{{ lista.etiqueta.toUpperCase() }}</span>
@@ -92,7 +92,7 @@
                       <ul class="todo-list ui-sortable">
                         <li>
                           <span class="text">{{ lista.etiqueta.toUpperCase() }}</span>
-                          <div *ngIf="lista.imagen == 1 && lista.tipo == 'EVIDENCIAS'">
+                          <div *ngIf="lista.imagen == 1 && lista.tipo === 'EVIDENCIAS'">
                             <div class="row">
                               <div *ngFor="let img of imagenes; let i = index">
                                 <div class="col-1 mt-1" *ngIf="'EVIDENCIAS' == checkTipoImagen(img.filename)">
@@ -117,7 +117,7 @@
                               </div>
                             </div>
 
-                            <div class="row" *ngIf="usuarioDB.editorder && cantImg < 4">
+                            <div class="row" *ngIf="usuarioDB.editorder && cantImg < 3">
                               <div class="col-12 mt-3">
                                 <input
                                   type="file" #Image accept="image/*"
@@ -134,7 +134,7 @@
                       </ul>
                     </div>
 
-                    <div *ngIf="lista.tipo.toUpperCase() == 'FOTO BITÁCORA'">
+                    <div *ngIf="lista.tipo.toUpperCase() === 'FOTO BITÁCORA'">
                       <ul class="todo-list ui-sortable">
                         <li>
                           <span class="text">{{ lista.etiqueta.toUpperCase() }}</span>
@@ -175,8 +175,7 @@
                         <textarea 
                           type="text"
                           name="observaciones"
-                          class="form-control"
-                          (click)="disabledbutton = false"
+                          class="form-control"               
                           [(ngModel)]="observaciones"
                           maxlength="650"
                         >
@@ -197,7 +196,6 @@
                         <input 
                           type="date"
                           name="fechaMejora"
-                          (click)="changeDate()"
                           [disabled]="!usuarioDB.editorder"
                           class="form-control"
                           [ngModel] ="fechaMejora | date:'yyyy-MM-dd'" (ngModelChange)="fechaMejora = $event"
@@ -214,8 +212,7 @@
                 <span>
                   <button 
                     type="button"
-                    class="btn btn-warning float-right"
-                    [disabled]="disabledbutton"
+                    class="btn btn-warning float-right"                    
                     (click)="updateOrdenActividad()"
                   >
                     <i [ngClass]="{'fa-refresh fa-spin':loadingButton}" class="fa"></i>

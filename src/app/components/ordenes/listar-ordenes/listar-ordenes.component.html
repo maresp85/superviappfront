@@ -30,8 +30,10 @@
                 [colors]="chartOptions.colors"
                 [legend]="chartOptions.legend"
                 [plotOptions]="chartOptions.plotOptions"
-                ></apx-chart>  
-                <button (click)="showPdfButton()">Open PDF</button>  
+                [xaxis]="chartOptions.xaxis"
+              >
+              </apx-chart>  
+              <button (click)="showPdfButton()">Open PDF</button>  
             </div>
           </div>
         </div>
@@ -138,8 +140,8 @@
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary" type="submit">
-                            <i [ngClass]="{'fa-refresh fa-spin':loadingButton}" class="fa"></i>
-                            Buscar
+                          <i [ngClass]="{'fa-refresh fa-spin':loadingButton}" class="fa"></i>
+                          Buscar
                         </button>
                     </div>
                   </form>
@@ -157,7 +159,7 @@
                       <th style="width: 10px">N°</th>
                       <th scope="col" style="text-align: center;">Trabajo</th>
                       <th scope="col" style="text-align: center;">Aliado</th>
-                      <th scope="col" style="text-align: center;">Usuario(a)</th>
+                      <th scope="col" style="text-align: center;">Supervisor(a)</th>
                       <th scope="col" style="text-align: center;">Fecha Creación</th>                
                       <th scope="col" style="text-align: center;">Estado</th>
                       <th scope="col" style="text-align: center;">Opciones</th>

@@ -22,8 +22,9 @@ export class EditarUsuariosClaveComponent implements OnInit {
   listado: any = [];
   loading: boolean = false;  
   email: any;
-  options: any = ["1", "0"]; 
+  options: any = ['1', '0']; 
   estado: any;
+  passwordInvalid: boolean = false;
 
   constructor(
     private router: Router,
@@ -49,11 +50,30 @@ export class EditarUsuariosClaveComponent implements OnInit {
         }, error => {
           this.error();
         });
-  }  
+  }
+
+  validatePassword(password: string): boolean {
+    const regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*+#?&])[a-zA-Z\d@$!%*+#?&]{8,}$/;
+
+    const match = regex.exec(password);
+
+    if (match) return true;
+
+    return false
+  }
+
+  onchangePassword = () => {
+    this.passwordInvalid = false;
+  }
 
   onSubmit(form: NgForm) {   
   
     if (form.invalid) { return; }
+
+    if (!this.validatePassword(this.usuario.password)) {
+      this.passwordInvalid = true;
+      return;
+    }
 
     this.loadingButton = true;    
     this._usService

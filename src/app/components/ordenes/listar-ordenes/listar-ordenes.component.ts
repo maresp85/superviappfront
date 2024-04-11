@@ -17,8 +17,10 @@ import {
   ApexNonAxisChartSeries,
   ApexResponsive,
   ApexChart,
-  ApexTitleSubtitle
-} from "ng-apexcharts";
+  ApexTitleSubtitle,
+  ApexXAxis,
+  ApexStroke,
+} from 'ng-apexcharts';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -29,6 +31,8 @@ export type ChartOptions = {
   title: ApexTitleSubtitle;
   colors: string[],
   plotOptions: any,
+  xaxis: ApexXAxis,
+  stroke: ApexStroke,
 };
 
 @Component({
@@ -242,7 +246,6 @@ export class ListarOrdenesComponent implements OnInit {
       }
     });
   }
-
 
   generatePdf(_id: any) {
     this.loading = true;
@@ -459,8 +462,14 @@ export class ListarOrdenesComponent implements OnInit {
         ]
     }, margin: [0, 20, 0, 0], layout: 'noBorders'});
 
-    ordentipotrabajo.forEach((element: any) => {
+    let seriesCumple: any = [];
+    let seriesNoCumple: any = [];
 
+    ordentipotrabajo.forEach((element: any) => {
+      
+      let actividadCumple: number = 0;
+      let actividadNoCumple: number = 0;
+      
       let estado = element.estado;
       if (ordentrabajo.trabajo.bitacora) {
         if (ordentrabajo.estado === 'NO CUMPLE') {
@@ -488,7 +497,7 @@ export class ListarOrdenesComponent implements OnInit {
       ordenactividad.forEach((elementact: any, idx: any) => {
 
         if (elementact.ordentipotrabajo == element._id && elementact.actividad) {
-
+          
           if (idx == 0) {
             content.push({table: {
               widths: [300, 120, '*'],
@@ -513,14 +522,12 @@ export class ListarOrdenesComponent implements OnInit {
           let estadoAct = elementact.estado;
           let fechalegaliza = new Date(elementact.fechalegaliza).toLocaleString();
 
-          if (elementact.estado == 'NO CUMPLE') {
-            this.series[0] += 1;
-            color = 'red';
-            if (ordentrabajo.trabajo.bitacora) estadoAct = 'ABIERTA';
-          } else if (elementact.estado == 'CUMPLE') {
-            this.series[1] += 1;
-            color = 'green';
-            if (ordentrabajo.trabajo.bitacora) estadoAct = 'CERRADA';
+          if (elementact.estado === 'NO CUMPLE') {
+            actividadNoCumple += 1;
+            color = 'red';            
+          } else if (elementact.estado === 'CUMPLE') {
+            actividadCumple += 1;
+            color = 'green';           
           } else {
             this.series[2] += 1;
             color = 'blue';
@@ -543,29 +550,44 @@ export class ListarOrdenesComponent implements OnInit {
 
       }); //orden actividad
 
+      seriesCumple.push(actividadCumple);
+      seriesNoCumple.push(actividadNoCumple);
+
     });
 
     content.push({ text: '', pageBreak: 'before' });
 
+    const series: any = [
+      {
+        name: 'CUMPLE',
+        data: seriesCumple,
+      },
+      {
+        name: 'NO CUMPLE',
+        data: seriesNoCumple,
+      }
+    ];
+
     this.chartOptions = {
-      series: this.series,        
-      colors : ['#b84644', '#28a745', '#4576b5'],
+      series: series,        
+      colors : ['#0292f7', '#fdae35'],
       chart: {
-        width: 380,
-        type: "pie",
+        width: 440,
+        type: 'bar',
         animations: {
           enabled: false,
-        },        
-      },
-      title: {
-        text: 'Ejecución de Actividades',
-      },
-      labels: this.labels,
+        },
+      },           
       plotOptions: {
-        pie: {
+        bar: {
           customScale: 0.90
         }
       },
+      stroke: {
+        show: true,
+        width: 1,
+        colors: ['transparent']
+      },  
       legend: {
         show: true,
         showForSingleSeries: true,
@@ -597,7 +619,7 @@ export class ListarOrdenesComponent implements OnInit {
                   bold: true,
                   fillColor: '#fff',
                   fontSize: 12,
-                  text: 'ESTADÍSTICAS',
+                  text: (ordentrabajo.trabajo.nombre).toUpperCase(),
                 }
               ]
             ]
@@ -607,7 +629,23 @@ export class ListarOrdenesComponent implements OnInit {
           { image: pieImage, alignment: 'center', margin: [0, 20, 0, 0] },
         );
 
-        content.push({
+        let columsWidthTableSummary: any = [];
+        let columsTextTableSummary: any = [];
+        ordentipotrabajo.forEach((item: any) => {
+          columsWidthTableSummary.push('*');
+          columsTextTableSummary.push(
+            { text: item.tipotrabajo.nombre, fontSize: 7, alignment: 'center', color: '#a7a7a7' }
+          );
+        });
+
+        content.push({ table: {
+          widths: columsWidthTableSummary,        
+            body: [
+              columsTextTableSummary
+            ]
+        }, margin: [80, 0, 80, 10], layout: 'noBorders'}); //left, top, right, bottom
+
+        /*content.push({
           style: 'tableHeader',
           table: {
             widths: ['*', '*'],
@@ -634,7 +672,7 @@ export class ListarOrdenesComponent implements OnInit {
               ],
             ]
           }, margin: [50, 0, 50, 0]
-        });
+        });*/
        
         content.push({ text: '', pageBreak: 'before' });
 
@@ -658,13 +696,6 @@ export class ListarOrdenesComponent implements OnInit {
         ordentipotrabajo.forEach((element: any) => {
 
           let estado = element.estado;
-          if (ordentrabajo.trabajo.bitacora) {
-            if (ordentrabajo.estado === 'NO CUMPLE') {
-              estado = 'ABIERTA';
-            } else if (ordentrabajo.estado === 'CUMPLE') {       
-              estado = 'CERRADA';
-            }  
-          }        
 
           content.push({table: {
             widths: ['*'],
@@ -742,17 +773,19 @@ export class ListarOrdenesComponent implements OnInit {
                       { text: item.etiqueta, fontSize: 10, bold: true, margin: [0, 15, 0, 0] } //
                     ]});
 
-                  } else if (item.tipo === 'EVIDENCIAS') {
-
-                    content.push({ ul: [
-                      ({ text: item.etiqueta + ':', fontSize: 10, bold: true, margin: [0, 15, 0, 0] })
-                    ]});
+                  } else if (item.tipo === 'EVIDENCIAS') {                      
 
                     let value = [];
                     for (let img of this.imagenesOrdenes) {
-                      if (elementact._id === img.ordenactividad && img.tipo === "EVIDENCIAS") {
+                      if (elementact._id === img.ordenactividad && img.tipo === 'EVIDENCIAS') {
                         value.push({ image: img.image, width: 126 });
                       }
+                    }
+
+                    if (value.length > 0) {
+                      content.push({ ul: [
+                        ({ text: item.etiqueta + ':', fontSize: 10, bold: true, margin: [0, 15, 0, 0] })
+                      ]});                 
                     }
 
                     content.push({table: {
@@ -763,17 +796,19 @@ export class ListarOrdenesComponent implements OnInit {
                     }, layout: 'noBorders', margin: [3, 5, 0, 5]});
 
                   } else if (item.tipo === 'FOTO BITÁCORA') {
-
-                    content.push({ ul: [
-                      ({ text: item.etiqueta + ':', fontSize: 10, bold: true })
-                    ]});
-
-                    var value = [];
+           
+                    let value = [];
                     for (let img of this.imagenesOrdenes) {
                       if (elementact._id == img.ordenactividad && img.tipo === 'FOTOBITACORA') {
                         value.push({ image: img.image, width: 126 });
                       }
-                    }  
+                    }
+
+                    if (value.length > 0) {
+                      content.push({ ul: [
+                        ({ text: item.etiqueta + ':', fontSize: 10, bold: true, margin: [0, 15, 0, 0] })
+                      ]});                 
+                    }
 
                     content.push({table: {
                       headerRows: 1,
@@ -813,7 +848,7 @@ export class ListarOrdenesComponent implements OnInit {
                 content.push({ text: elementact.observacion, fontSize: 10, margin: [10, 5, 0, 0] });
               }
 
-              if (elementact.fechaMejora) {
+              if (elementact.fechaMejora != 'undefined' && elementact.fechaMejora != '' && elementact.fechaMejora != null && elementact.fechaMejora != 'true') {
                 content.push({ ul: [
                   ({ text: 'Fecha proyectada de Mejora: ', fontSize: 10, bold: true, margin: [0, 5, 0, 0] })
                 ]});
@@ -906,18 +941,58 @@ export class ListarOrdenesComponent implements OnInit {
 
   async showPdfButton() {
 
+    const series: any = [
+      {
+        name: 'CUMPLE',
+        data: [44, 55, 41, 64, 22, 43, 21],
+      },
+      {
+        name: 'NO CUMPLE',
+        data: [53, 32, 33, 52, 13, 44, 32],
+      }
+    ];
+
     this.chartOptions = {
-      series: [28, 39, 11],
-      colors : ['#b84644', '#4576b5', '#28a745'],
+      series: series,        
+      colors : ['#0292f7', '#fdae35'],
       chart: {
         width: 380,
-        type: "pie"          
+        type: 'bar',
+        animations: {
+          enabled: false,
+        },
+      },           
+      plotOptions: {
+        bar: {
+          customScale: 0.80
+        }
       },
-      title: {
-        text: 'Ejecución de Actividades',
+      stroke: {
+        show: true,
+        width: 2,
+        colors: ["transparent"]
       },
-      labels: this.labels,
-     
+      xaxis: {
+        categories: [
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",     
+        ]
+      },
+      legend: {
+        show: true,
+        showForSingleSeries: true,
+        position: 'top',
+        horizontalAlign: 'center', 
+        floating: true,
+        fontSize: '11px',
+        fontFamily: 'Helvetica, Arial',         
+        offsetX: 0,
+        offsetY: 0,
+      }
     };
 
     this.showChart = true;
@@ -956,21 +1031,35 @@ export class ListarOrdenesComponent implements OnInit {
       const img = new Image();
       const svgElement: SVGGraphicsElement = document.querySelector('.apexcharts-svg');
       const imageBlobURL = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgElement.outerHTML);      
+      
       img.onload = () => {
-        var canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
+        const scaleFactor = 1; // Ajustar según sea necesario
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scaleFactor;
+        canvas.height = img.height * scaleFactor;
         const ctx = canvas.getContext('2d');
+        
+        // Ajustar la calidad del dibujado
+        ctx.imageSmoothingQuality = 'high';
+        
+        // Escalar y dibujar la imagen SVG en el canvas
+        ctx.scale(scaleFactor, scaleFactor);
         ctx.drawImage(img, 0, 0);
-        const dataURL = canvas.toDataURL('image/png');
+        
+        // Obtener la imagen en formato base64 con mejor calidad
+        const dataURL = canvas.toDataURL('image/png', 1.0); // Calidad al 100%
         resolve(dataURL);
       };
+      
       img.onerror = (error) => {
         reject(error);
       };
+      
       img.src = imageBlobURL;
     });
   }
+  
+  
   
   error(error: any) {
     this.loading = false;
