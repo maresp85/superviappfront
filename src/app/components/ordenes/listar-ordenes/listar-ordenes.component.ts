@@ -57,6 +57,7 @@ export class ListarOrdenesComponent implements OnInit {
   ordenes: OrdenesModel = new OrdenesModel();
   obra: any = [];
   p: number = 1;
+  role: any;
   trabajo: any = [];
   usuarios: any = [];
   urluploadimgordenes: any = environment.url + environment.uploadimgordenes_pdf;
@@ -76,12 +77,12 @@ export class ListarOrdenesComponent implements OnInit {
     public _usService: UsuarioService,
     private _conService: ConfiguracionService,
   ) {
-
+    this.role = this._usService.leerRoleUsuario();
     if (
-      this._usService.leerRoleUsuario() == '' ||
-      this._usService.leerEmailUsuario() == '' ||
-      this._usService.leerEmpresaUsuario() == '' ||
-      this._usService.leerIDUsuario() == ''
+      this.role === '' ||
+      this._usService.leerEmailUsuario() === '' ||
+      this._usService.leerEmpresaUsuario() === '' ||
+      this._usService.leerIDUsuario() === ''
     ) {
       this.router.navigate(['/login']);
     }
@@ -94,8 +95,7 @@ export class ListarOrdenesComponent implements OnInit {
 
    // Obtiene orden de trabajo
   getOrdenes() {
-    this.loading = true;
-    let role: any = this._usService.leerRoleUsuario();
+    this.loading = true;    
     let usuarioId: any = this._usService.leerIDUsuario();
 
     this._usService
@@ -123,7 +123,7 @@ export class ListarOrdenesComponent implements OnInit {
         this.error(err);
       });
 
-    if (role === 'SUPERVISOR SSTA' || role === 'SUPERVISOR LEGAL LABORAL') {
+    if (this.role === 'SUPERVISOR SSTA' || this.role === 'SUPERVISOR LEGAL LABORAL') {
       this._orService
         .getOrdenesBitacoraUsuario(usuarioId, this.empresa, false)
         .subscribe((res: any) => {
@@ -465,10 +465,15 @@ export class ListarOrdenesComponent implements OnInit {
     let seriesCumple: any = [];
     let seriesNoCumple: any = [];
 
+    //calificación barras
+    let actividadNoCumple: number = 0;
+    let actividadCumple: number = 0;
+    let actividadPendiente: number = 0;
+
     ordentipotrabajo.forEach((element: any) => {
       
-      let actividadCumple: number = 0;
-      let actividadNoCumple: number = 0;
+      let actividadSeriesNoCumple: number = 0;
+      let actividadSeriesCumple: number = 0;
       
       let estado = element.estado;
       if (ordentrabajo.trabajo.bitacora) {
@@ -523,13 +528,18 @@ export class ListarOrdenesComponent implements OnInit {
           let fechalegaliza = new Date(elementact.fechalegaliza).toLocaleString();
 
           if (elementact.estado === 'NO CUMPLE') {
-            actividadNoCumple += 1;
+            actividadNoCumple += elementact.calificacion;
+            actividadSeriesNoCumple += elementact.calificacion;
+            this.series[0] += 1;
             color = 'red';            
           } else if (elementact.estado === 'CUMPLE') {
-            actividadCumple += 1;
+            actividadCumple += elementact.calificacion;
+            actividadSeriesCumple += elementact.calificacion;
+            this.series[1] += 1;
             color = 'green';           
           } else {
-            this.series[2] += 1;
+            actividadPendiente += elementact.calificacion;
+            this.series[2] += elementact.calificacion;
             color = 'blue';
             fechalegaliza = '';
           }
@@ -539,7 +549,7 @@ export class ListarOrdenesComponent implements OnInit {
             headerRows: 1,
               body: [
                 [
-                 { text: elementact.actividad.nombre, alignment: 'justify', fontSize: 10 },
+                 { text: elementact.actividad.nombre + ' (cal.' + elementact.calificacion + ')', alignment: 'justify', fontSize: 10 },
                  { text: fechalegaliza, fontSize: 10, alignment: 'center' },
                  { text: estadoAct, fontSize: 9, bold: true, alignment: 'center', color: color }
                 ]
@@ -550,64 +560,96 @@ export class ListarOrdenesComponent implements OnInit {
 
       }); //orden actividad
 
-      seriesCumple.push(actividadCumple);
-      seriesNoCumple.push(actividadNoCumple);
+      seriesCumple.push(actividadSeriesCumple);
+      seriesNoCumple.push(actividadSeriesNoCumple);
 
     });
 
     content.push({ text: '', pageBreak: 'before' });
 
-    const series: any = [
-      {
-        name: 'CUMPLE',
-        data: seriesCumple,
-      },
-      {
-        name: 'NO CUMPLE',
-        data: seriesNoCumple,
-      }
-    ];
-
-    this.chartOptions = {
-      series: series,        
-      colors : ['#0292f7', '#fdae35'],
-      chart: {
-        width: 440,
-        type: 'bar',
-        animations: {
-          enabled: false,
+    if (ordentrabajo.trabajo.gradeChart === 'bar') {
+      const series: any = [
+        {
+          name: 'CUMPLE',
+          data: seriesCumple,
         },
-      },           
-      plotOptions: {
-        bar: {
-          customScale: 0.90
+        {
+          name: 'NO CUMPLE',
+          data: seriesNoCumple,
         }
-      },
-      stroke: {
-        show: true,
-        width: 1,
-        colors: ['transparent']
-      },  
-      legend: {
-        show: true,
-        showForSingleSeries: true,
-        position: 'top',
-        horizontalAlign: 'center', 
-        floating: true,
-        fontSize: '11px',
-        fontFamily: 'Helvetica, Arial',         
-        offsetX: 0,
-        offsetY: 0,
-      }
-    };
+      ];
+
+      this.chartOptions = {
+        series: series,        
+        colors : ['#0292f7', '#fdae35'],
+        chart: {
+          width: 440,
+          type: 'bar',
+          animations: {
+            enabled: false,
+          },
+        },           
+        plotOptions: {
+          bar: {
+            customScale: 0.90
+          }
+        },
+        stroke: {
+          show: true,
+          width: 1,
+          colors: ['transparent']
+        },  
+        legend: {
+          show: true,
+          showForSingleSeries: true,
+          position: 'top',
+          horizontalAlign: 'center', 
+          floating: true,
+          fontSize: '11px',
+          fontFamily: 'Helvetica, Arial',         
+          offsetX: 0,
+          offsetY: 0,
+        }
+      };
+    } else {
+      this.chartOptions = {
+        series: this.series,        
+        colors : ['#0292f7', '#fdae35', '#dddddd'],
+        chart: {
+          width: 380,
+          type: 'pie',
+          animations: {
+            enabled: false,
+          },        
+        },
+        title: {
+          text: 'Ejecución de Actividades',
+        },
+        labels: this.labels,
+        plotOptions: {
+          pie: {
+            customScale: 0.90
+          }
+        },
+        legend: {
+          show: true,
+          showForSingleSeries: true,
+          position: 'top',
+          horizontalAlign: 'center', 
+          floating: true,
+          fontSize: '11px',
+          fontFamily: 'Helvetica, Arial',         
+          offsetX: 0,
+          offsetY: 0,
+        }
+      };
+    }
 
     this.showChart = true;
 
     setTimeout(async () => {
 
       this.getBase64ImagePie().then((pieImage: any) => {
-
-        let totalActividades = this.series[0] + this.series[1] + this.series[2];
 
         content.push({ table: {
           widths: ['*'],
@@ -629,51 +671,83 @@ export class ListarOrdenesComponent implements OnInit {
           { image: pieImage, alignment: 'center', margin: [0, 20, 0, 0] },
         );
 
-        let columsWidthTableSummary: any = [];
-        let columsTextTableSummary: any = [];
-        ordentipotrabajo.forEach((item: any) => {
-          columsWidthTableSummary.push('*');
-          columsTextTableSummary.push(
-            { text: item.tipotrabajo.nombre, fontSize: 7, alignment: 'center', color: '#a7a7a7' }
-          );
-        });
+        if (ordentrabajo.trabajo.gradeChart === 'bar') {
+          let columsWidthTableSummary: any = [];
+          let columsTextTableSummary: any = [];
+          ordentipotrabajo.forEach((item: any) => {
+            columsWidthTableSummary.push('*');
+            columsTextTableSummary.push(
+              { text: item.tipotrabajo.nombre.toUpperCase(), fontSize: 7.5, alignment: 'center', color: '#4c4c4c' },    
+            );
+          });
 
-        content.push({ table: {
-          widths: columsWidthTableSummary,        
-            body: [
-              columsTextTableSummary
-            ]
-        }, margin: [80, 0, 80, 10], layout: 'noBorders'}); //left, top, right, bottom
+          content.push({ table: {
+            widths: columsWidthTableSummary,        
+              body: [
+                columsTextTableSummary
+              ]
+          }, margin: [0, 0, 40, 0], layout: 'noBorders'}); //left, top, right, bottom
 
-        /*content.push({
+          columsWidthTableSummary = [];
+          columsTextTableSummary  = [];
+          ordentipotrabajo.forEach((item: any, idx: number) => {
+            columsWidthTableSummary.push('*');
+            columsTextTableSummary.push(
+              { text: 'CUMPLE: ' + seriesCumple[idx], fontSize: 7, alignment: 'center', color: '#787878' },    
+            );
+          });
+
+          content.push({ table: {
+            widths: columsWidthTableSummary,        
+              body: [
+                columsTextTableSummary
+              ]
+          }, margin: [0, 0, 40, 10], layout: 'noBorders'}); //left, top, right, bottom
+
+          content.push({ table: {
+            widths: ['*'],
+            headerRows: 1,
+              body: [
+                [
+                  {
+                    alignment: 'center',
+                    bold: true,
+                    fillColor: '#fff',
+                    fontSize: 12,
+                    text: 'CÁLCULO TRABAJO ' + (ordentrabajo.trabajo.nombre).toUpperCase(),
+                  }
+                ]
+              ]
+          }, margin: [0, 40, 0, 10], layout: 'noBorders'});       
+        }
+
+        let totalActividades = actividadCumple + actividadNoCumple + actividadPendiente;
+        let totalActividadesCumpleNoCumple = actividadCumple + actividadNoCumple;
+        let calificacion = ((actividadCumple/totalActividadesCumpleNoCumple)*100).toFixed(2);
+
+        content.push({
           style: 'tableHeader',
           table: {
-            widths: ['*', '*'],
+            widths: ['*', '*', '*', 120, 120],
             body: [
               [
-                { text: 'N° ORDENES EJECUTADAS', fontSize: 10, fillColor: '#efefef', bold: true, },
-                { text: ordentipotrabajo.length, fontSize: 10, bold: true, },
+                { text: 'CUMPLE', fontSize: 10, alignment: 'center', fillColor: '#efefef', bold: true, },
+                { text: 'NO CUMPLE', fontSize: 10, alignment: 'center', fillColor: '#efefef', bold: true, },
+                { text: 'TOTAL ACTIVIDADES', fontSize: 10, alignment: 'center', fillColor: '#efefef', bold: true, },
+                { text: 'TOTAL ACTIVIDADES (cumple + no cumple)', fontSize: 10, alignment: 'center',  fillColor: '#efefef', bold: true, },
+                { text: 'CALIFICACIÓN (cumple / total actividades) * 100%', fontSize: 10, alignment: 'center', fillColor: '#efefef', bold: true, },                
               ],
               [
-                { text: 'TOTAL ACTIVIDADES', fontSize: 10, fillColor: '#efefef', bold: true, },
-                { text: totalActividades, fontSize: 10, bold: true, },
-              ],
-              [
-                { text: 'N° ACTIVIDADES NO CUMPLIDAS', fontSize: 10, fillColor: '#efefef', bold: true, },
-                { text: this.series[0], fontSize: 10, bold: true, },
-              ],
-              [
-                { text: 'N°ACTIVIDADES CUMPLIDAS', fontSize: 10, fillColor: '#efefef', bold: true, },
-                { text: this.series[1], fontSize: 10, bold: true, },
-              ],
-              [
-                { text: 'N°ACTIVIDADES PENDIENTES', fontSize: 10, fillColor: '#efefef', bold: true, },
-                { text: this.series[2], fontSize: 10, bold: true, },
+                { text: actividadCumple, fontSize: 10, alignment: 'center', },
+                { text: actividadNoCumple, fontSize: 10, alignment: 'center', },
+                { text: totalActividades, fontSize: 10, alignment: 'center', },
+                { text: totalActividadesCumpleNoCumple, fontSize: 10, alignment: 'center', },
+                { text: calificacion, fontSize: 10, alignment: 'center', },
               ],
             ]
-          }, margin: [50, 0, 50, 0]
-        });*/
-       
+          }, margin: [0, 10, 0, 10]
+        });
+              
         content.push({ text: '', pageBreak: 'before' });
 
         // Detalle de las actividades
@@ -1059,13 +1133,11 @@ export class ListarOrdenesComponent implements OnInit {
     });
   }
   
-  
-  
   error(error: any) {
     this.loading = false;
     this.loadingButton = false;
-    if (error.error.err.message == "Token no válido") {
-      this.router.navigate(["/login"]);
+    if (error.error.err.message === 'Token no válido') {
+      this.router.navigate(['/login']);
     } else {
       Swal.fire({
         text: 'Ocurrió un error, intente de nuevo',

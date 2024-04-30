@@ -23,6 +23,7 @@ export class CrearUsuariosComponent implements OnInit {
   loading: boolean = false;
   signImg: File = null;
   usuario: UsuarioModel;
+  passwordInvalid: boolean = false;
 
   constructor(
     private router: Router,
@@ -55,6 +56,21 @@ export class CrearUsuariosComponent implements OnInit {
       });
   }
 
+  onchangePassword = () => {
+    this.passwordInvalid = false;
+  }
+
+
+  validatePassword(password: string): boolean {
+    const regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*+#?&])[a-zA-Z\d@$!%*+#?&]{8,}$/;
+
+    const match = regex.exec(password);
+
+    if (match) return true;
+
+    return false
+  }
+
    // Cargue de la firma digital
   signUpload(fileInput: any) {
     this.signImg = <File>fileInput.target.files[0];
@@ -63,6 +79,11 @@ export class CrearUsuariosComponent implements OnInit {
   onSubmit(form: NgForm) {
 
     if (form.invalid) { return; }
+
+    if (!this.validatePassword(this.usuario.password)) {
+      this.passwordInvalid = true;
+      return;
+    }
 
     if (this.signImg == null) {
       this.existsFile = true;

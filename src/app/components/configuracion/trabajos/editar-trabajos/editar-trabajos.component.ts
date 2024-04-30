@@ -36,17 +36,29 @@ export class EditarTrabajosComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.validateRole();
+    this.getTrabajo();
+  }
+
+  validateRole = () => {
+    if (this._usService.leerRoleUsuario() !== 'ADMIN') {
+      this.router.navigate(['/']);
+    }
+  }
+
+  getTrabajo = () => {
     this.loading = true;
     this._conService
         .getUnTrabajo(this._trabajo)
         .subscribe((res: any) => {         
-            this.listadoTrabajo = res['trabajoDB'][0];  
-            this.trabajo.nombre = this.listadoTrabajo.nombre;
-            this.trabajo.activo = this.listadoTrabajo.activo ? 1 : 0; ;
-            this.trabajo.fechaMejora = this.listadoTrabajo.fechaMejora ? 1 : 0; ;          
-            this.trabajo.legalizaCualquierOrden = this.listadoTrabajo.legalizaCualquierOrden ? 1 : 0; ;
-            this.trabajo.bitacora = this.listadoTrabajo.bitacora ? 1 : 0; 
-            this.loading = false;
+          this.listadoTrabajo = res['trabajoDB'][0];  
+          this.trabajo.nombre = this.listadoTrabajo.nombre;
+          this.trabajo.gradeChart = this.listadoTrabajo.gradeChart;
+          this.trabajo.activo = this.listadoTrabajo.activo ? 1 : 0; ;
+          this.trabajo.fechaMejora = this.listadoTrabajo.fechaMejora ? 1 : 0; ;          
+          this.trabajo.legalizaCualquierOrden = this.listadoTrabajo.legalizaCualquierOrden ? 1 : 0; ;
+          this.trabajo.bitacora = this.listadoTrabajo.bitacora ? 1 : 0; 
+          this.loading = false;
         }, (err: any) => {
           this.error();
         });
@@ -65,6 +77,7 @@ export class EditarTrabajosComponent implements OnInit {
         this.trabajo.fechaMejora,
         this.trabajo.legalizaCualquierOrden,
         this.trabajo.bitacora,
+        this.trabajo.gradeChart,
       ).subscribe((res: any) => { 
         if (res.ok == true) {
           this.loadingButton = false;    

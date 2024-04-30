@@ -80,19 +80,21 @@ export class ConfiguracionService {
   }
 
    // POST crear trabajos
-  crearTrabajo(
+  crearTrabajo = (
     nombre: any, 
     fechaMejora: any, 
     legalizaCualquierOrden: any, 
     bitacora: any, 
-    empresa: any
-  ) {
+    empresa: any,
+    gradeChart: string,
+  ) => {
     const myObj = {
       'nombre': nombre,
       'fechaMejora': fechaMejora,
       'legalizaCualquierOrden': legalizaCualquierOrden,
       'bitacora': bitacora,
       'empresa': empresa,
+      'gradeChart': gradeChart,
     };
 
     const params = JSON.stringify(myObj);
@@ -109,7 +111,8 @@ export class ConfiguracionService {
     activo: any,
     fechaMejora: any,
     legalizaCualquierOrden: any,
-    bitacora: any
+    bitacora: any,
+    gradeChart: string,
   ) => {
     const myObj = {
       'nombre': nombre,
@@ -117,6 +120,7 @@ export class ConfiguracionService {
       'fechaMejora': fechaMejora,
       'legalizaCualquierOrden': legalizaCualquierOrden,
       'bitacora': bitacora,
+      'gradeChart': gradeChart,
     };
     
     const url = `${ this.url }/trabajo/editar/${ _id }`;
@@ -275,12 +279,15 @@ export class ConfiguracionService {
   }
 
    // Crea actividades
-  crearActividad(nombre: any, orden: any, tipotrabajo: any, role: any) {
+  crearActividad = (
+    nombre: any, orden: any, tipotrabajo: any, role: any, calificacion: any
+  ) => {
     const myObj = {
       'nombre': nombre,
       'orden': orden,
       'tipotrabajo': tipotrabajo,
       'role': role,
+      'calificacion': calificacion,
     };
     const params = JSON.stringify(myObj);
     const url = `${ this.url }/actividad/crear/`;
@@ -294,6 +301,7 @@ export class ConfiguracionService {
     _id: any,
     nombre: any,
     orden: any,
+    calificacion: any,
     role: any,
     trabajo: any,
     tipotrabajo: any,
@@ -303,6 +311,7 @@ export class ConfiguracionService {
     const myObj = {
       'nombre': nombre,
       'orden': orden,
+      'calificacion': calificacion,
       'role': role,
       'trabajo': trabajo,
       'tipotrabajo': tipotrabajo,

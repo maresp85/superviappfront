@@ -39,13 +39,31 @@ export class CrearOrdenesComponent implements OnInit {
     this.ordenes.fecha = moment().format().slice(0, 16);
   }
 
-  ngOnInit(): void {
-    this.loading = true;
+  ngOnInit(): void {    
     this.empresa = this._usService.leerEmpresaUsuario(); 
     this.usuarioid = this._usService.leerIDUsuario();
     this.usuarioNombre = this._usService.leerNombreUsuario();
     this.role = this._usService.leerRoleUsuario();
+    this.validateRole();
+    this.onloadData();
+  }
 
+  validateRole = () => {       
+    if (
+      this.role === '' ||
+      this._usService.leerEmailUsuario() === '' ||
+      this._usService.leerEmpresaUsuario() === '' ||
+      this._usService.leerIDUsuario() === ''
+    ) {
+      this.router.navigate(['/login']);
+    }
+    if (this.role == 'CONSULTA') {
+      this.router.navigate(['/login']);
+    }
+  }
+
+  onloadData = () => {
+    this.loading = true;
     this._conService
         .getTrabajoEmpresaFiltroBitacora(this.empresa, false)
         .subscribe((res: any) => {                                               
@@ -72,7 +90,7 @@ export class CrearOrdenesComponent implements OnInit {
           }, error => {
             this.error();
           });
-    }              
+    }
   }
 
   onChangeUsuario(usuarioId: any) {

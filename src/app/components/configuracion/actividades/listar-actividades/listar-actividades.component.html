@@ -67,6 +67,7 @@
                     <th style="text-align: center;">Nombre</th>
                     <th>Trabajo</th>
                     <th>Tipo Trabajo</th>
+                    <th>Calificación</th>
                     <th>Perfil</th>
                     <th>Opciones</th>
                   </tr>
@@ -77,14 +78,15 @@
                     <td>{{ lista.nombre }}</td>
                     <td style="font-size: 11pt;">{{ lista.trabajo.nombre }}</td>
                     <td style="font-size: 11pt;">{{ lista.tipotrabajo[0].nombre }}</td>
+                    <td style="text-align: center;">{{ lista.calificacion }}</td>
                     <td>
-                      <span *ngIf="lista.role == 'SUPERVISOR SSTA'" class="badge badge-warning">
+                      <span *ngIf="lista.role === 'SUPERVISOR SSTA'" class="badge badge-warning">
                         {{ lista.role }}
                       </span>
-                      <span *ngIf="lista.role == 'SUPERVISOR LEGAL LABORAL'" class="badge badge-primary">
+                      <span *ngIf="lista.role === 'SUPERVISOR LEGAL LABORAL'" class="badge badge-primary">
                         {{ lista.role }}
                       </span>
-                      <span *ngIf="lista.role == 'SUPERVISOR DEL CONTRATO'" class="badge badge-success">
+                      <span *ngIf="lista.role === 'SUPERVISOR DEL CONTRATO'" class="badge badge-success">
                         {{ lista.role }}
                       </span>               
                     </td>

@@ -28,6 +28,7 @@ export class CargarOrdenesComponent implements OnInit {
   ordenes: any;
   ordenTrabajo: any = [];
   _ordenes: any;
+  role: any;
   showModalExtraFields: boolean = false;
   showSignatureButton: boolean = false;
   urlUploadFirmaUsuario: any = environment.url + environment.uploadImgFirmaUsuario;
@@ -38,26 +39,31 @@ export class CargarOrdenesComponent implements OnInit {
     private _orService: OrdenesService,
     public _usService: UsuarioService,
   ) {
+    this.role = this._usService.leerRoleUsuario();
+    this.validateRole();
+    this.activatedRoute.params.subscribe(params => {
+      this.ordenes = params['ordenes'];
+      this._ordenes = params['_ordenes'];
+      this.title = this.title + " N° " + this.ordenes;
+    });
+  }
 
+  ngOnInit() {
+    this.unaOrden();
+  }
+
+  validateRole = () => {  
     if (
-      this._usService.leerRoleUsuario() === '' ||
+      this.role === '' ||
       this._usService.leerEmailUsuario() === '' ||
       this._usService.leerEmpresaUsuario() === '' ||
       this._usService.leerIDUsuario() === ''
     ) {
       this.router.navigate(['/login']);
     }
-
-    this.activatedRoute.params.subscribe(params => {
-      this.ordenes = params['ordenes'];
-      this._ordenes = params['_ordenes'];
-      this.title = this.title + " N° " + this.ordenes;
-    });
-
-  }
-
-  ngOnInit() {
-    this.unaOrden();
+    if (this.role == 'CONSULTA') {
+      this.router.navigate(['/login']);
+    }
   }
   
   unaOrden = () => {

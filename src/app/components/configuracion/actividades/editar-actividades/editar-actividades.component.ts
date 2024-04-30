@@ -14,9 +14,9 @@ import Swal from 'sweetalert2';
 })
 export class EditarActividadesComponent implements OnInit {
 
-  title: string = "Editar actividad";
-  breadcrumbtitle: string = "Configuración";
-  breadcrumbtitle2: string = "Actividades";
+  title: string = 'Editar actividad';
+  breadcrumbtitle: string = 'Configuración';
+  breadcrumbtitle2: string = 'Actividades';
   actividad: ActividadModel;
   loadingButton: boolean = false;
   loading: boolean = false;  
@@ -45,6 +45,7 @@ export class EditarActividadesComponent implements OnInit {
           this.listado = res['actividadDB'];
           this.actividad.nombre = this.listado.nombre;
           this.actividad.orden = this.listado.orden;
+          this.actividad.calificacion = this.listado.calificacion;
           this.actividad.role = this.listado.role;
           this.actividad.tipotrabajo = this.listado.tipotrabajo[0];
           this.empresa = this.listado.empresa;
@@ -55,16 +56,22 @@ export class EditarActividadesComponent implements OnInit {
                 this.loading = false;        
                 this.listadoTipoTrabajo = res['tipotrabajoDB'];     
               }, (err: any) => {
-                this.error();
+                this.error('Ocurrió un error, consulte al Administrador.');
               }); 
         }, (err: any) => {
-          this.error();
+          this.error('Ocurrió un error, consulte al Administrador.');
         });
   }  
 
   onSubmit(form: NgForm) {   
   
     if (form.invalid) { return; }
+
+    if (this.actividad.calificacion < 0) {
+      this.error('La calificación no puede ser menor a cero 0.');
+      return;
+    }
+
     this.loadingButton = true;    
     this._conService
         .getUnTipoTrabajo(this.actividad.tipotrabajo)
@@ -75,6 +82,7 @@ export class EditarActividadesComponent implements OnInit {
                 this._actividad,
                 this.actividad.nombre,
                 this.actividad.orden,
+                this.actividad.calificacion,
                 this.actividad.role,
                 trabajo,
                 this.actividad.tipotrabajo,
@@ -93,21 +101,21 @@ export class EditarActividadesComponent implements OnInit {
                     this.router.navigate(['/listaractividades', this.empresa]);
                   });                  
                 } else {
-                  this.error();
+                  this.error('Ocurrió un error, consulte al Administrador.');
                 }         
               }, (err: any) => {
-                this.error();
+                this.error('Ocurrió un error, consulte al Administrador.');
               });                      
         }, (err: any) => {
-          this.error();
+          this.error('Ocurrió un error, consulte al Administrador.');
         });
   }
 
-  error() {
+  error = (msg: string) => {
     this.loading = false;  
     this.loadingButton = false;
     Swal.fire({    
-      text: 'Ocurrió un error, contacte al administrador',
+      text: msg,
       icon: 'error',
       confirmButtonText: 'OK',
       allowOutsideClick: false

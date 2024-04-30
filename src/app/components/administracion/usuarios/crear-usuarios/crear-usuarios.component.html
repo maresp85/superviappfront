@@ -52,7 +52,11 @@
                             [ngClass]="{'is-invalid':f.submitted && f.controls['password'].errors}"
                             maxlength="50"
                             required
+                            (input)="onchangePassword()"
                         >
+                        <div *ngIf="f.submitted && passwordInvalid" class="text-danger">
+                            La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.
+                        </div>
                     </div> 
                     <div class="form-group">
                         <label for="role">Perfil:</label>
@@ -66,7 +70,8 @@
                             <option value='ADMIN'>ADMINISTRADOR</option>
                             <option value='SUPERVISOR SSTA'>SUPERVISOR SSTA</option>
                             <option value='SUPERVISOR LEGAL LABORAL'>SUPERVISOR LEGAL LABORAL</option>                  
-                            <option value='SUPERVISOR DEL CONTRATO'>SUPERVISOR DEL CONTRATO</option>                  
+                            <option value='SUPERVISOR DEL CONTRATO'>SUPERVISOR DEL CONTRATO</option>               
+                            <option value='CONSULTA'>CONSULTA</option>               
                         </select>
                     </div> 
                     <div class="form-group">

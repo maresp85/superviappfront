@@ -64,7 +64,8 @@ export class CrearTrabajosComponent implements OnInit {
       this.trabajo.fechaMejora,    
       this.trabajo.legalizaCualquierOrden,
       this.trabajo.bitacora,
-      this.trabajo.empresa
+      this.trabajo.empresa,
+      this.trabajo.gradeChart,
     ).subscribe((res: any) => {
       if (res.ok == true) {
         Swal.fire({

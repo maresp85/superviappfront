@@ -66,7 +66,7 @@
                           />
                         </div>
                       </div>
-                      <div class="col-3" *ngIf="_usService.leerRoleUsuario() === 'SUPERVISOR DEL CONTRATO'">
+                      <div class="col-3" *ngIf="role === 'SUPERVISOR DEL CONTRATO' || role === 'CONSULTA'">
                         <div class="form-group">
                           <label for="usuario">Supervisor(a):</label>
                           <select 
@@ -209,7 +209,7 @@
                       </td>
                       <td scope="col">
                         <div class="row">
-                          <div class="col-3" *ngIf="lista.estado !== 'CERRADA'">
+                          <div class="col-3" *ngIf="role !== 'CONSULTA' && lista.estado !== 'CERRADA'">
                             <a 
                               style="cursor: pointer;color:#007bff"
                               [routerLink]="['/cargarordenes', lista.id, lista._id]"
@@ -227,16 +227,18 @@
                               <i class="fa fa-cloud-download" aria-hidden="true"></i>
                             </a>
                           </div>
-                          <div class="col-3" *ngIf="lista.estado !== 'CERRADA'">
-                            <a 
-                              (click)="cerrarOrdenTrabajo(lista._id)"
-                              style="cursor: pointer;color:#dc3545"
-                              title="Cerrar Orden"
-                            >
-                              <i class="fa fa-arrow-down"></i>
-                            </a>
+                          <div *ngIf="role === 'ADMIN' || role === 'SUPERVISOR DEL CONTRATO'">
+                            <div class="col-3" *ngIf="lista.estado !== 'CERRADA'">
+                              <a 
+                                (click)="cerrarOrdenTrabajo(lista._id)"
+                                style="cursor: pointer;color:#dc3545"
+                                title="Cerrar Orden"
+                              >
+                                <i class="fa fa-arrow-down"></i>
+                              </a>
+                            </div>
                           </div>
-                          <div class="col-3" *ngIf="_usService.leerRoleUsuario() === 'ADMIN' && lista.estado !== 'CERRADA'">
+                          <div class="col-3" *ngIf="role === 'ADMIN' && lista.estado !== 'CERRADA'">
                             <a 
                               (click)="deleteOrdenTrabajo(lista._id)"
                               title="Eliminar"
@@ -253,12 +255,16 @@
               </div>
             </div>
           </div>
-          <a 
-            class="btn btn-primary"
-            routerLink="/crearordenes"
-          >
-            Nueva Orden de Trabajo
-          </a>
+
+          <div *ngIf="role === 'SUPERVISOR SSTA' || role === 'SUPERVISOR LEGAL LABORAL' || role === 'SUPERVISOR DEL CONTRATO'">
+            <a 
+              class="btn btn-primary"
+              routerLink="/crearordenes"
+            >
+              Nueva Orden de Trabajo
+            </a>
+          </div>
+
           <div class="row text-center">
             <div class="col-md-12 col-lg-12">
               <pagination-controls 

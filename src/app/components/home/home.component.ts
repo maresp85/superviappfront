@@ -132,9 +132,9 @@ export class HomeComponent implements OnInit {
         }); 
   }
 
-  errorToken(error: any) {
-    if (error.error.err.message == "Token no válido") {
-      this.router.navigate(["/login"]);
+  errorToken = (error: any) => {
+    if (error.error.err.message === 'Token no válido') {
+      this.router.navigate(['/login']);
     } 
   }
 

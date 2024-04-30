@@ -36,7 +36,7 @@
                             >
                         </div>
                         <div class="form-group">
-                            <label for="activo">Habilitar campo Fecha Mejora: </label>
+                            <label for="activo">Habilitar campo Fecha Mejora:</label>
                             <select 
                                 name="fechaMejora"                         
                                 class="form-control" 
@@ -49,7 +49,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="activo">Legaliza en Cualquier Orden: </label>
+                            <label for="activo">Legaliza en Cualquier Orden:</label>
                             <select 
                                 name="legalizaCualquierOrden"                         
                                 class="form-control" 
@@ -61,6 +61,19 @@
                                 <option [value]=0>No</option>                        
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="gradeChart">Gráfica calificación:</label>
+                            <select 
+                                name='gradeChart'                         
+                                class="form-control" 
+                                [(ngModel)]="trabajo.gradeChart" 
+                                [ngClass]="{'is-invalid':f.submitted && f.controls['gradeChart'].errors}"    
+                                required
+                            >                            
+                                <option [value]="'bar'" [selected]="trabajo.gradeChart === 'bar'">Bar</option>
+                                <option [value]="'pie'" [selected]="trabajo.gradeChart === 'pie'">Pie</option>
+                            </select>
+                        </div>  
                         <div class="form-group">
                             <label for="activo">Bitácora: </label>
                             <select 

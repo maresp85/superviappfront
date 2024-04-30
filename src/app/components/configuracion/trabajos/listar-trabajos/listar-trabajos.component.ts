@@ -17,9 +17,12 @@ export class ListarTrabajosComponent implements OnInit {
   breadcrumbtitle2: string = 'Trabajos';
   extraFieldsList: any = [];
   newExtraField: string;
+  editExtraField: string;
+  indexEditExtraField: any;
   listado: any = [];
   loading: boolean = false;
   showModalExtraFields: boolean = false;
+  showModalEditExtraFields: boolean = false;  
   _trabajo: any;
   p: number = 1;
 
@@ -58,39 +61,83 @@ export class ListarTrabajosComponent implements OnInit {
     this.showModalExtraFields = true;
   }
 
-  onSubmit(form: NgForm) {   
-  
-    if (form.invalid) { return; }
-    
-    this.extraFieldsList.push(this.newExtraField);
-    this.showModalExtraFields = false;
-    this.loading = true;  
-
-    this._conService
-      .addTrabajoExtraFields(
-        this._trabajo,
-        this.extraFieldsList,
-      ).subscribe((res: any) => { 
-        if (res.ok === true) {
-          this.loading = false;
-          form.resetForm();
-          Swal.fire({    
-            text: 'Nuevo campo extra agregado correctamente.',
-            icon: 'success',
-            confirmButtonText: 'OK',
-            allowOutsideClick: false
-          }).then((result) => {
-            this.loading = false;           
-            this.getTrabajo();
-          });                  
-        } else {
-          this.error('Ocurrió un error, intente de nuevo');
-        }         
-      }, (err: any) => {
-        this.error('Ocurrió un error, intente de nuevo');
-      }); 
+  deleteExtraField = (element: any) => {
+    Swal.fire({    
+      text: '¿Está seguro que desea eliminar este campo extra permanentemente?',
+      icon: 'question',
+      showCancelButton: true,
+      showCloseButton: true,      
+      cancelButtonColor: '#aaa',
+      confirmButtonColor: '#dc3545',
+      confirmButtonText: 'Si, estoy seguro',
+      cancelButtonText: 'No',
+    }).then((result: any) => {
+      if (result.value == true) {
+        let index = this.extraFieldsList.indexOf(element);
+        this.extraFieldsList.splice(index, 1);
+        this.handleExtraFields('Campo extra eliminado correctamente.')
+        .then(() => {});
+      } 
+    });
   }
 
+  modalEditExtraField = (element: any) => {    
+    this.indexEditExtraField = this.extraFieldsList.indexOf(element);
+    this.editExtraField = element;
+    this.showModalExtraFields = false;
+    this.showModalEditExtraFields = true;
+  }
+
+  onSubmitExtraFields(form: NgForm) {  
+    if (form.invalid) { return; }
+    
+    this.extraFieldsList.push(this.newExtraField.toUpperCase());
+    this.handleExtraFields('Nuevo campo extra agregado correctamente.')
+        .then(() => {
+          form.resetForm();;
+        })
+  }
+
+  onSubmitEditExtraFields(form: NgForm) {  
+    if (form.invalid) { return; }
+    
+    this.extraFieldsList[this.indexEditExtraField] = this.editExtraField.toUpperCase();
+    this.handleExtraFields('Campo extra editado correctamente.')
+        .then(() => {
+          form.resetForm();
+          this.showModalEditExtraFields = false;
+          this.showModalExtraFields = true;
+        })
+  }
+
+  handleExtraFields = (message: string): Promise<void> => {
+    return new Promise<void>((resolve, reject) => {
+        this.loading = true;
+        this._conService.addTrabajoExtraFields(this._trabajo, this.extraFieldsList)
+            .subscribe((res: any) => {
+                if (res.ok === true) {
+                  this.loading = false;
+                  Swal.fire({
+                    text: message,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false
+                  }).then((result) => {
+                      this.getTrabajo();
+                      resolve();
+                  });
+                } else {
+                  this.loading = false;
+                  this.error('Ocurrió un error, intente de nuevo');
+                  reject();
+                }
+            }, (err: any) => {
+                this.loading = false;
+                this.error('Ocurrió un error, intente de nuevo');
+                reject();
+            });
+    });
+  }
 
   deleteTrabajo(_id: any) {
     Swal.fire({    
@@ -125,10 +172,9 @@ export class ListarTrabajosComponent implements OnInit {
     });
   }
 
-
   error(error: any) {
     this.loading = false;
-    if (error.error.err.message == 'Token no válido') {
+    if (error.error.err.message === 'Token no válido') {
       this.router.navigate(['/login']);
     } else {
       Swal.fire({

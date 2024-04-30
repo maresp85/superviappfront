@@ -29,6 +29,7 @@
                       <th style="text-align: center;">Empresa</th>
                       <th style="text-align: center;">¿Campo Fecha Mejora?</th>
                       <th style="text-align: center;">¿Legaliza en Cualquier Orden?</th>
+                      <th style="text-align: center;">Gráfica calificación</th>
                       <th style="text-align: center;">Bitácora</th>
                       <th style="text-align: center;">Activo</th>
                       <th *ngIf="_usService.leerRoleUsuario() == 'ADMIN'">Opciones</th>
@@ -54,6 +55,14 @@
                           No
                         </span>
                       </td>
+                      <td style="text-align: center;">
+                        <span *ngIf="lista.gradeChart == 'bar'" class="badge badge-warning">
+                          Bar
+                        </span>
+                        <span *ngIf="lista.gradeChart == 'pie'" class="badge badge-secondary">
+                          Pie
+                        </span>
+                      </td>              
                       <td style="text-align: center;">
                         <span *ngIf="lista.bitacora == true" class="badge badge-primary">
                           Si
@@ -142,13 +151,35 @@
                     <tbody>
                       <tr *ngFor="let list of extraFieldsList">              
                         <td>{{ list }}</td>
+                        <td>
+                          <div class="row">
+                            <div class="col-3">
+                              <a
+                                (click)="modalEditExtraField(list)" 
+                                title="Editar campo extra"
+                                style="color: #063b80;cursor: pointer"
+                              >
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                              </a>
+                            </div>
+                            <div class="col-3">
+                              <a 
+                                (click)="deleteExtraField(list)" 
+                                title="Eliminar campo extra"
+                                style="color: #dc3545;cursor: pointer"
+                              >
+                                <i class="fa fa-times-circle" aria-hidden="true"></i>
+                              </a>
+                            </div>
+                          </div>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
 
-              <form (ngSubmit)="onSubmit(f)" #f="ngForm" class="form-group">                                
+              <form (ngSubmit)="onSubmitExtraFields(f)" #f="ngForm" class="form-group">                                
                 <div class="form-group">
                   <label for="newExtraField">Agregue un nuevo campo:</label>
                   <input 
@@ -161,7 +192,39 @@
                     required
                   >
                 </div>
-                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-secondary" (click)="showModalExtraFields=!showModalExtraFields">Cerrar</button>
+                <button type="submit" class="btn btn-primary ml-2">Guardar</button>
+              </form>                      
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" [ngClass]="{'show-modal': showModalEditExtraFields}">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Editar campo extra</h4>
+              <button type="button" class="close" (click)="showModalEditExtraFields=!showModalEditExtraFields" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form (ngSubmit)="onSubmitEditExtraFields(j)" #j="ngForm" class="form-group">                                
+                <div class="form-group">
+                  <label for="editExtraField">Edite el campo:</label>
+                  <input 
+                    type="text" 
+                    name="editExtraField"
+                    class="form-control"
+                    [(ngModel)]="editExtraField"
+                    [ngClass]="{'is-invalid':f.submitted && f.controls['editExtraField'].errors}"
+                    maxlength="64"
+                    required
+                  >
+                </div>
+                <button type="button" class="btn btn-secondary" (click)="showModalEditExtraFields=!showModalEditExtraFields">Cerrar</button>
+                <button type="submit" class="btn btn-primary ml-2">Guardar</button>
               </form>                      
             </div>
           </div>

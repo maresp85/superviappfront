@@ -36,6 +36,11 @@ export class EditarObrasComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.validateRole();
+    this.getObras();  
+  }
+
+  getObras = () => {
     this.loading = true;
     this._conService
         .getUnaObra(this._obra)
@@ -49,7 +54,13 @@ export class EditarObrasComponent implements OnInit {
         }, error => {
           this.error();
         });
-  }  
+  }
+
+  validateRole = () => {
+    if (this._usService.leerRoleUsuario() !== 'ADMIN') {
+      this.router.navigate(['/']);
+    }
+  }
 
   onSubmit(form: NgForm) {   
   

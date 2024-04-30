@@ -41,6 +41,11 @@ export class EditarItemActividadesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.validateRole();
+    this.getItemsActividades();
+  }
+
+  getItemsActividades = () => {
     this.loading = true;  
     this._conService
         .getUnItemActividad(this.item)
@@ -55,36 +60,43 @@ export class EditarItemActividadesComponent implements OnInit {
         }, error => {
           this.error();
         });
-  }  
+  }
+
+  validateRole = () => {
+    if (this._usService.leerRoleUsuario() !== 'ADMIN') {
+      this.router.navigate(['/']);
+    }
+  }
 
   onSubmit(form: NgForm) {   
   
     if (form.invalid) { return; }
 
     this.loadingButton = true;    
-    this._conService.putItemActividad(this.item,
-                                      this.itemactividad.cumple,
-                                      this.itemactividad.tipo,
-                                      this.itemactividad.etiqueta,
-                                      this.itemactividad.imagen,
-                                      this.itemactividad.activo)
-                    .subscribe((res: any) => { 
-                      if (res.ok == true) {
-                        this.loadingButton = false;    
-                        Swal.fire({    
-                          text: 'Item Editado',
-                          icon: 'success',
-                          confirmButtonText: 'OK',
-                          allowOutsideClick: false
-                        }).then((result) => {
-                          this.router.navigate(['/listaritemactividades', this.actividad]);
-                        });                  
-                      } else {
-                        this.error();
-                      }         
-                    }, error => {
-                      this.error();
-                    }); 
+    this._conService.putItemActividad(
+      this.item,
+      this.itemactividad.cumple,
+      this.itemactividad.tipo,
+      this.itemactividad.etiqueta,
+      this.itemactividad.imagen,
+      this.itemactividad.activo
+    ).subscribe((res: any) => { 
+        if (res.ok == true) {
+          this.loadingButton = false;    
+          Swal.fire({    
+            text: 'Item Editado',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            allowOutsideClick: false
+          }).then((result) => {
+            this.router.navigate(['/listaritemactividades', this.actividad]);
+          });                  
+        } else {
+          this.error();
+        }         
+      }, error => {
+        this.error();
+      }); 
   }
 
   error() {

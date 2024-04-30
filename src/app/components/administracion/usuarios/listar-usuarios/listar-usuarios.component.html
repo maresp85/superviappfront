@@ -31,7 +31,7 @@
                       <th>Nombre</th>
                       <th>Correo Electrónico</th>
                       <th>Empresa</th>
-                      <th>Perfil</th>
+                      <th style="text-align: center;">Perfil</th>
                       <th>Activo</th>
                       <!--<th>Recibe Email</th>-->
                       <th>Login Web</th>
@@ -51,17 +51,20 @@
                           {{ lista.empresa[0].nombre }}
                         </span>
                       </td>
-                      <td>
-                        <span *ngIf="lista.role == 'ADMIN'" class="badge badge-success">
+                      <td style="text-align: center;">
+                        <span *ngIf="lista.role === 'ADMIN'" class="badge badge-success">
                           {{ lista.role }}
                         </span>
-                        <span *ngIf="lista.role == 'SUPERVISOR SSTA'" class="badge badge-warning">
+                        <span *ngIf="lista.role === 'SUPERVISOR SSTA'" class="badge badge-warning">
                           {{ lista.role }}
                         </span>
-                        <span *ngIf="lista.role == 'SUPERVISOR LEGAL LABORAL'" class="badge badge-primary">
+                        <span *ngIf="lista.role === 'SUPERVISOR LEGAL LABORAL'" class="badge badge-primary">
                           {{ lista.role }}
                         </span>
-                        <span *ngIf="lista.role == 'SUPERVISOR DEL CONTRATO'" class="badge badge-success">
+                        <span *ngIf="lista.role === 'SUPERVISOR DEL CONTRATO'" class="badge badge-success">
+                          {{ lista.role }}
+                        </span>
+                        <span *ngIf="lista.role === 'CONSULTA'" class="badge badge-secondary">
                           {{ lista.role }}
                         </span>
                       </td>

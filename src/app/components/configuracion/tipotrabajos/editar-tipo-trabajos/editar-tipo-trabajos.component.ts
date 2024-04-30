@@ -38,6 +38,11 @@ export class EditarTipoTrabajosComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.validateRole();
+    this.getTiposTrabajo();
+  }
+
+  getTiposTrabajo = () => {
     this.loading = true;
     this.empresa = this._usService.leerEmpresaUsuario();
     this._conService
@@ -60,7 +65,13 @@ export class EditarTipoTrabajosComponent implements OnInit {
         }, error => {
           this.error();
         });
-  }  
+  }
+
+  validateRole = () => {
+    if (this._usService.leerRoleUsuario() !== 'ADMIN') {
+      this.router.navigate(['/']);
+    }
+  }
 
   onSubmit(form: NgForm) {   
   

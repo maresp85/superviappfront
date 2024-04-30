@@ -56,7 +56,18 @@
                                         name="orden"                         
                                         class="form-control" 
                                         [(ngModel)]="actividad.orden" 
-                                        [ngClass]="{'is-invalid':f.submitted && f.controls['tipotrabajo'].errors}"    
+                                        [ngClass]="{'is-invalid':f.submitted && f.controls['orden'].errors}"    
+                                        required
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label for="orden">Calificación:</label>
+                                    <input 
+                                        type="number"
+                                        name="calificacion"                         
+                                        class="form-control" 
+                                        [(ngModel)]="actividad.calificacion" 
+                                        [ngClass]="{'is-invalid':f.submitted && f.controls['calificacion'].errors}"    
                                         required
                                     >
                                 </div>

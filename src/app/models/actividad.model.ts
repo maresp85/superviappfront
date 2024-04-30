@@ -5,5 +5,6 @@ export class ActividadModel {
     tipotrabajo: any;
     orden: number;
     role: any;
+    calificacion: number;
     
 }

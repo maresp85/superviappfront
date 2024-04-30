@@ -13,9 +13,9 @@ import Swal from 'sweetalert2';
 })
 export class CrearActividadesComponent implements OnInit {
 
-  title: string = "Actividades";
-  breadcrumbtitle: string = "Configuración";
-  breadcrumbtitle2: string = "Actividades";
+  title: string = 'Actividades';
+  breadcrumbtitle: string = 'Configuración';
+  breadcrumbtitle2: string = 'Actividades';
   actividad: ActividadModel;
   loadingButton: boolean = false;
   loading: boolean = false;
@@ -77,6 +77,7 @@ export class CrearActividadesComponent implements OnInit {
         this.actividad.orden,
         this.actividad.tipotrabajo,
         this.actividad.role,
+        this.actividad.calificacion,
       )
       .subscribe((res: any) => { 
         if (res.ok == true) {

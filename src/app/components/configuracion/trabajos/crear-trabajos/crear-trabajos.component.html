@@ -20,13 +20,15 @@
                     <form (ngSubmit)="onSubmit( f )" #f="ngForm" class="form-group">                                
                         <div class="form-group">
                             <label for="descripcion">Nombre:</label>
-                            <input type="text" 
+                            <input 
+                                type="text" 
                                 name="nombre"
                                 class="form-control"
                                 [(ngModel)]="trabajo.nombre"
                                 [ngClass]="{'is-invalid':f.submitted && f.controls['nombre'].errors}"
                                 maxlength="450"
-                                required>
+                                required
+                            >
                         </div>
                         <div class="form-group">
                             <label for="empresa">Empresa:</label>
@@ -66,6 +68,19 @@
                                 <option [value]=0>No</option>                        
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="gradeChart">Gráfica calificación:</label>
+                            <select 
+                                name='gradeChart'                         
+                                class="form-control" 
+                                [(ngModel)]="trabajo.gradeChart" 
+                                [ngClass]="{'is-invalid':f.submitted && f.controls['gradeChart'].errors}"    
+                                required
+                            >                            
+                                <option value="bar">Bar</option>
+                                <option value="pie">Pie</option>
+                            </select>
+                        </div>  
                         <div class="form-group">
                             <label for="activo">Bitácora: </label>
                             <select 
